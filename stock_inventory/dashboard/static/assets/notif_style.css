@@ -1,0 +1,269 @@
+/* style for notifs */
+.component-read {
+    width: 372px;
+    height: 416px;
+  }
+  
+  .component-read .overlap {
+    position: relative;
+    height: 416px;
+    border-radius: 10px;
+  }
+  
+  .component-read .notifications {
+    position: absolute;
+    width: 372px;
+    height: 416px;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .component-read .text-wrapper {
+    position: absolute;
+    top: 19px;
+    left: 19px;
+    font-family: "Inter", Helvetica;
+    font-weight: 500;
+    color: #000000;
+    font-size: 16px;
+    letter-spacing: 0.16px;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .component-read .iconamoon-close-thin {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 19px;
+    left: 339px;
+  }
+  
+  .component-read .toggle-switch {
+    display: flex;
+    width: 64px;
+    height: 23px;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 4px;
+    position: absolute;
+    top: 52px;
+    left: 19px;
+    background-color: #828282;
+    border-radius: 100px;
+    border: 1px solid;
+    border-color: #c1c1c1;
+  }
+  
+  .component-read .ellipse {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    background-color: #ffffff;
+    border-radius: 7.5px;
+  }
+  
+  .component-read .div {
+    position: absolute;
+    width: 76px;
+    top: 55px;
+    left: 95px;
+    font-family: "Inter", Helvetica;
+    font-weight: 400;
+    color: #000000;
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+  .component-read .overlap-group {
+    position: absolute;
+    width: 391px;
+    height: 65px;
+    top: 100px;
+    left: 0;
+  }
+  
+  .component-read .overlap-2 {
+    position: absolute;
+    width: 391px;
+    height: 65px;
+    top: 0;
+    left: 0;
+  }
+  
+  .component-read .text-wrapper-2 {
+    position: absolute;
+    width: 76px;
+    top: 46px;
+    left: 315px;
+    font-family: "Inter", Helvetica;
+    font-weight: 500;
+    color: #a19898;
+    font-size: 10px;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+  .component-read .frame {
+    left: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+  }
+  
+  .component-read .p {
+    position: relative;
+    width: 292px;
+    margin-top: -1px;
+    font-family: "Inter", Helvetica;
+    font-weight: 400;
+    color: #000000;
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+  .component-read .line {
+    top: 63px;
+    position: absolute;
+    width: 372px;
+    height: 1px;
+    left: 0;
+    object-fit: cover;
+  }
+  
+  .component-read .ellipse-2 {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 4px;
+    left: 13px;
+    background-color: #30a6ef;
+    border-radius: 5px;
+  }
+  
+  .component-read .overlap-3 {
+    position: absolute;
+    width: 391px;
+    height: 68px;
+    top: 174px;
+    left: 0;
+  }
+  
+  .component-read .overlap-4 {
+    position: absolute;
+    width: 391px;
+    height: 65px;
+    top: 3px;
+    left: 0;
+  }
+  
+  .component-read .img {
+    top: 64px;
+    position: absolute;
+    width: 372px;
+    height: 1px;
+    left: 0;
+    object-fit: cover;
+  }
+  
+  .component-read .overlap-group-2 {
+    position: absolute;
+    width: 45px;
+    height: 44px;
+    top: 0;
+    left: 13px;
+  }
+  
+  .component-read .group {
+    position: absolute;
+    width: 41px;
+    height: 41px;
+    top: 3px;
+    left: 4px;
+  }
+  
+  .component-read .ellipse-3 {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0;
+    left: 0;
+    background-color: #30a6ef;
+    border-radius: 5px;
+  }
+  
+  .component-read .overlap-5 {
+    position: absolute;
+    width: 383px;
+    height: 61px;
+    top: 253px;
+    left: 0;
+  }
+  
+  .component-read .text-wrapper-3 {
+    position: absolute;
+    width: 76px;
+    top: 42px;
+    left: 307px;
+    font-family: "Inter", Helvetica;
+    font-weight: 500;
+    color: #a19898;
+    font-size: 10px;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+  .component-read .div-wrapper {
+    left: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+  }
+  
+  .component-read .line-2 {
+    top: 60px;
+    position: absolute;
+    width: 372px;
+    height: 1px;
+    left: 0;
+    object-fit: cover;
+  }
+  
+  .component-read .line-3 {
+    top: 89px;
+    position: absolute;
+    width: 372px;
+    height: 1px;
+    left: 0;
+    object-fit: cover;
+  }
+  
+  .component-read .icon-exclamation {
+    position: absolute;
+    width: 41px;
+    height: 33px;
+    top: 108px;
+    left: 17px;
+  }
+  
+  .component-read .shipped {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    top: 252px;
+    left: 17px;
+  }
+  
