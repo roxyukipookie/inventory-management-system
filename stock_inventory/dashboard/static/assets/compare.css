@@ -1,0 +1,838 @@
+.frame {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.frame .div {
+  background-color: #ffffff;
+  overflow: hidden;
+  width: 1440px;
+  height: 1024px;
+  position: relative;
+}
+
+.frame .LOGO {
+  position: absolute;
+  width: 182px;
+  height: 58px;
+  top: 45px;
+  left: 62px;
+}
+
+.frame .overlap-group {
+  position: relative;
+  width: 180px;
+  height: 58px;
+}
+
+.frame .rectangle {
+  position: absolute;
+  width: 123px;
+  height: 50px;
+  top: 4px;
+  left: 58px;
+  background-color: #ffffff;
+  border-radius: 41px 10px 10px 41px;
+  box-shadow: 0px 6px 4px #00000040;
+  opacity: 0.85;
+}
+
+.frame .zipstock {
+  position: absolute;
+  width: 172px;
+  top: 0;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: transparent;
+  font-size: 40px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .text-wrapper {
+  color: #e48727;
+}
+
+.frame .span {
+  color: #000000d9;
+}
+
+.frame .overlap {
+  position: absolute;
+  width: 608px;
+  height: 45px;
+  top: 45px;
+  left: 419px;
+}
+
+.frame .navbar {
+  position: absolute;
+  width: 608px;
+  height: 45px;
+  top: 0;
+  left: 0;
+}
+
+.frame .dashboard {
+  position: absolute;
+  width: 144px;
+  height: 45px;
+  top: 0;
+  left: 0;
+}
+
+.frame .overlap-group-2 {
+  position: relative;
+  height: 45px;
+  border-radius: 14px;
+}
+
+.frame .container {
+  position: absolute;
+  width: 144px;
+  height: 45px;
+  top: 0;
+  left: 0;
+  background-color: #c4c4c4;
+  border-radius: 14px;
+  box-shadow: 0px 6px 4px #00000040;
+  opacity: 0.85;
+}
+
+.frame .group {
+  position: absolute;
+  width: 89px;
+  height: 20px;
+  top: 12px;
+  left: 28px;
+}
+
+.frame .dash-bicon {
+  position: absolute;
+  width: 21px;
+  height: 20px;
+  top: 0;
+  left: 0;
+}
+
+.frame .text-wrapper-2 {
+  position: absolute;
+  width: 62px;
+  top: 2px;
+  left: 26px;
+  opacity: 0.6;
+  font-family: "Istok Web-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .invoice {
+  position: absolute;
+  width: 152px;
+  height: 53px;
+  top: 0;
+  left: 151px;
+}
+
+.frame .inventory {
+  position: absolute;
+  width: 135px;
+  height: 45px;
+  top: 0;
+  left: 309px;
+}
+
+.frame .container-2 {
+  width: 135px;
+  position: absolute;
+  height: 45px;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0px 6px 4px #00000040;
+  opacity: 0.85;
+}
+
+.frame .group-2 {
+  position: absolute;
+  width: 81px;
+  height: 20px;
+  top: 12px;
+  left: 33px;
+}
+
+.frame .text-wrapper-3 {
+  position: absolute;
+  width: 53px;
+  top: 2px;
+  left: 26px;
+  opacity: 0.6;
+  font-family: "Istok Web-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .history {
+  position: absolute;
+  width: 144px;
+  height: 45px;
+  top: 0;
+  left: 464px;
+}
+
+.frame .container-3 {
+  width: 144px;
+  position: absolute;
+  height: 45px;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0px 6px 4px #00000040;
+  opacity: 0.85;
+}
+
+.frame .div-wrapper {
+  position: absolute;
+  width: 43px;
+  height: 17px;
+  top: 14px;
+  left: 65px;
+}
+
+.frame .text-wrapper-4 {
+  position: absolute;
+  width: 41px;
+  top: 0;
+  left: 0;
+  opacity: 0.6;
+  font-family: "Istok Web-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .img {
+  position: absolute;
+  width: 21px;
+  height: 20px;
+  top: 12px;
+  left: 502px;
+}
+
+.frame .div-2 {
+  display: flex;
+  width: 240px;
+  align-items: center;
+  gap: 33px;
+  position: absolute;
+  top: 49px;
+  left: 1162px;
+}
+
+.frame .notifications {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.frame .div-3 {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.frame .div-4 {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.frame .text-wrapper-5 {
+  position: relative;
+  width: fit-content;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 16px;
+  letter-spacing: 0.16px;
+  line-height: normal;
+}
+
+.frame .photo {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.frame .more-arrow {
+  position: relative;
+  width: 13.86px;
+  height: 10.5px;
+}
+
+.frame .overlap-2 {
+  position: absolute;
+  width: 1332px;
+  height: 140px;
+  top: 136px;
+  left: 57px;
+  background-color: #ffffff;
+  border-radius: 30px 30px 0px 0px;
+  border: 1px solid;
+  border-color: #00000040;
+  box-shadow: 0px 4px 10px #00000040;
+}
+
+.frame .overlap-wrapper {
+  position: absolute;
+  width: 150px;
+  height: 70px;
+  top: 28px;
+  left: 23px;
+}
+
+.frame .overlap-3 {
+  position: relative;
+  width: 146px;
+  height: 70px;
+}
+
+.frame .text-wrapper-6 {
+  position: absolute;
+  width: 99px;
+  top: 0;
+  left: 1px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .text-wrapper-7 {
+  width: 146px;
+  position: absolute;
+  top: 41px;
+  left: 0;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .group-3 {
+  position: absolute;
+  width: 214px;
+  height: 78px;
+  top: 20px;
+  left: 324px;
+}
+
+.frame .overlap-group-wrapper {
+  position: absolute;
+  width: 118px;
+  height: 70px;
+  top: 8px;
+  left: 0;
+}
+
+.frame .overlap-group-3 {
+  position: relative;
+  width: 114px;
+  height: 70px;
+}
+
+.frame .text-wrapper-8 {
+  width: 114px;
+  position: absolute;
+  top: 41px;
+  left: 0;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .in-stock {
+  position: absolute;
+  width: 82px;
+  height: 77px;
+  top: 0;
+  left: 132px;
+  object-fit: cover;
+}
+
+.frame .box {
+  position: absolute;
+  width: 83px;
+  height: 77px;
+  top: 20px;
+  left: 183px;
+  object-fit: cover;
+}
+
+.frame .group-4 {
+  position: absolute;
+  width: 307px;
+  height: 85px;
+  top: 20px;
+  left: 603px;
+}
+
+.frame .group-5 {
+  position: absolute;
+  width: 208px;
+  height: 70px;
+  top: 8px;
+  left: 0;
+}
+
+.frame .overlap-group-4 {
+  position: relative;
+  width: 204px;
+  height: 70px;
+}
+
+.frame .text-wrapper-9 {
+  position: absolute;
+  width: 204px;
+  top: 41px;
+  left: 0;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .warning {
+  position: absolute;
+  width: 90px;
+  height: 85px;
+  top: 0;
+  left: 218px;
+  object-fit: cover;
+}
+
+.frame .group-6 {
+  position: absolute;
+  width: 332px;
+  height: 92px;
+  top: 13px;
+  left: 967px;
+}
+
+.frame .group-7 {
+  position: absolute;
+  width: 230px;
+  height: 70px;
+  top: 15px;
+  left: 0;
+}
+
+.frame .overlap-group-5 {
+  position: relative;
+  width: 226px;
+  height: 70px;
+}
+
+.frame .text-wrapper-10 {
+  position: absolute;
+  width: 226px;
+  top: 41px;
+  left: 0;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .rejected {
+  position: absolute;
+  width: 98px;
+  height: 92px;
+  top: 0;
+  left: 234px;
+  object-fit: cover;
+}
+
+.frame .overlap-4 {
+  position: absolute;
+  width: 1330px;
+  height: 40px;
+  top: 279px;
+  left: 58px;
+  background-color: #e48727;
+}
+
+.frame .text-wrapper-11 {
+  position: absolute;
+  width: 1216px;
+  top: 6px;
+  left: 23px;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.frame .overlap-5 {
+  position: absolute;
+  width: 681px;
+  height: 298px;
+  top: 335px;
+  left: 58px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color: #cbcbcb;
+}
+
+.frame .text-wrapper-12 {
+  position: absolute;
+  width: 132px;
+  top: 13px;
+  left: 19px;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  line-height: normal;
+}
+
+.frame .overlap-6 {
+  position: absolute;
+  width: 632px;
+  height: 298px;
+  top: 335px;
+  left: 756px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color: #cbcbcb;
+}
+
+.frame .text-wrapper-13 {
+  position: absolute;
+  width: 261px;
+  top: 13px;
+  left: 33px;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  line-height: normal;
+}
+
+.frame .sales-table {
+  display: flex;
+  width: 538px;
+  height: 217px;
+  align-items: flex-start;
+  padding: 10px;
+  position: absolute;
+  top: 47px;
+  left: 21px;
+}
+
+.frame .rank-column {
+  flex-direction: column;
+  width: 40px;
+  height: 200px;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: -3px;
+  display: flex;
+  position: relative;
+}
+
+.frame .table-head-wrapper {
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  align-self: stretch;
+  width: 100%;
+  background-color: #e48727;
+  display: flex;
+  position: relative;
+}
+
+.frame .text-wrapper-14 {
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 0.14px;
+  position: relative;
+  width: fit-content;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.frame .table-body-wrapper {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.frame .table-body {
+  color: #323c47;
+  font-size: 13px;
+  letter-spacing: 0.13px;
+  position: relative;
+  width: fit-content;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.frame .product-name-column {
+  display: flex;
+  flex-direction: column;
+  width: 355px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+  margin-bottom: -3px;
+}
+
+.frame .div-wrapper-2 {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  background-color: #085166;
+}
+
+.frame .no-of-sales-column {
+  display: flex;
+  flex-direction: column;
+  width: 66px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  margin-bottom: -3px;
+}
+
+.frame .actions-colum {
+  display: flex;
+  flex-direction: column;
+  width: 107px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  margin-bottom: -3px;
+  margin-right: -50px;
+}
+
+.frame .text-wrapper-15 {
+  position: absolute;
+  width: 188px;
+  top: 644px;
+  left: 60px;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  line-height: normal;
+}
+
+.frame .text-wrapper-16 {
+  position: absolute;
+  width: 207px;
+  top: 644px;
+  left: 790px;
+  font-family: "Istok Web-Bold", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  line-height: normal;
+}
+
+.frame .sales-table-2 {
+  display: flex;
+  width: 611px;
+  height: 326px;
+  align-items: flex-start;
+  padding: 10px;
+  position: absolute;
+  top: 673px;
+  left: 50px;
+}
+
+.frame .rank-column-2 {
+  display: flex;
+  flex-direction: column;
+  width: 56px;
+  height: 304px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+
+.frame .table-head-wrapper-2 {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  background-color: #e48727;
+}
+
+.frame .product-name-column-2 {
+  display: flex;
+  flex-direction: column;
+  width: 308px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.frame .div-wrapper-3 {
+  background-color: #085166;
+  display: flex;
+  height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+}
+
+.frame .no-of-sales-column-2 {
+  display: flex;
+  flex-direction: column;
+  width: 111px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.frame .actions-colum-2 {
+  display: flex;
+  flex-direction: column;
+  width: 178px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+  margin-right: -62px;
+}
+
+.frame .table-body-2 {
+  color: #0b62c1;
+  position: relative;
+  width: fit-content;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.13px;
+  line-height: normal;
+}
+
+.frame .transaction {
+  position: absolute;
+  width: 603px;
+  height: 357px;
+  top: 673px;
+  left: 778px;
+  overflow: hidden;
+}
+
+.frame .div-5 {
+  width: 1133px;
+  align-items: flex-start;
+  display: flex;
+  padding: 10px;
+  position: relative;
+}
+
+.frame .id-column {
+  display: flex;
+  flex-direction: column;
+  width: 233px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.frame .date-column {
+  display: flex;
+  flex-direction: column;
+  width: 181px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.frame .status-column {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.frame .table-body-3 {
+  color: #324739;
+  position: relative;
+  width: fit-content;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.13px;
+  line-height: normal;
+}
