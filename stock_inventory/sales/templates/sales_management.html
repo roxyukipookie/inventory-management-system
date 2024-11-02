@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %} Sales Management {% endblock %}
+
+{% load static %}
+    
+{% block content %}
+<div class="table-container"> <!--Product Table-->
+
+    <div class="add-search">
+
+        <div class="search-bar">
+            <svg id="search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                width="24px" fill="#">
+                <path
+                    d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+            </svg>
+            <span class="search-text">search product...</span>
+            <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                width="24px" fill="#">
+                <path
+                    d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+            </svg>
+        </div>
+
+        <button class="delete-all"><svg id="del-icon" xmlns="http://www.w3.org/2000/svg" height="24px"
+                viewBox="0 -960 960 960" width="24px" fill="#">
+                <path
+                    d="M280-120q-33 0-56.5-23.5T200-200v-520q-17 0-28.5-11.5T160-760q0-17 11.5-28.5T200-800h160q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800h160q17 0 28.5 11.5T800-760q0 17-11.5 28.5T760-720v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM400-280q17 0 28.5-11.5T440-320v-280q0-17-11.5-28.5T400-640q-17 0-28.5 11.5T360-600v280q0 17 11.5 28.5T400-280Zm160 0q17 0 28.5-11.5T600-320v-280q0-17-11.5-28.5T560-640q-17 0-28.5 11.5T520-600v280q0 17 11.5 28.5T560-280ZM280-720v520-520Z" />
+            </svg></button>
+
+        <div class="add-product">
+            <svg id="add-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                width="24px" fill="#ffffff">
+                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+            </svg>
+            <span class="add-text">Add Sale</span>
+        </div>
+    </div>
+
+    <div class="prod-table">
+        <!-- Products Section -->
+        <div class="products-section">
+            <h2>PRODUCTS</h2>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>Product</th>
+                        <th>Sold Quantity</th>
+                        <th>Price</th>
+                        <th>Total Sales</th>
+                        <th>Date Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in recently_added_products %}
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.total_sold_quantity }}</td>
+                        <td>₱{{ product.price }}</td>
+                        <td>₱{{ product.total_sales }}</td>
+                        <td>{{ product.created_at }}</td>
+                        <td>
+                            <!-- Edit button SVG -->
+                            <a href="{% url 'update_sales' product.id %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960"
+                                width="18px" fill="#">
+                                <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                            </svg> 
+                            
+                            <!-- Delete button SVG -->
+                            <a href="{% url 'update_sales' product.id %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                            </svg>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="categories-section">
+            <h2>CATEGORIES</h2>
+            <ul class="categories-list">
+                <li>Shampoo</li>
+                <li class="selected">Drinks</li>
+                <li>Foods</li>
+                <li>Powdered Soap</li>
+                <li>Body Soap</li>
+                <li>Spices</li>
+            </ul>
+            <div class="category-buttons">
+                <button class="new-category-btn">New Category</button>
+                <button class="dropdown-btn">▼</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

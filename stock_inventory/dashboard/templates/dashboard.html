@@ -1,475 +1,293 @@
-<!DOCTYPE html>
-<html lang="english">
-  <head>
-    <title>Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta charset="utf-8" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'assets/dashboardIndex.css' %}">
-  </head>
-  <body>
-    <div>
-      <div class="frame1169-container">
-        <div class="frame1169-frame1169">
+{% extends "base.html" %}
+{% block title %} Dashboard {% endblock %}
+
+{% load static %}
+
+{% block content %}
+<body>
+  <div class="dashboardTitleBlock">
+    <h3 class="dashboardTitleBlock-title">Dashboard</h3>
+  </div>
+
+  <img
+    src="{% static 'img/rectangle554504-z1hj-200h.png' %}"
+    alt="Rectangle554504"
+    class="summaryRectangle"
+  />
+
+  <img
+    src="{% static 'img/rectangle544504-putj-200h.png' %}"
+    alt="Rectangle544504"
+    class="orangeRectangle"
+  />
+  <span class="welcome">
+    <span>Welcome, John Lloyd!</span>
+  </span>
+
+  <div class="totalProducts">
+    <span class="totalProducts-num">
+      {{ total_products }}
+    </span>
+    <span class="totalProducts-label">
+      <span>Total Products</span>
+    </span>
+  </div>
+  <img
+    src="{% static 'img/box114504-3gfe-200h.png' %}"
+    alt="box114504"
+    class="totalProducts-img"
+  />
+
+  <div class="totalStock">
+    <div class="totalStock-div2">
+      <span class="totalStock-num">
+        {{ total_stock }}
+      </span>
+      <span class="totalStock-label">
+        <span>Total Stock</span>
+      </span>
+    </div>
+    <img
+      src="{% static 'img/instock314504-6hyq-200h.png' %}"
+      alt="instock314504"
+      class="totalStock-img"
+    />
+  </div>
+
+  <div class="lowStock">
+    <div class="lowStock-div2">
+      <span class="lowStock-num">
+        {{ low_stock_items }}
+      </span>
+      <span class="lowStock-label">
+        <span>Low Stock Products</span>
+      </span>
+    </div>
+    <img
+      src="{% static 'img/warning114524-c7os-200w.png' %}"
+      alt="warning114524"
+      class="lowStock-img"
+    />
+  </div>
+
+  <div class="outOfStock">
+    <div class="outOfStock-div2">
+      <span class="outOfStock-num">
+        {{out_of_stock_items }}
+      </span>
+      <span class="outOfStock-label">
+        <span>Out of Stock Products</span>
+      </span>
+    </div>
+    <img
+      src="{% static 'img/rejected114524-7q3w-200h.png' %}"
+      alt="Out Of Stock icon"
+      class="outOfStock-img"
+    />
+  </div>
+
+  <img
+    src="{% static 'img/rectangle564524-sp05-700w.png' %}"
+    alt="Sales Report Box Container"
+    class="salesReportContainer"
+  />
+
+  <!-- START OF SALES REPORT CHART -->
+  <span class="salesReport-label">
+    <span>Sales Report</span>
+  </span>
+  <div class="chart-container">
+    <canvas id="salesChart"></canvas>
+      <script>
+        const productNames = {{ product_names|safe }};
+        const remainingQuantities = {{ remaining_quantities|safe }};
+        const soldQuantities = {{ sold_quantities|safe }};
+  
+        console.log(productNames, remainingQuantities, soldQuantities);
             
-            <!--LOGO START-->
-          <div class="frame1169logo">
-            <img
-                src="{% static 'img/logo3.png' %}"
-                alt="Rectangle84504"
-                class="frame1169-rectangle8"
-            />
-            <span class="frame1169-text100">    
-            </span>
-          </div>
-          <!--LOGO END-->
-
-          <!--NAV BAR START-->
-          <div class="frame1169-navbar">
-              <div class="frame1169-group31">
-                <div class="frame1169-dash-bicon1">
-                  <img
-                    src="{% static 'img/dashboard.png' %}"
-                    alt="image4504"
-                    class="frame1169-image1"
-                  />
-                </div>
-
-                <a href="{% url 'dashboard_view' %}">
-                  <span class="frame1169-text103"><span>Dashboard</span></span>
-                </a>
-                
-              </div>
-            <div class="frame1169-invoice">
-              <div class="frame1169-group32">
-                <div class="frame1169-dash-bicon2">
-                  <img
-                    src="{% static 'img/invoice.png' %}"
-                    alt="image4504"
-                    class="frame1169-image3"
-                  />
-                </div>
-                
-                <span class="frame1169-text105"><span>Invoice</span></span>
-                  
-                
-              </div>
-            </div>
-            <div class="frame1169-inventory">
-              <div class="frame1169-group33">
-                <div class="frame1169-dash-bicon3">
-                  <img
-                    src="{% static 'img/inventory.png' %}"
-                    alt="image4504"
-                    class="frame1169-image4"
-                  />
-                </div>
-                <span class="frame1169-text107"><span>Inventory</span></span>
-              </div>
-            </div>
-            <div class="frame1169-history">
-              <div class="frame1169-group34">
-                <div class="frame1169-dash-bicon4">
-                  <img
-                    src="{% static 'img/history.png' %}"    
-                    alt="image4504"
-                    class="frame1169-image5"
-                  />
-                </div>
-                <span class="frame1169-text109"><span>History</span></span>
-              </div>
-            </div>
-          </div>
-          <!--NAV BAR END-->
-
-          <!-- User options and notification button -->
-          <div class="frame1169-frame1142">
-              <img
-                src="{% static 'img/notif.png' %}"
-                alt="notificationsI450"
-                class="frame1169-notifications"
-                id="notificationIcon"
-                onclick="toggleNotificationPopup()"
-              />
-
-              <div id="notificationPopup" style="display:none; position: fixed; bottom: 20px; right: 20px; background: #fff; border: 1px solid #ccc; padding: 20px; width: 300px; z-index: 1000;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h4 style="margin: 0;">Notifications</h4>
-                    <img src="{% static 'img/close.svg' %}" onclick="toggleNotificationPopup()" style="cursor: pointer; width: 20px; height: 20px;">
-                </div>
-                <ul id="notificationList" style="max-height: 200px; overflow-y: auto; padding: 0; list-style-type: none;">
-                  {% for notification in notifications %}
-                    <li style="display: flex; align-items: center; margin-bottom: 10px;">
-                      <img src="{% static notification.icon %}"  style="width: 20px; height: 20px; margin-right: 10px;">
-                      <span style="flex-grow: 1;">{{ notification.title }} - {{ notification.message }} <br> <small style="color: gray;">{{ notification.created_at|date:"Y-m-d H:i:s" }}</small></span>
-                    </li>
-                  {% empty %}
-                    <li>No new notifications</li>
-                  {% endfor %}
-                </ul>
-              </div>
-            
-            
-            
-                <span class="frame1169-text111"><span>John Lloyd</span></span>
-
-                <div class="frame1169-frame1138">
-                  <div class="profile-picture-container">
-                    <img
-                        src="{% static 'img/profile.jpg' %}" 
-                        alt="Profile Picture"
-                        class="profile-picture"
-                    />
-                </div> 
-        
-               </div>
-                <img
-                src="{% static 'img/morearrowi450-pq8c.svg' %}" 
-                alt="MoreArrowI450"
-                class="frame1169-more-arrow"
-               />
-              </div>
-               </div>
-          <!--USER OPTIONS END-->
-
-          <img
-            src="{% static 'img/rectangle554504-z1hj-200h.png' %}"
-            alt="Rectangle554504"
-            class="frame1169-rectangle55"
-          />
-
-          <div class="frame1169-group4">
-            <span class="frame1169-text113">
-                {{ total_products }}
-            </span>
-            <span class="frame1169-text115"><span>Total Products</span></span>
-          </div>
-          <img
-            src="{% static 'img/rectangle544504-putj-200h.png' %}"
-            alt="Rectangle544504"
-            class="frame1169-rectangle54"
-          />
-          <span class="frame1169-text117">
-            <span>Welcome, John Lloyd!</span>
-          </span>
-          <div class="frame1169-group10">
-            <div class="frame1169-group5">
-              <span class="frame1169-text119">
-                {{ total_stock }}
-              </span>
-              <span class="frame1169-text121"><span>Total Stock</span></span>
-            </div>
-            <img
-              src="{% static 'img/instock314504-6hyq-200h.png' %}"
-              alt="instock314504"
-              class="frame1169-instock31"
-            />
-          </div>
-          <img
-            src="{% static 'img/box114504-3gfe-200h.png' %}"
-            alt="box114504"
-            class="frame1169-box11"
-          />
-          <div class="frame1169-group9">
-            <div class="frame1169-group6">
-              <span class="frame1169-text123">
-                {{ low_stock_items }}
-              </span>
-              <span class="frame1169-text125">
-                <span>Low Stock Products</span>
-              </span>
-            </div>
-            <img
-              src="{% static 'img/warning114524-c7os-200w.png' %}"
-              alt="warning114524"
-              class="frame1169-warning11"
-            />
-          </div>
-          <div class="frame1169-group8">
-            <div class="frame1169-group7">
-              <span class="frame1169-text127">
-                {{out_of_stock_items }}
-              </span>
-              <span class="frame1169-text129">
-                <span>Out of Stock Products</span>
-              </span>
-            </div>
-            <img
-              src="{% static 'img/rejected114524-7q3w-200h.png' %}"
-              alt="Out Of Stock icon"
-              class="frame1169-rejected11"
-            />
-          </div>
-
-          <img
-            src="{% static 'img/rectangle564524-sp05-700w.png' %}"
-            alt="Sales Report Box Container"
-            class="frame1169-rectangle56"
-          />
-         <!-- START OF SALES REPORT CHART -->
-        <div class="chart-container">
-        <canvas id="salesChart"></canvas>
-            <script>
-              const productNames = {{ product_names|safe }};
-              const remainingQuantities = {{ remaining_quantities|safe }};
-              const soldQuantities = {{ sold_quantities|safe }};
-
-              console.log(productNames, remainingQuantities, soldQuantities);
-              
-              const ctx = document.getElementById('salesChart').getContext('2d');
-              const salesChart = new Chart(ctx, {
-                  type: 'bar',  
-                  data: {
-                      labels: productNames,  
-                      datasets: [
-                          {
-                              label: 'Remaining Quantity',
-                              data: remainingQuantities,
-                              backgroundColor: 'rgba(228, 135, 39, 1)',  
-                              borderColor: 'rgba(228, 135, 39, 1)',
-                              borderWidth: 1
-                          },
-                          {
-                              label: 'Sold Quantity',
-                              data: soldQuantities,
-                              backgroundColor: 'rgba(8, 81, 102, 1)',  
-                              borderColor: 'rgba(8, 81, 102, 1)',
-                              borderWidth: 1
-                          }
-                      ]
-                  },
-                  options: {
-                      scales: {
-                          y: {
-                              beginAtZero: true
-                          }
-                      },
-                      responsive: true,
-                      maintainAspectRatio: false
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+          type: 'bar',  
+          data: {
+              labels: productNames,  
+              datasets: [
+                {
+                  label: 'Remaining Quantity',
+                  data: remainingQuantities,
+                  backgroundColor: 'rgba(228, 135, 39, 1)',
+                  borderColor: 'rgba(228, 135, 39, 1)',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Sold Quantity',
+                  data: soldQuantities,
+                  backgroundColor: 'rgba(8, 81, 102, 1)',
+                  borderColor: 'rgba(8, 81, 102, 1)',
+                  borderWidth: 1
+                }
+              ]
+              },
+              options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
                   }
-              });
-            </script>
+                },
+                responsive: true,
+                maintainAspectRatio: false
+              }
+            });
+          </script>
+  </div>
+  <!-- END OF SALES REPORT CHART -->
+
+  <img
+    src="{% static 'img/rectangle574524-eqj-600w.png' %}"
+    alt="Recently Added Products Box Container"
+    class="recentlyAddedContainer"
+  />
+  <span class="recentlyAdded-label">
+    <span>Recently Added Products</span>
+  </span>
+  <!--START OF RECENTLY ADDED-->
+    <table class="frame1169-salestable2">
+      <thead>
+        <tr>
+          <th class="frame1169-ranktxt2">No</th>
+          <th class="frame1169-frame11547">Product</th>
+          <th class="frame1169-frame11548">Price</th>
+          <th class="frame1169-frame11549">Date Added</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for product in recently_added_products %}
+        <tr>
+          <td class="frame1169-rank-column2">{{ forloop.counter }}</td>
+          <td class="frame1169-frame11557">{{ product.name }}</td>
+          <td class="frame1169-frame11558">₱{{ product.price }}</td>
+          <td class="frame1169-frame11559">{{ product.created_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <!--END OF RECENTLY ADDED-->
+
+    <img
+      src="{% static 'img/rectangle574524-eqj-600w.png' %}"
+      alt="Top Products Sold Box Container"
+      class="topProductsContainer"
+    />
+    <span class="topProducts-label">
+      <span>Top Products Sold</span>
+    </span>
+    <!--START OF TOP PRODUCTS-->
+    <table class="frame1169-salestable1">
+      <thead>
+        <tr>
+          <th class="frame1169-ranktxt1">Rank</th>
+          <th class="frame1169-frame11541">Name</th>
+          <th class="frame1169-frame11542">Number of Sales</th>
+          <th class="frame1169-frame11543">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for product in top_products_sold %}
+          <tr>
+              <td class="frame1169-rankcolumn1">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</td>
+              <td class="frame1169-frame11551">{{ product.name }}</td>
+              <td class="frame1169-frame11552">{{ product.sold_quantity }}</td>
+              <td class="frame1169-frame11553">{{ product.action }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+    <!--END OF TOP PRODUCTS-->
+
+    <img
+      src="{% static 'img/rectangle574524-eqj-600w.png' %}"
+      alt="Recent Transactions Box Container"
+      class="transactionContainer"
+    />
+    <span class="transaction-label">
+      <span>Recent Transactions</span>
+    </span>
+    <!--START OF TRANSACTIONS-->
+    <div class="frame1169-transactiontable2">
+      <div class="frame1169-frame11584">
+        <div class="frame1169-idcolumn">
+          <div class="frame1169-frame11544">
+            <span class="frame1169-text183">
+              <span>Transaction ID</span>
+            </span>
           </div>
-        <!-- END OF SALES REPORT CHART -->
+          <div class="frame1169-frame11554">
+            <span class="frame1169-text185">
+              <span>1231940391809483</span>
+            </span>
+          </div>
+          <div class="frame1169-frame11564">
+            <span class="frame1169-text187">
+              <span>502743507239057</span>
+            </span>
+          </div>
+          <div class="frame1169-frame11574">
+            <span class="frame1169-text189">
+              <span>813102483943294</span>
+            </span>
+          </div>
+          <div class="frame1169-frame11585">
+            <span class="frame1169-text191">
+              <span>23958329549232</span>
+            </span>
+          </div>
+          <div class="frame1169-frame11594">
+            <span class="frame1169-text193">
+              <span>42350853841048</span>
+            </span>
+          </div>
         </div>
-
-          <img
-            src="{% static 'img/rectangle574524-eqj-600w.png' %}"
-            alt="Recently Added Products Box Container"
-            class="frame1169-rectangle57"
-          />
-          <!--START OF RECENTLY ADDED-->
-          <table class="frame1169-salestable2">
-            <thead>
-              <tr>
-                <th class="frame1169-ranktxt2">No</th>
-                <th class="frame1169-frame11547">Product</th>
-                <th class="frame1169-frame11548">Price</th>
-                <th class="frame1169-frame11549">Date Added</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for product in recently_added_products %}
-              <tr>
-                <td class="frame1169-rank-column2">{{ forloop.counter }}</td>
-                <td class="frame1169-frame11557">{{ product.name }}</td>
-                <td class="frame1169-frame11558">₱{{ product.price }}</td>
-                <td class="frame1169-frame11559">{{ product.created_at }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>    
-          <!--END OF RECENTLY ADDED-->
-
-          <img
-            src="{% static 'img/rectangle574524-eqj-600w.png' %}"
-            alt="Top Products Sold Box Container"
-            class="frame1169-rectangle58"
-          />
-          <!--START OF TOP PRODUCTS-->
-          <table class="frame1169-salestable1">
-            <thead>
-              <tr>
-                <th class="frame1169-ranktxt1">Rank</th>
-                <th class="frame1169-frame11541">Name</th>
-                <th class="frame1169-frame11542">Number of Sales</th>
-                <th class="frame1169-frame11543">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-                {% for product in top_products_sold %}
-                <tr>
-                    <td class="frame1169-rankcolumn1">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</td>
-                    <td class="frame1169-frame11551">{{ product.name }}</td>
-                    <td class="frame1169-frame11552">{{ product.sold_quantity }}</td>
-                    <td class="frame1169-frame11553">{{ product.action }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-          </table>
-          <!--END OF TOP PRODUCTS-->
-
-          <img
-            src="{% static 'img/rectangle574524-eqj-600w.png' %}"
-            alt="Recent Transactions Box Container"
-            class="frame1169-rectangle59"
-          />
-          <!--START OF TRANSACTIONS-->
-          <div class="frame1169-transactiontable2">
-            <div class="frame1169-frame11584">
-              <div class="frame1169-idcolumn">
-                <div class="frame1169-frame11544">
-                  <span class="frame1169-text183">
-                    <span>Transaction ID</span>
-                  </span>
-                </div>
-                <div class="frame1169-frame11554">
-                  <span class="frame1169-text185">
-                    <span>1231940391809483</span>
-                  </span>
-                </div>
-                <div class="frame1169-frame11564">
-                  <span class="frame1169-text187">
-                    <span>502743507239057</span>
-                  </span>
-                </div>
-                <div class="frame1169-frame11574">
-                  <span class="frame1169-text189">
-                    <span>813102483943294</span>
-                  </span>
-                </div>
-                <div class="frame1169-frame11585">
-                  <span class="frame1169-text191">
-                    <span>23958329549232</span>
-                  </span>
-                </div>
-                <div class="frame1169-frame11594">
-                  <span class="frame1169-text193">
-                    <span>42350853841048</span>
-                  </span>
-                </div>
-              </div>
-              <div class="frame1169-datecolumn">
-                <div class="frame1169-frame11545">
-                  <span class="frame1169-text195"><span>Date</span></span>
-                </div>
-                <div class="frame1169-frame11555">
-                  <span class="frame1169-text197"><span>09/11/2024</span></span>
-                </div>
-                <div class="frame1169-frame11565">
-                  <span class="frame1169-text199"><span>10/13/2024</span></span>
-                </div>
-                <div class="frame1169-frame11575">
-                  <span class="frame1169-text201"><span>03/09/24</span></span>
-                </div>
-                <div class="frame1169-frame11586">
-                  <span class="frame1169-text203"><span>12/4/2024</span></span>
-                </div>
-                <div class="frame1169-frame11595">
-                  <span class="frame1169-text205"><span>02/17/2024</span></span>
-                </div>
-              </div>
-              <div class="frame1169-statuscolumn">
-                <div class="frame1169-frame11546">
-                  <span class="frame1169-text207"><span>Status</span></span>
-                </div>
-                <div class="frame1169-frame11556">
-                  <span class="frame1169-text209"><span>Completed</span></span>
-                </div>
-                <div class="frame1169-frame11566">
-                  <span class="frame1169-text211"><span>Completed</span></span>
-                </div>
-                <div class="frame1169-frame11576">
-                  <span class="frame1169-text213"><span>Completed</span></span>
-                </div>
-                <div class="frame1169-frame11587">
-                  <span class="frame1169-text215"><span>Completed</span></span>
-                </div>
-                <div class="frame1169-frame11596">
-                  <span class="frame1169-text217"><span>Completed</span></span>
-                </div>
-              </div>
-            </div>
+        <div class="frame1169-datecolumn">
+          <div class="frame1169-frame11545">
+            <span class="frame1169-text195"><span>Date</span></span>
           </div>
-          <!--END OF TRANSACTIONS-->
-
-          <span class="frame1169-text131">
-            <span>Sales Report</span>
-          </span>
-          <span class="frame1169-text132">
-            <span>Top Products Sold</span>
-          </span>
-          <span class="frame1169-text133">
-            <span>Recently Added Products</span>
-          </span>
-          <span class="frame1169-text134">
-            <span>Recent Transactions</span>
-          </span>
-          
+          <div class="frame1169-frame11555">
+            <span class="frame1169-text197"><span>09/11/2024</span></span>
+          </div>
+          <div class="frame1169-frame11565">
+            <span class="frame1169-text199"><span>10/13/2024</span></span>
+          </div>
+          <div class="frame1169-frame11575">
+            <span class="frame1169-text201"><span>03/09/24</span></span>
+          </div>
+          <div class="frame1169-frame11586">
+            <span class="frame1169-text203"><span>12/4/2024</span></span>
+          </div>
+          <div class="frame1169-frame11595">
+            <span class="frame1169-text205"><span>02/17/2024</span></span>
+          </div>
+        </div>
+        <div class="frame1169-statuscolumn">
+          <div class="frame1169-frame11546">
+            <span class="frame1169-text207"><span>Status</span></span>
+          </div>
+          <div class="frame1169-frame11556">
+            <span class="frame1169-text209"><span>Completed</span></span>
+          </div>
+          <div class="frame1169-frame11566">
+            <span class="frame1169-text211"><span>Completed</span></span>
+          </div>
+          <div class="frame1169-frame11576">
+            <span class="frame1169-text213"><span>Completed</span></span>
+          </div>
+          <div class="frame1169-frame11587">
+            <span class="frame1169-text215"><span>Completed</span></span>
+          </div>
+          <div class="frame1169-frame11596">
+            <span class="frame1169-text217"><span>Completed</span></span>
           </div>
         </div>
       </div>
     </div>
-
-    <script>
-      function toggleNotificationPopup() {
-          var popup = document.getElementById("notificationPopup");
-          if (popup.style.display === "none" || popup.style.display === "") {
-              popup.style.display = "block";
-              fetchNotifications();  // Fetch notifications when opening
-          } else {
-              popup.style.display = "none";
-          }
-      }
-
-      function fetchNotifications() {
-        fetch('/get-notifications/')  // Ensure this URL matches your endpoint
-            .then(response => response.json())
-            .then(data => {
-                var notificationList = document.getElementById('notificationList');
-                notificationList.innerHTML = '';  // Clear old notifications
-
-                // Icon mapping based on notification type
-                const iconMapping = {
-                    'out-of-stock': 'img/out.png',
-                    'low-stock': 'img/warning.svg',
-                    // Add more mappings as needed
-                    'new-stock': 'img/new.png',
-                    'general': 'img/general.png'
-                };
-
-                data.forEach(function(notification) {
-                    var li = document.createElement('li');
-
-                    // Create an image element for the icon
-                    var icon = document.createElement('img');
-                    icon.src = iconMapping[notification.notification_type] || 'img/default.png'; // Fallback to a default icon if type not found
-                    icon.alt = notification.notification_type; // Set alt text for accessibility
-                    icon.style.width = '20px'; // Set width of the icon
-                    icon.style.height = '20px'; // Set height of the icon
-                    icon.style.marginRight = '10px'; // Add some space between the icon and text
-
-                    // Append the icon and the text to the list item
-                    li.appendChild(icon);
-                    li.appendChild(document.createTextNode(notification.title + " - " + notification.message));
-                    
-                    notificationList.appendChild(li);
-                });
-
-                // If no notifications, show a default message
-                if (data.length === 0) {
-                    notificationList.innerHTML = '<li>No new notifications</li>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching notifications:', error);
-            });
-      }
-      // Periodically check for new notifications every 30 seconds
-      setInterval(fetchNotifications, 30000);
-    </script>
-
-  </body>
-</html>
+    <!--END OF TRANSACTIONS-->
+</body>
+{% endblock %}

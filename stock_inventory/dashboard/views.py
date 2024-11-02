@@ -36,20 +36,22 @@ def dashboard_view(request):
     return render(request, 'dashboard.html', context)
 
 def get_notifications(request):
-    # Fetch unread notifications (you can filter them based on stock levels or other criteria)
-    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')[:5]  # Limit to 5 recent notifications
+    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')[:5]
+    unread_count = Notification.objects.filter(is_read=False).count()  # Count unread notifications
 
-    # Prepare the notifications data in a list
     notifications_data = []
     for notification in notifications:
         notifications_data.append({
             'title': notification.title,
             'message': notification.message,
-            'icon': notification.icon,  # Optional: add icon URL if needed
+            'icon': notification.icon,
             'created_at': notification.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'notification_type': notification.notification_type
         })
 
-    # Return the data as a JSON response
-    return JsonResponse(notifications_data, safe=False)
+    return JsonResponse({
+        'notifications': notifications_data,
+        'unread_count': unread_count  # Return unread count
+    }, safe=False)
+
 
