@@ -1,14 +1,22 @@
 from django.db import models
 from django.utils import timezone
+from inventory.models import Category
 
 # Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=255)
+    barcode = models.IntegerField(default=0)
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) 
-    sold_quantity = models.PositiveIntegerField(default=0)  
+    total_sales = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    mfg_date = models.CharField(max_length=200, default="mm-dd-yy", blank=True)
+    exp_date = models.CharField(max_length=200, default="mm-dd-yy", blank=True)
+    description = models.CharField(max_length=200, default="No Description")
+    sold_quantity = models.PositiveIntegerField(default=0)  #for current sale only
+    total_sold_quantity = models.PositiveIntegerField(default=0)  # For cumulative sold quantity
     created_at = models.DateTimeField(default=timezone.now)
-    alert_threshold = models.PositiveIntegerField(default=10)  # Minimum stock level before a product is considered 'low'
+    alert_threshold = models.PositiveIntegerField(default=10)  
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='products')
 
     def __str__(self):
         return self.name
@@ -46,7 +54,7 @@ class Product(models.Model):
         if self.quantity == 0:
             # Create a new out-of-stock notification
             Notification.objects.create(
-                title="0ut of stock",
+                title="Out of stock",
                 message=f"The product '{self.name}' has run out of stock.",
                 notification_type='out-of-stock',
                 icon='img/out.png'

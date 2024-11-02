@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} Update Product {% endblock %}
+
+{% load static %}
+
+{% block content %}
+<body>
+    <div class="titleBlock">
+        <h3 class="titleBlock-title">Update Product</h3>
+        <a href="{% url 'inventory' %}" style="color: black;" class="{% if request.resolver_match.url_name == 'inventory' %}active{% endif %}">Inventory</a> /
+        <a href="{% url 'update_product' %}" class="{% if request.resolver_match.url_name == 'update_product' %}active{% endif %}">Update Product</a>
+    </div>
+</body>
+{% endblock %}
