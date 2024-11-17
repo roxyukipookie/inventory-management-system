@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.dashboard_view, name='dashboard_view'),
-    path('get-notifications/', views.get_notifications, name='get_notifications'),
+    path('get_notifications/', views.get_notifications, name='get_notifications'),
 ]
