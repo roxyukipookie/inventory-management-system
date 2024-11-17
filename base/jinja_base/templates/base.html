@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        Django App
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}">
+  </head>
+  <body>
+
+    <div class="page-1">
+
+      <nav class="navbar">
+        <img class="LOGO" src="{% static 'images/LOGO.png' %}" />
+
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Invoice</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Inventory</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">History</a>
+          </li>
+        </ul>
+
+        <img class="notif" src="{% static 'images/Vector.png' %}" />
+
+        <div class="user_profile">
+          <div class="user_name">John Lloyd</div>
+          <img class="photo" src="{% static 'images/pic.png' %}" />
+        </div>
+        
+        <img class="more-arrow" src="{% static 'images/arrow.png' %}" />
+
+      </nav>
+
+      <div class="container1">{% block content %} {% endblock %}</div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    </div>
+  </body>
+</html>
