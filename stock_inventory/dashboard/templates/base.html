@@ -10,11 +10,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="{% static 'assets/base_style.css' %}">
   <link rel="stylesheet" href="{% static 'assets/dashboardStyle.css' %}">
-  <link rel="stylesheet" href="{% static 'css/inventory_style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/add_product.css' %}">
-  <link rel="stylesheet" href="{% static 'css/invoice_style.css' %}">
   <link rel="stylesheet" href="{% static 'css/sales_management.css' %}">
-  <link rel="stylesheet" href="{% static 'css/update_sales.css' %}">
+  <link rel="stylesheet" href="{% static 'inventory_styles/inventory.css' %}">
+  <link rel="stylesheet" href="{% static 'inventory_styles/product_table.css' %}">
+  <link rel="stylesheet" href="{% static 'inventory_styles/add_product.css' %}">
 </head>
 
 <body>
@@ -26,7 +25,7 @@
               d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
           </svg></a></li>
       <li><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
-      <li><a href="{% url 'sales_management' %}">Sales</a></li>
+      <li><a href="{% url 'sales_management' %}">Sales Terminal</a></li>
       <li><a href="{% url 'inventory' %}">Inventory</a></li>
       <li><a href="#">History</a></li>
     </ul>

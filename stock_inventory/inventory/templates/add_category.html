@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %} Add Category {% endblock %}
+
+{% load static %}
+
+{% block content %}
+<body>
+    <div class="titleBlock">
+        <h3 class="titleBlock-title">Add Category</h3>
+        <a href="{% url 'add_product' %}" style="color: black;" class="{% if request.resolver_match.url_name == 'add_product' %}active{% endif %}">Add Product</a> /
+        <a href="{% url 'add_category' %}" class="{% if request.resolver_match.url_name == 'add_category' %}active{% endif %}">Add Category</a>
+    </div>
+
+    <div class="addCategoryForm-container">
+        <h3 class="addCategoryForm-title">Add New Category</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Category Name: </label>
+                {{ form.name }}
+            </div>
+            <button type="submit" class="submit-button">Save Category</button>
+        </form>
+    </div>
+</body>
+{% endblock %}
