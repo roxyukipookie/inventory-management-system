@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} sales terminal {% endblock %}
+
+{% block content %}
+    <div class="sales_container">
+
+        <!---Sales Terminal-->
+        <div class="products_table">
+            <h2>SALES TERMINAL</h2>
+
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+
+            <span class="grand-total">Grand Total: </span>
+
+            <h2 class="footer" ></h2>
+            <div class="footer-btns">
+                <button class="fbtn" id="cncl" type="button">Cancel</button>
+                <button class="fbtn" id="sbttl" type="button">Subtotal</button>
+                <button class="fbtn" id="totl" type="button">Total</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="box">0</div>
+            <div class="box">1</div>
+            <div class="box">2</div>
+            <div class="box">3</div>
+            <div class="box">4</div>
+            <div class="box">5</div>
+            <div class="box">6</div>
+            <div class="box">7</div>
+            <div class="box">8</div>
+            <div class="box">9</div>
+        </div>
+
+        <!--Products Tab-->
+        <div class="category_tab">
+            <section class="filter-option">
+                <h2>PRODUCTS</h2>
+                <form method="get" action="{% url 'sales_terminal' %}">
+                    <select class="form_category" name="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category and selected_category|stringformat:"i" == category.id|stringformat:"i" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </section>
+
+            <!-- Products Section -->
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{product.name}}</td>
+                            <td>{{product.description}}</td>
+                            <td>{{product.price}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+    </div>
+{% endblock %}
