@@ -1010,3 +1010,27 @@ text-decoration: none;
   margin-bottom: .0rem; 
   letter-spacing: 1px;      
 }
+
+.recentlyAdded-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.export_button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: rgba(228, 135, 39, 1); /* Button color */
+  color: white; /* Text color */
+  text-decoration: none; /* Remove underline */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 245px;
+}
+
+.export_button:hover {
+  background-color: rgba(228, 135, 39, 0.8); /* Slightly darker on hover */
+}

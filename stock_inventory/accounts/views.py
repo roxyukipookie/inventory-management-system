@@ -26,10 +26,6 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'accounts/signup.html', {'form': form})
 
-
-def home(request):
-    return render(request, 'accounts/home.html')
-
 def dashboard_view(request):
     return render(request, 'accounts/dashboard.html')
 

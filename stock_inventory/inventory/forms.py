@@ -1,5 +1,6 @@
 from django import forms
 from dashboard.models import Product
+from .models import Category
 import random
 
 class ProductForm(forms.ModelForm):
@@ -61,3 +62,12 @@ class ProductForm(forms.ModelForm):
             if quantity < 0:
                 raise forms.ValidationError("Quantity cannot be negative.")
             return quantity
+        
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']  # Adjust fields as necessary
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Category Name'}),
+        }
