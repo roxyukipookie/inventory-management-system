@@ -24,5 +24,6 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('inventory/', include('inventory.urls')),
     path('sales/', include('sales.urls')),
+    path('history/', include('history.urls')),
     path('', views.home, name='home'),
 ]
