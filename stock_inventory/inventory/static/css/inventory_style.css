@@ -89,8 +89,6 @@ h2 { /* Headings */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
     border-radius: 5px;
     padding: 8px 10px;
     font-size: 13px;

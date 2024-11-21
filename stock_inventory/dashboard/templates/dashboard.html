@@ -4,291 +4,338 @@
 {% load static %}
 
 {% block content %}
-<body>
-  <div class="dashboardTitleBlock">
-    <h3 class="dashboardTitleBlock-title">Dashboard</h3>
-  </div>
-
-  <img
-    src="{% static 'img/rectangle554504-z1hj-200h.png' %}"
-    alt="Rectangle554504"
-    class="summaryRectangle"
-  />
-
-  <img
-    src="{% static 'img/rectangle544504-putj-200h.png' %}"
-    alt="Rectangle544504"
-    class="orangeRectangle"
-  />
-  <span class="welcome">
-    <span>Welcome, John Lloyd!</span>
-  </span>
-
-  <div class="totalProducts">
-    <span class="totalProducts-num">
-      {{ total_products }}
-    </span>
-    <span class="totalProducts-label">
-      <span>Total Products</span>
-    </span>
-  </div>
-  <img
-    src="{% static 'img/box114504-3gfe-200h.png' %}"
-    alt="box114504"
-    class="totalProducts-img"
-  />
-
-  <div class="totalStock">
-    <div class="totalStock-div2">
-      <span class="totalStock-num">
-        {{ total_stock }}
-      </span>
-      <span class="totalStock-label">
-        <span>Total Stock</span>
-      </span>
-    </div>
-    <img
-      src="{% static 'img/instock314504-6hyq-200h.png' %}"
-      alt="instock314504"
-      class="totalStock-img"
-    />
-  </div>
-
-  <div class="lowStock">
-    <div class="lowStock-div2">
-      <span class="lowStock-num">
-        {{ low_stock_items }}
-      </span>
-      <span class="lowStock-label">
-        <span>Low Stock Products</span>
-      </span>
-    </div>
-    <img
-      src="{% static 'img/warning114524-c7os-200w.png' %}"
-      alt="warning114524"
-      class="lowStock-img"
-    />
-  </div>
-
-  <div class="outOfStock">
-    <div class="outOfStock-div2">
-      <span class="outOfStock-num">
-        {{out_of_stock_items }}
-      </span>
-      <span class="outOfStock-label">
-        <span>Out of Stock Products</span>
-      </span>
-    </div>
-    <img
-      src="{% static 'img/rejected114524-7q3w-200h.png' %}"
-      alt="Out Of Stock icon"
-      class="outOfStock-img"
-    />
-  </div>
-
-  <img
-    src="{% static 'img/rectangle564524-sp05-700w.png' %}"
-    alt="Sales Report Box Container"
-    class="salesReportContainer"
-  />
-
-  <!-- START OF SALES REPORT CHART -->
-  <span class="salesReport-label">
-    <span>Sales Report</span>
-  </span>
-  <div class="chart-container">
-    <canvas id="salesChart"></canvas>
-      <script>
-        const productNames = {{ product_names|safe }};
-        const remainingQuantities = {{ remaining_quantities|safe }};
-        const soldQuantities = {{ sold_quantities|safe }};
-  
-        console.log(productNames, remainingQuantities, soldQuantities);
-            
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        const salesChart = new Chart(ctx, {
-          type: 'bar',  
-          data: {
-              labels: productNames,  
-              datasets: [
-                {
-                  label: 'Remaining Quantity',
-                  data: remainingQuantities,
-                  backgroundColor: 'rgba(228, 135, 39, 1)',
-                  borderColor: 'rgba(228, 135, 39, 1)',
-                  borderWidth: 1
-                },
-                {
-                  label: 'Sold Quantity',
-                  data: soldQuantities,
-                  backgroundColor: 'rgba(8, 81, 102, 1)',
-                  borderColor: 'rgba(8, 81, 102, 1)',
-                  borderWidth: 1
-                }
-              ]
-              },
-              options: {
-                scales: {
-                    y: {
-                    beginAtZero: true
-                  }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-              }
-            });
-      </script>
-  </div>
-  <!-- END OF SALES REPORT CHART -->
-
-  <img
-    src="{% static 'img/rectangle574524-eqj-600w.png' %}"
-    alt="Recently Added Products Box Container"
-    class="recentlyAddedContainer"
-  />
-  <span class="recentlyAdded-label">
-    <span>Recently Added Products</span>
-    <a href="{% url 'export_products' %}" class="export_button">Export Products to Excel</a>
-  </span>
-  <!--START OF RECENTLY ADDED-->
-    <table class="frame1169-salestable2">
-      <thead>
-        <tr>
-          <th class="frame1169-ranktxt2">No</th>
-          <th class="frame1169-frame11547">Product</th>
-          <th class="frame1169-frame11548">Price</th>
-          <th class="frame1169-frame11549">Date Added</th>
-          </tr>
-      </thead>
-      <tbody>
-        {% for product in recently_added_products %}
-        <tr>
-          <td class="frame1169-rank-column2">{{ forloop.counter }}</td>
-          <td class="frame1169-frame11557">{{ product.name }}</td>
-          <td class="frame1169-frame11558">₱{{ product.price }}</td>
-          <td class="frame1169-frame11559">{{ product.created_at }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <!--END OF RECENTLY ADDED-->
-
-    <img
-      src="{% static 'img/rectangle574524-eqj-600w.png' %}"
-      alt="Top Products Sold Box Container"
-      class="topProductsContainer"
-    />
-    <span class="topProducts-label">
-      <span>Top Products Sold</span>
-    </span>
-    <!--START OF TOP PRODUCTS-->
-    <table class="frame1169-salestable1">
-      <thead>
-        <tr>
-          <th class="frame1169-ranktxt1">Rank</th>
-          <th class="frame1169-frame11541">Name</th>
-          <th class="frame1169-frame11542">Number of Sales</th>
-          <th class="frame1169-frame11543">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-          {% for product in top_products_sold %}
-          <tr>
-              <td class="frame1169-rankcolumn1">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</td>
-              <td class="frame1169-frame11551">{{ product.name }}</td>
-              <td class="frame1169-frame11552">{{ product.sold_quantity }}</td>
-              <td class="frame1169-frame11553">{{ product.action }}</td>
-          </tr>
-          {% endfor %}
-      </tbody>
-    </table>
-    <!--END OF TOP PRODUCTS-->
-
-    <img
-      src="{% static 'img/rectangle574524-eqj-600w.png' %}"
-      alt="Recent Transactions Box Container"
-      class="transactionContainer"
-    />
-    <span class="transaction-label">
-      <span>Recent Transactions</span>
-    </span>
-    <!--START OF TRANSACTIONS-->
-    <div class="frame1169-transactiontable2">
-      <div class="frame1169-frame11584">
-        <div class="frame1169-idcolumn">
-          <div class="frame1169-frame11544">
-            <span class="frame1169-text183">
-              <span>Transaction ID</span>
-            </span>
-          </div>
-          <div class="frame1169-frame11554">
-            <span class="frame1169-text185">
-              <span>1231940391809483</span>
-            </span>
-          </div>
-          <div class="frame1169-frame11564">
-            <span class="frame1169-text187">
-              <span>502743507239057</span>
-            </span>
-          </div>
-          <div class="frame1169-frame11574">
-            <span class="frame1169-text189">
-              <span>813102483943294</span>
-            </span>
-          </div>
-          <div class="frame1169-frame11585">
-            <span class="frame1169-text191">
-              <span>23958329549232</span>
-            </span>
-          </div>
-          <div class="frame1169-frame11594">
-            <span class="frame1169-text193">
-              <span>42350853841048</span>
-            </span>
+<!-- Header -->
+<div class="header bg-primary pb-6" >
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Welcome, Username</h6>
+        </div>
+        <div class="col-lg-6 col-5 text-right">
+          <a href="#" class="btn btn-sm btn-neutral">New</a>
+          <a href="#" class="btn btn-sm btn-neutral">Filters</a>
+        </div>
+      </div>
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Total Products</h5>
+                  <span class="h2 font-weight-bold mb-0">{{ total_products }}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow pt-2">
+                    <i class="ni ni-active-40"><img src="{% static 'img/icons8-product-24.png' %}"/></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>Some details here</span>
+                <span class="text-nowrap">Details</span>
+              </p>
+            </div>
           </div>
         </div>
-        <div class="frame1169-datecolumn">
-          <div class="frame1169-frame11545">
-            <span class="frame1169-text195"><span>Date</span></span>
-          </div>
-          <div class="frame1169-frame11555">
-            <span class="frame1169-text197"><span>09/11/2024</span></span>
-          </div>
-          <div class="frame1169-frame11565">
-            <span class="frame1169-text199"><span>10/13/2024</span></span>
-          </div>
-          <div class="frame1169-frame11575">
-            <span class="frame1169-text201"><span>03/09/24</span></span>
-          </div>
-          <div class="frame1169-frame11586">
-            <span class="frame1169-text203"><span>12/4/2024</span></span>
-          </div>
-          <div class="frame1169-frame11595">
-            <span class="frame1169-text205"><span>02/17/2024</span></span>
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Total Stock</h5>
+                  <span class="h2 font-weight-bold mb-0">{{ total_stock }}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow pt-2">
+                    <i class="ni ni-chart-pie-35"><img src="{% static 'img/icons8-inventory-24.png' %}"/></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>Some details here</span>
+                <span class="text-nowrap">Details</span>
+              </p>
+            </div>
           </div>
         </div>
-        <div class="frame1169-statuscolumn">
-          <div class="frame1169-frame11546">
-            <span class="frame1169-text207"><span>Status</span></span>
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Low Stock Products</h5>
+                  <span class="h2 font-weight-bold mb-0">{{ low_stock_items }}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow pt-2">
+                    <i class="ni ni-money-coins"><img src="{% static 'img/icons8-low-priority-24.png' %}"/></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>Some details here</span>
+                <span class="text-nowrap">Details</span>
+              </p>
+            </div>
           </div>
-          <div class="frame1169-frame11556">
-            <span class="frame1169-text209"><span>Completed</span></span>
-          </div>
-          <div class="frame1169-frame11566">
-            <span class="frame1169-text211"><span>Completed</span></span>
-          </div>
-          <div class="frame1169-frame11576">
-            <span class="frame1169-text213"><span>Completed</span></span>
-          </div>
-          <div class="frame1169-frame11587">
-            <span class="frame1169-text215"><span>Completed</span></span>
-          </div>
-          <div class="frame1169-frame11596">
-            <span class="frame1169-text217"><span>Completed</span></span>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Out of Stock Products</h5>
+                  <span class="h2 font-weight-bold mb-0">{{out_of_stock_items }}</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow pt-2">
+                    <i class="ni ni-chart-bar-32"><img src="{% static 'img/icons8-warning-25.png' %}"/></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>Some details here</span>
+                <span class="text-nowrap">Details</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <!--END OF TRANSACTIONS-->
-</body>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-8">
+      <div class="card bg-default">
+        <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
+              <h5 class="h3 text-white mb-0">Sales Report</h5>
+            </div>
+            <div class="col">
+              <ul class="nav nav-pills justify-content-end">
+                <li class="nav-item mr-2 mr-md-0" id="default-tab">
+                  <a href="#" class="nav-link active py-2 px-3">Default</a>
+                </li>
+                <li class="nav-item mr-2 mr-md-0" id="remaining-quantity-tab">
+                  <a href="#" class="nav-link active py-2 px-3">Remaining Quantity</a>
+                </li>
+                <li class="nav-item mr-2 mr-md-0" id="sold-quantity-tab">
+                  <a href="#" class="nav-link py-2 px-3">Sold Quantity</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card-bodyChart">
+          <!-- Chart -->
+          <div class="chart">
+            <!-- Chart wrapper -->
+            <canvas id="salesChart"></canvas>
+            <style>
+              #salesChart {
+                width: 900px;
+                height: 400px;
+              }
+            </style>
+            <script>
+              const productNames = {{ product_names|safe }};
+              const remainingQuantities = {{ remaining_quantities|safe }};
+              const soldQuantities = {{ sold_quantities|safe }};
+
+              console.log(productNames, remainingQuantities, soldQuantities);
+
+              const ctx = document.getElementById('salesChart').getContext('2d');
+
+              const salesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: productNames,
+                  datasets: [
+                    {
+                      label: 'Remaining Quantity',
+                      data: remainingQuantities,
+                      backgroundColor: '#5e72e4',
+                      borderColor: '#5e72e4',
+                      borderWidth: 1
+                    },
+                    {
+                      label: 'Sold Quantity',
+                      data: soldQuantities,
+                      backgroundColor: '#fb6340',
+                      borderColor: '#fb6340',
+                      borderWidth: 1
+                    }
+                  ]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  },
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: false // This removes the legend (labels)
+                    }
+                  }
+                }
+              });
+
+              document.getElementById('default-tab').addEventListener('click', function() {
+                salesChart.data.datasets[0].data = remainingQuantities;
+                salesChart.data.datasets[1].data = soldQuantities;
+                salesChart.update();
+                updateActiveTab('default-tab');
+              });
+
+              document.getElementById('remaining-quantity-tab').addEventListener('click', function() {
+                salesChart.data.datasets[0].data = remainingQuantities; 
+                salesChart.data.datasets[1].data = [];  
+                salesChart.update();  
+                updateActiveTab('remaining-quantity-tab');
+              });
+
+              document.getElementById('sold-quantity-tab').addEventListener('click', function() {
+                salesChart.data.datasets[0].data = [];  
+                salesChart.data.datasets[1].data = soldQuantities; 
+                salesChart.update();  
+                updateActiveTab('sold-quantity-tab');
+              });
+
+              
+              function updateActiveTab(activeTabId) {
+                const tabs = document.querySelectorAll('.nav-item .nav-link');
+                tabs.forEach(tab => {
+                  const parent = tab.parentElement;
+                  if (parent.id === activeTabId) {
+                    tab.classList.add('active');  
+                  } else {
+                    tab.classList.remove('active');  // Remove active class from other tabs
+                  }
+                });
+              }
+
+              updateActiveTab('default-tab');
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4">
+      <div class="card">
+        <div class="card-header bg-transparent">
+          <div class="row align-items-center">
+            <div class="col">
+              <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
+              <h5 class="h3 mb-0">Top products sold</h5>
+            </div>
+          </div>
+        </div>
+        <div class="card-bodyTopProducts">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Number of Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in top_products_sold %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</th>
+                  <td class="frame1169-frame11557">{{ product.name }}</td>
+                  <td class="frame1169-frame11558">{{ product.sold_quantity }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xl-8">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Recently added products</h3>
+            </div>
+            <div class="col text-right">
+              <a href="{% url 'export_products' %}" class="btn btn-sm btn-primary">Export in excel</a>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in recently_added_products %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td class="frame1169-frame11557">{{ product.name }}</td>
+                <td class="frame1169-frame11558">₱{{ product.price }}</td>
+                <td class="frame1169-frame11559">{{ product.created_at }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Recent Transactions</h3>
+            </div>
+            <div class="col text-right">
+              <a href="#!" class="btn btn-sm btn-primary">See all</a>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Column 1</th>
+                <th scope="col">Column 2</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
 {% endblock %}
