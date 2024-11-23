@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from dashboard.models import Product
 from .models import Category
 import random
@@ -15,6 +16,16 @@ class ProductForm(forms.ModelForm):
     def generate_barcode():
         # Generate a random 8-digit barcode (ensure it's unique based on your requirements)
         return random.randint(100000000000, 999999999999)
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        mfg_date = cleaned_data.get('mfg_date')
+        exp_date = cleaned_data.get('exp_date')
+
+        if mfg_date and exp_date and exp_date < mfg_date:
+            self.add_error('exp_date', "Expiration date must be after the manufacturing date.")
+
+        return cleaned_data
     
     class Meta:
         model = Product
@@ -43,19 +54,6 @@ class ProductForm(forms.ModelForm):
             'price' : 'Selling Price (₱)', 
             'alert_threshold' : 'Low Stock Threshold',
         }
-
-        '''def clean_retail(self):
-            retail = self.cleaned_data.get('retail_sale')
-            if retail <= 0:
-                raise forms.ValidationError("Retail price must be greater then zero")
-            return retail
-        
-        def clean_whole(self):
-            whole = self.cleaned_data.get('whole_sale')
-            retail = self.cleaned_data.get('retail_sale')
-            if whole > retail:
-                raise forms.ValidationError("Whole price must not higher than retail price.")
-            return whole'''
         
         def clean_quantity(self):
             quantity = self.cleaned_data.get('quantity')
