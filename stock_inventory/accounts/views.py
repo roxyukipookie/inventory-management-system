@@ -1,56 +1,51 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm
 from django.contrib import messages
-from django import forms
+from .models import CustomUser, Role
+from .forms import SignUpForm
 
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # Check if username already exists
-            username = form.cleaned_data.get('username')
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username already taken. Please choose a different one.')
-                print("Username already taken.")  # Debug message
-            else:
+            try:
+                # Save the user and return the instance
                 user = form.save()
+                
+                # Log the user in after successful registration
                 login(request, user)
-                print("User registered and logged in. Redirecting to dashboard...")  # Debug message
-                return redirect('dashboard_view')  # Redirect to dashboard
+                return redirect('dashboard_view')
+            except Exception as e:
+                messages.error(request, f"Error creating account: {e}")
         else:
-            print("Form is not valid. Errors:", form.errors)  # Debug message
+            messages.error(request, "Please fix the errors below.")
     else:
         form = SignUpForm()
+
     return render(request, 'accounts/signup.html', {'form': form})
 
+@login_required
 def dashboard_view(request):
     return render(request, 'accounts/dashboard.html')
+
+@login_required
+def staff_list(request):
+    staff_users = CustomUser.objects.filter(role__name='staff')
+    return render(request, 'accounts/staff_list.html', {'staff_users': staff_users})
+
 
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        password = request.POST.get('password1')
+        password = request.POST.get('password')
 
-        try:
-            # Get the user with the provided email
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            user = None
-        
-        if user:
-            # Use the username for authentication (User object will have username)
-            user = authenticate(request, username=user.username, password=password)
-
-            if user is not None:
-                login(request, user)
-                return redirect('dashboard_view')
-            else:
-                messages.error(request, 'Invalid email or password')
+        # Authenticate user using email and password
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard_view')
         else:
-            messages.error(request, 'Email not found')
+            messages.error(request, "Invalid email or password.")
     
     return render(request, 'accounts/login.html')
-

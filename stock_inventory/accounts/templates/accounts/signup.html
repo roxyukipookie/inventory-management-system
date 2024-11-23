@@ -8,7 +8,7 @@
     <title>Register</title>
     <style>
         body {
-            background-color: black; /* Black background for the entire page */
+            background-color: black;
             color: white;
             margin: 0;
         }
@@ -46,42 +46,57 @@
             width: 350px;
             border-radius: 8px;
         }
+        .logo {
+            margin-bottom: 20px;
+            height: 60px;
+        }
         .form-group {
             margin-bottom: 20px;
         }
+
+        .footer-text {
+            font-size: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .additional-links {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .additional-links a {
+            color: #4A5EEC; /* This makes the "Forgot password?" link more visible */
+            font-size: 12px; /* Make the link font slightly larger for better readability */
+            text-decoration: none; /* Removes underline */
+        }
+
         input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 8px 5px;
             border: none;
-            border-bottom: 2px solid #4A5EEC; /* Creates a bottom line */
+            border-bottom: 2px solid #4A5EEC;
             background: transparent;
             color: white;
             font-size: 16px;
         }
         input::placeholder {
-            color: #bbb; /* Light color for placeholder text */
+            color: #bbb;
         }
         input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
             outline: none;
-            border-bottom: 2px solid #fff; /* White line when focused */
-        }
-        input[type="checkbox"] {
-            margin-right: 10px;
+            border-bottom: 2px solid #fff;
         }
         .btn-primary {
             width: 100%;
             background-color: #4A5EEC;
             border-color: #4A5EEC;
         }
-        .logo {
-            height: 60px;
-            margin-bottom: 20px;
-        }
-        .additional-links {
+        .error-message {
+            color: red;
             font-size: 12px;
-        }
-        .footer-text {
-            font-size: 12px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -92,22 +107,35 @@
             <div class="register-box">
                 <h1>Get Started</h1>
                 <p>Please enter your details</p>
-                <form method="post">
+                <form method="post" id="signup-form">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="text" name="first_name" placeholder="First Name" required>
+                        <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
+                        <div id="first_name_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="last_name" placeholder="Last Name" required>
+                        <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
+                        <div id="last_name_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="email" name="email" id="email" placeholder="Email" required>
+                        <div id="email_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password1" placeholder="Password" required>
+                        <input type="password" name="password1" id="password1" placeholder="Password" required>
+                        <div id="password1_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password2" placeholder="Confirm Password" required>
+                        <input type="password" name="password2" id="password2" placeholder="Confirm Password" required>
+                        <div id="password2_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <select name="role" class="form-control" required>
+                            <option value="" disabled selected>Select Role</option>
+                            {% for key, value in form.fields.role.choices %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group additional-links">
                         <label>
@@ -117,7 +145,7 @@
                     <button type="submit" class="btn btn-primary">Register</button>
                 </form>
                 <div class="footer-text" style="margin-top: 15px; text-align: center;">
-                    Already have an account? <a href="http://127.0.0.1:8000/accounts/login/" style="color: #4A5EEC;">Login</a>
+                    Already have an account? <a href="{% url 'login' %}" style="color: #4A5EEC;">Login</a>
                 </div>
             </div>
         </div>
@@ -127,6 +155,53 @@
             <img src="{% static 'images/Dashboard2.png' %}" alt="Inventory Dashboard">
         </div>
     </div>
-    
+
+    <script>
+        document.getElementById('signup-form').onsubmit = function(event) {
+            event.preventDefault();
+            alert('Registration successful! You will be redirected to the login page.');
+            window.location.href = '{% url "login" %}';
+        }
+        // Real-time validation for first and last names
+        const firstName = document.getElementById('first_name');
+        const lastName = document.getElementById('last_name');
+        const emailField = document.getElementById('email');
+        const password1 = document.getElementById('password1');
+        const password2 = document.getElementById('password2');
+
+        firstName.addEventListener('input', () => validateName(firstName, 'first_name_error'));
+        lastName.addEventListener('input', () => validateName(lastName, 'last_name_error'));
+        emailField.addEventListener('input', () => validateEmail(emailField, 'email_error'));
+        password2.addEventListener('input', () => validatePassword(password1, password2));
+
+        function validateName(input, errorElementId) {
+            const errorElement = document.getElementById(errorElementId);
+            const regex = /^[A-Za-z\s]+$/;
+            if (!regex.test(input.value)) {
+                errorElement.textContent = "This name has numbers or special characters.";
+            } else {
+                errorElement.textContent = "";
+            }
+        }
+
+        function validateEmail(input, errorElementId) {
+            const errorElement = document.getElementById(errorElementId);
+            const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+            if (!regex.test(input.value)) {
+                errorElement.textContent = "This email is invalid.";
+            } else {
+                errorElement.textContent = "";
+            }
+        }
+
+        function validatePassword(password1, password2) {
+            const errorElement = document.getElementById('password2_error');
+            if (password1.value !== password2.value) {
+                errorElement.textContent = "The passwords do not match.";
+            } else {
+                errorElement.textContent = "";
+            }
+        }
+    </script>
 </body>
 </html>
