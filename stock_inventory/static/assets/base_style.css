@@ -1,6 +1,7 @@
 *{ /*global*/
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body{ /*body styles*/
@@ -12,6 +13,8 @@ body{ /*body styles*/
 nav{ /*nav styles*/
   background-color: white;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  position: relative;
 }
 
 nav ul{ /* nav ul styles*/
@@ -20,6 +23,7 @@ nav ul{ /* nav ul styles*/
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 nav li{ /*nav li styles*/
@@ -33,12 +37,16 @@ nav a{ /*anchor styles*/
   display: flex;
   align-items: center;
   color: black;
+  transition: all 0.2s ease; 
 }
 
-nav a:hover{
+nav a:hover{ /* hover for nav links*/
   text-decoration: none;
-  background-color: #c9c9c9;
+  background-color: #ffffff;
+  border-radius: 7px;
   color: black;
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 nav li:first-child{ /*logo alignment*/
@@ -51,7 +59,7 @@ nav li:first-child{ /*logo alignment*/
 nav ul li:nth-child(7) { /* profile alignment */
   display: flex;
   align-items: center;
-  margin-right: 20px;
+  
 }
 
 
@@ -87,20 +95,6 @@ nav ul li:nth-child(7) { /* profile alignment */
   display: none;
 }
 
-.list-group-flush {
-  max-height: 300px; /* Limit height */
-  overflow-y: auto; /* Enable vertical scrollbar */
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000;
-  cursor: pointer;
-}
-
 
 /*media query*/
 
@@ -111,11 +105,19 @@ nav ul li:nth-child(7) { /* profile alignment */
   .menu-btn{
       display: block;
   }
+  nav a{
+      padding: 0 15px;
+  }
 }
 
 @media(max-width: 400px){
   .sidebar{
       width: 100%;
   }
+  nav a {
+      padding: 0 10px; 
+      font-size: 14px; 
+  }
 }
+
 

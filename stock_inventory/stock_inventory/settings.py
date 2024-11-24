@@ -125,7 +125,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'accounts/static'),  # Adjust to match your actual folder structure
+    os.path.join(BASE_DIR, 'static'),  # Adjust to match your actual folder structure
     #BASE_DIR / 'dashboard/static'
 ]
 
