@@ -5,49 +5,44 @@
 {% block title %} sales terminal {% endblock %}
 
 {% block content %}
-    <div class="sales_container">
+<div class="sales_container">
 
-        <!---Sales Terminal-->
-        <div class="products_table">
-            <h2>SALES TERMINAL</h2>
+    <!---Sales Terminal-->
+    <div class="products_table">
+        <h2>SALES TERMINAL</h2>
 
-            <table class="product-table">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="salesTableBody">
+                <tr id="noProductRow">
+                    <td colspan="4">No products selected</td>
+                </tr>
+            </tbody>
+        </table>
 
-            <span class="grand-total">Grand Total: </span>
-
-            <h2 class="footer" ></h2>
-            <div class="footer-btns">
-                <button class="fbtn" id="cncl" type="button">Cancel</button>
-                <button class="fbtn" id="sbttl" type="button">Subtotal</button>
-                <button class="fbtn" id="totl" type="button">Total</button>
-            </div>
+        <div id="noProductMessage" class="no-products-selected">
+            No products selected
         </div>
 
-        <div class="container">
-            <div class="box">0</div>
-            <div class="box">1</div>
-            <div class="box">2</div>
-            <div class="box">3</div>
-            <div class="box">4</div>
-            <div class="box">5</div>
-            <div class="box">6</div>
-            <div class="box">7</div>
-            <div class="box">8</div>
-            <div class="box">9</div>
-        </div>
+        <footer class="footer-btns">
+            <button class="fbtn" id="cncl" onclick="cancelSelection()">Cancel</button>
+            <button class="fbtn" id="sbttl" onclick="calculateSubtotal()">Subtotal</button>
+            <button class="fbtn" id="totl" type="button">Total</button>
+            <p id="subtotalDisplay"></p>
+        </footer>
 
-        <!--Products Tab-->
+        
+    </div>
+
+    <!-- Products Tab -->
+    <div class="products-tab">
         <div class="category_tab">
             <section class="filter-option">
                 <h2>PRODUCTS</h2>
@@ -63,25 +58,32 @@
                 </form>
             </section>
 
-            <!-- Products Section -->
-                <table class="product-table">
-                    <thead>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in products %}
-                        <tr>
-                            <td>{{product.name}}</td>
-                            <td>{{product.description}}</td>
-                            <td>{{product.price}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr class="product-row" data-name="{{ product.name }}" data-description="{{ product.description }}" data-price="{{ product.price }}">
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Quantity Input -->
+        <div class="quantity-input">
+            <p><strong>Select the number of quantity first:</strong></p>
+            <input type="number" id="quantityInput" placeholder="Enter quantity" min="1">
+            <button id="quantityButton">Reset</button>
         </div>
     </div>
+</div>
 {% endblock %}
