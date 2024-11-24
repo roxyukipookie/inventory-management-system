@@ -1,5 +1,9 @@
 # inventory-management-system
 
+<a href="#">
+    <img src="images/LOGO_inv.png" alt="Logo" width="80" height="80">
+</a>
+
 # Links:
 https://docs.google.com/spreadsheets/d/1OFXsZk7QUNmsHOwiR8ewBccnk4cWuhCA/edit?usp=sharing&ouid=111017210003517529526&rtpof=true&sd=true
 
