@@ -1,8 +1,36 @@
-# inventory-management-system
+<a id="readme-top"></a>
 
-<a href="#">
-    <img src="images/LOGO_inv.png" alt="Logo" width="80" height="80">
-</a>
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/roxyukipookie/inventory-management-system
+">
+    <img src="static/images/LOGO_inv.png" alt="Logo" width="100" height="100">
+  </a>
+
+<h3 align="center">Product Inventory Management System</h3>
+
+  <p align="center">
+    This project aims to address the challenges faced by small businesses in managing their product inventory effectively. This application will transform existing processes by providing an automated, user-friendly system that simplifies inventory management. The application will support small business owners by enabling them to track stock levels in real-time, manage product details, receive alerts for low stock levels, and maintain accurate sales records.
+    <br />
+    <a href="https://github.com/roxyukipookie/inventory-management-system"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/roxyukipookie/inventory-management-system">View Demo</a>
+    ·
+    <a href="https://github.com/roxyukipookie/inventory-management-system/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    ·
+    <a href="https://github.com/roxyukipookie/inventory-management-system/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
+
 
 # Links:
 https://docs.google.com/spreadsheets/d/1OFXsZk7QUNmsHOwiR8ewBccnk4cWuhCA/edit?usp=sharing&ouid=111017210003517529526&rtpof=true&sd=true
