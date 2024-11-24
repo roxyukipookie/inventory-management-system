@@ -29,7 +29,7 @@ class ProductForm(forms.ModelForm):
     
     class Meta:
         model = Product
-        fields = ['name', 'category', 'barcode', 'description', 'mfg_date', 'exp_date', 'quantity', 'price', 'alert_threshold'] #fields to display
+        fields = ['name', 'category', 'barcode', 'description', 'mfg_date', 'exp_date', 'quantity', 'price', 'alert_threshold', 'image'] #fields to display
         
         widgets = {
             'name' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Product Name'}),
@@ -41,6 +41,7 @@ class ProductForm(forms.ModelForm):
             'quantity' : forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity'}),
             'price' : forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Selling Price'}),
             'alert_threshold' : forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Low Stock Threshold'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*', 'placeholder': 'Upload image'})
         }
 
         labels = {
@@ -53,6 +54,7 @@ class ProductForm(forms.ModelForm):
             'quantity' : 'Initial Stock', 
             'price' : 'Selling Price (₱)', 
             'alert_threshold' : 'Low Stock Threshold',
+            'image': 'Product Image',
         }
         
         def clean_quantity(self):
@@ -69,3 +71,4 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Category Name'}),
         }
+        

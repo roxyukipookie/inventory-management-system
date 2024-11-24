@@ -4,7 +4,6 @@ from dashboard.models import Product, Category
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 
@@ -21,7 +20,7 @@ def inventory(request):
     if category_id:
         products = products.filter(category_id=category_id)
 
-    form = ProductForm(request.POST or None)
+    form = ProductForm(request.POST or None,  request.FILES or None)
     
     if request.method == 'POST':
         if form.is_valid():
@@ -43,20 +42,6 @@ def inventory(request):
 def history(request):
     return render(request, 'history.html')
 
-def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Product added successfully!')
-            return redirect('inventory')
-        else:
-            messages.error(request, 'There was an error adding the product, Please check the details.')
-    else:
-        form = ProductForm()
-    
-    return render(request, 'inventory.html', {'form': form})
-
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -69,7 +54,7 @@ def add_category(request):
     else:
         form = CategoryForm()
 
-    return render(request, 'add_category.html', {'form': form})
+    return render(request, 'inventory.html', {'form': form})
 
 def delete_product(request, barcode):  
     product = get_object_or_404(Product, barcode=barcode)  
@@ -81,7 +66,7 @@ def edit_product(request, barcode):
     product = get_object_or_404(Product, barcode=barcode)
 
     if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
+        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
             messages.success(request, 'Product updated successfully!')

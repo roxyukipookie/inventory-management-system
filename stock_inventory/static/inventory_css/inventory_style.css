@@ -130,6 +130,14 @@ h2 { /* Headings */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
 }
+
+.modal-content h2{
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 3px solid #FFB365;
+}
 .close {
     color: #aaa;
     font-size: 30px;
@@ -205,3 +213,14 @@ h2 { /* Headings */
 .btn-secondary:hover {
     background-color: #ccc;
 }
+
+.product-image {
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover; 
+    border-radius: 4px; 
+    display: block; 
+    margin: auto; 
+}
+
+

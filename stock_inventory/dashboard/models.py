@@ -17,6 +17,8 @@ class Product(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     alert_threshold = models.PositiveIntegerField(default=10)  
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='products')
+    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+
 
     def __str__(self):
         return self.name
