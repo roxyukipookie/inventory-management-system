@@ -122,6 +122,16 @@ python manage.py runserver
 Try opening [http://localhost:8000](http://localhost:8000) in the browser.
 Now you are good to go.
 
+<!-- USAGE EXAMPLES -->
+## Usage
+Useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space.
+
+### Dashboard:
+[![Product Screen Shot][product-screenshot]](https://github.com/roxyukipookie/inventory-management-system)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 # Links:
 https://docs.google.com/spreadsheets/d/1OFXsZk7QUNmsHOwiR8ewBccnk4cWuhCA/edit?usp=sharing&ouid=111017210003517529526&rtpof=true&sd=true
@@ -132,18 +142,16 @@ https://lucid.app/lucidchart/b5c83653-cc57-4b7e-9603-799dd79cbe4c/edit?viewport_
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[contributors-shield]: https://img.shields.io/github/contributors/roxyukipookie/inventory-management-system.svg?style=for-the-badge
+[contributors-url]: https://github.com/roxyukipookie/inventory-management-system/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
 [forks-url]: https://github.com/github_username/repo_name/network/members
 [stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
 [stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[issues-shield]: https://img.shields.io/github/issues/roxyukipookie/inventory-management-system.svg?style=for-the-badge
+[issues-url]: https://github.com/roxyukipookie/inventory-management-system/issues
+[license-shield]: https://img.shields.io/github/license/roxyukipookie/inventory-management-system.svg?style=for-the-badge
+[license-url]: https://github.com/roxyukipookie/inventory-management-system/blob/master/LICENSE.txt
 [product-screenshot]: stock_inventory/static/images/screenshot.png
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
