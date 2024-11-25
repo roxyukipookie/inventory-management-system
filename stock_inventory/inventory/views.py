@@ -30,7 +30,7 @@ def inventory(request):
         else:
             messages.error(request, "Please correct the errors in the form.")
 
-    return render(request, 'inventory.html', {
+    return render(request, 'new_inventory.html', {
         'products': products,
         'categories': categories,
         'query': query,

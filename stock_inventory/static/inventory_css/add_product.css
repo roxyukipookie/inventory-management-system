@@ -91,13 +91,13 @@
   
   
   .form-table th:nth-child(even) {
-    background-color:  rgba(8, 81, 102, 1); 
+    background-color:  #172b4d; 
     color: white;
     text-align: center;
     }
     
   .form-table th:nth-child(odd) {
-    background-color: rgba(228, 135, 39, 1); 
+    background-color: #5e72e4; 
     color: white;
     text-align: center;
   }
