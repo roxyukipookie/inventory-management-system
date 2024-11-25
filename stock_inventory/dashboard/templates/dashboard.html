@@ -4,6 +4,11 @@
 {% load static %}
 
 {% block content %}
+<head>
+  <title>
+    Dashboard
+  </title>
+</head>
 <body>
   <div class="dashboardTitleBlock">
     <h3 class="dashboardTitleBlock-title">Dashboard</h3>
@@ -21,7 +26,7 @@
     class="orangeRectangle"
   />
   <span class="welcome">
-    <span>Welcome, John Lloyd!</span>
+    <span>Welcome, {{ username }}!</span>
   </span>
 
   <div class="totalProducts">

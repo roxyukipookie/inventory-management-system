@@ -101,7 +101,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# settings.py
 AUTH_USER_MODEL = 'accounts.CustomUser'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 
 
 
@@ -130,3 +134,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+

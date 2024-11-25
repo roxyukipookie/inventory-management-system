@@ -8,8 +8,9 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 import json
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.hashers import check_password
 import logging
 from accounts.models import UserProfile 
@@ -18,6 +19,12 @@ import django_excel as excel
 import pyexcel
 import pandas as pd
 
+
+from .models import Profile
+from django.http import HttpResponseForbidden
+
+
+@login_required
 def dashboard_view(request):
     products = Product.objects.all()
 
@@ -34,6 +41,14 @@ def dashboard_view(request):
     recently_added_products = Product.objects.order_by('-created_at')[:5]
     notifications = Notification.objects.filter(is_read=False).order_by('-created_at')
 
+    # Fetch the logged-in user's profile picture (if it exists)
+    profile_picture = None
+    if request.user.is_authenticated:
+        try:
+            profile = request.user.profile
+            profile_picture = profile.profile_picture.url if profile.profile_picture else None
+        except Profile.DoesNotExist:
+            profile_picture = None
 
     context = {
         'total_products': total_products,
@@ -45,7 +60,9 @@ def dashboard_view(request):
         'notifications': notifications,  
         'product_names': product_names,  
         'remaining_quantities': remaining_quantities,  
-        'sold_quantities': sold_quantities  
+        'sold_quantities': sold_quantities,
+        'profile_picture': profile_picture,
+        'username': request.user.username,
     }
     return render(request, 'dashboard.html', context)
 
@@ -82,18 +99,38 @@ def export_products(request):
 
     return response
 
+@login_required
 def role_management_view(request):
     return render(request, 'role_management.html')
 
+@login_required
 def user_management_view(request):
-    users = User.objects.all()# Load related UserProfile data
+    # Fetch only users who are staff
+    users = User.objects.filter(role='Staff')
+    
+    # Get the count of staff users
     user_count = users.count()
-    context = {
+
+    return render(request, 'user_management.html', {
         'users': users,
-        'user_count': user_count,
-    }
-    #print("Users Context:", context)  # Print the context for debugging
-    return render(request, 'user_management.html', context)
+        'user_count': user_count
+    })
+
+@login_required
+def inventory_view(request):
+    # Restrict to superuser
+    if not request.user.is_owner:
+        return HttpResponseForbidden("You do not have permission to access this page.")
+    # Continue with the logic for displaying inventory
+    return render(request, 'inventory.html')
+
+@login_required
+def history_view(request):
+    # Restrict to superuser
+    if not request.user.is_owner:
+        return HttpResponseForbidden("You do not have permission to access this page.")
+    # Continue with the logic for displaying history
+    return render(request, 'history.html')
 
 @csrf_exempt
 def add_user(request):
@@ -101,13 +138,15 @@ def add_user(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
+        username = request.POST.get('username')  # New username field
         password = request.POST.get('password')
         role = request.POST.get('role', '').lower()
+        profile_picture = request.FILES.get('profile_picture')  # Profile picture upload
 
         try:
             # Step 1: Create the new user
             user = User.objects.create_user(
-                username=email,
+                username=username,
                 first_name=first_name,
                 last_name=last_name,
                 email=email
@@ -115,17 +154,20 @@ def add_user(request):
             user.set_password(password)
             user.save()
 
-            # Step 2: Create the UserProfile with the role
+            # Step 2: Create the UserProfile with the role and profile picture
             if not UserProfile.objects.filter(user=user).exists():
-                profile = UserProfile.objects.create(user=user)
+                profile = UserProfile.objects.create(
+                    user=user,
+                    profile_picture=profile_picture  # Save profile picture
+                )
 
                 # Set role based on form input
                 if role == 'staff':
-                    user.is_staff = True
+                    user.is_staff = False
                     user.is_superuser = False
                     profile.role = 'staff'
                 elif role == 'owner':
-                    user.is_superuser = True
+                    user.is_superuser = False
                     user.is_staff = False
                     profile.role = 'owner'
                 else:
@@ -134,16 +176,18 @@ def add_user(request):
                     profile.role = 'n/a'
 
                 user.save()  # Save updated permissions
-                profile.save()  # Save profile with role
+                profile.save()  # Save profile with role and picture
 
             return JsonResponse({
                 'success': True,
                 'user': {
                     'id': user.id,
+                    'username': user.username,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'email': user.email,
-                    'role': profile.role.capitalize()
+                    'role': profile.role.capitalize(),
+                    'profile_picture': profile.profile_picture.url if profile.profile_picture else None
                 }
             })
 
@@ -158,34 +202,14 @@ def add_user(request):
 
         
 @csrf_exempt
-@login_required
-@require_POST
-def delete_user_view(request):
-    data = json.loads(request.body)
-    user_ids = data.get('user_ids', [])
-
-    errors = []
-    deleted_users = []
-
-    for user_id in user_ids:
+def delete_users(request):
+    if request.method == 'POST':
         try:
-            user = User.objects.get(id=user_id)
-            # Prevent deletion of logged-in user or users with "Owner" role
-            if user.id == request.user.id:
-                errors.append(f"Cannot delete the logged-in user ({user.get_full_name()}).")
-            elif user.is_superuser:
-                errors.append(f"Cannot delete the Owner user ({user.get_full_name()}).")
-            else:
-                user.delete()
-                deleted_users.append(user_id)
-        except User.DoesNotExist:
-            errors.append(f"User with ID {user_id} does not exist.")
-
-    if errors:
-        return JsonResponse({'success': False, 'message': " ".join(errors)}, status=400)
-
-    return JsonResponse({'success': True, 'deleted_users': deleted_users})
-
+            user_ids = request.POST.getlist('user_ids')
+            User.objects.filter(id__in=user_ids).delete()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
 
 """User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -291,6 +315,10 @@ def edit_role_view(request):
         return JsonResponse({"success": True, "role": new_role})
 
     return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+def custom_logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 

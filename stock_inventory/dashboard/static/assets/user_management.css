@@ -1420,7 +1420,7 @@
 
 /* Scrollable Table Container */
 .table-container {
-  max-height: 400px; /* Adjust height as needed */
+  max-height: 200vh; /* Adjust height as needed */
   overflow-y: auto; /* Enables vertical scrolling */
   border: 1px solid #E0E0E0; /* Add border to the container */
 }
@@ -1649,12 +1649,12 @@ thead th {
   margin-right: 5px;
 }
 .action-reset-password{
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 22px;
+  margin-bottom: 22px;
 }
 .action-delete{
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 22px;
+  margin-bottom: 22px;
 }
 .field-actions a {
   text-decoration: none;

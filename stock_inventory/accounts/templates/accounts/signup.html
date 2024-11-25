@@ -52,14 +52,13 @@
         }
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
-
         .footer-text {
             font-size: 12px;
             margin-top: 20px;
             text-align: center;
         }
-
         .additional-links {
             font-size: 12px;
             display: flex;
@@ -67,12 +66,11 @@
             align-items: center;
         }
         .additional-links a {
-            color: #4A5EEC; /* This makes the "Forgot password?" link more visible */
-            font-size: 12px; /* Make the link font slightly larger for better readability */
-            text-decoration: none; /* Removes underline */
+            color: #4A5EEC;
+            font-size: 12px;
+            text-decoration: none;
         }
-
-        input[type="text"], input[type="email"], input[type="password"] {
+        input[type="text"], input[type="email"], input[type="password"], select {
             width: 100%;
             padding: 8px 5px;
             border: none;
@@ -81,10 +79,10 @@
             color: white;
             font-size: 16px;
         }
-        input::placeholder {
+        input::placeholder, select::placeholder {
             color: #bbb;
         }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+        input:focus, select:focus {
             outline: none;
             border-bottom: 2px solid #fff;
         }
@@ -98,6 +96,51 @@
             font-size: 12px;
             margin-top: 5px;
         }
+        .profile-upload {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #4A5EEC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            background-color: black;
+            cursor: pointer;
+            position: relative;
+            border-radius: 10px;
+        }
+        .profile-upload input {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            cursor: pointer;
+        }
+        .profile-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            border-radius: 10px;
+        }
+        .profile-upload.active img {
+            display: block;
+        }
+        #togglePassword {
+            background: transparent;
+            border: none;
+            color: #4A5EEC;
+            cursor: pointer;
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none; /* Hidden by default */
+        }
+        #togglePassword:focus {
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -107,8 +150,30 @@
             <div class="register-box">
                 <h1>Get Started</h1>
                 <p>Please enter your details</p>
-                <form method="post" id="signup-form">
+
+                {% if messages %}
+                <div>
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <form method="post" id="signup-form" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <!-- Profile Picture Upload -->
+                    <div class="form-group">
+                        <div class="profile-upload" id="profile-upload">
+                            <img id="profile-preview" src="#" alt="Profile Picture Preview">
+                            <input type="file" name="profile_picture" id="profile-picture" accept="image/*" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="username" id="username" placeholder="Username" required>
+                        <div id="username_error" class="error-message"></div>
+                    </div>
                     <div class="form-group">
                         <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
                         <div id="first_name_error" class="error-message"></div>
@@ -119,18 +184,14 @@
                     </div>
                     <div class="form-group">
                         <input type="email" name="email" id="email" placeholder="Email" required>
-                        <div id="email_error" class="error-message"></div>
+                        <span id="email_error" class="error-message"></span>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                        <button type="button" id="togglePassword">SHOW</button>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password1" id="password1" placeholder="Password" required>
-                        <div id="password1_error" class="error-message"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="password2" id="password2" placeholder="Confirm Password" required>
-                        <div id="password2_error" class="error-message"></div>
-                    </div>
-                    <div class="form-group">
-                        <select name="role" class="form-control" required>
+                        <select name="role" id="role" required>
                             <option value="" disabled selected>Select Role</option>
                             {% for key, value in form.fields.role.choices %}
                                 <option value="{{ key }}">{{ value }}</option>
@@ -157,51 +218,39 @@
     </div>
 
     <script>
-        document.getElementById('signup-form').onsubmit = function(event) {
-            event.preventDefault();
-            alert('Registration successful! You will be redirected to the login page.');
-            window.location.href = '{% url "login" %}';
-        }
-        // Real-time validation for first and last names
-        const firstName = document.getElementById('first_name');
-        const lastName = document.getElementById('last_name');
-        const emailField = document.getElementById('email');
-        const password1 = document.getElementById('password1');
-        const password2 = document.getElementById('password2');
+        const profileInput = document.getElementById('profile-picture');
+        const profilePreview = document.getElementById('profile-preview');
 
-        firstName.addEventListener('input', () => validateName(firstName, 'first_name_error'));
-        lastName.addEventListener('input', () => validateName(lastName, 'last_name_error'));
-        emailField.addEventListener('input', () => validateEmail(emailField, 'email_error'));
-        password2.addEventListener('input', () => validatePassword(password1, password2));
-
-        function validateName(input, errorElementId) {
-            const errorElement = document.getElementById(errorElementId);
-            const regex = /^[A-Za-z\s]+$/;
-            if (!regex.test(input.value)) {
-                errorElement.textContent = "This name has numbers or special characters.";
+        // Profile Picture Preview
+        profileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePreview.src = e.target.result;
+                    profilePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             } else {
-                errorElement.textContent = "";
+                profilePreview.style.display = 'none';
             }
-        }
+        });
 
-        function validateEmail(input, errorElementId) {
-            const errorElement = document.getElementById(errorElementId);
-            const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-            if (!regex.test(input.value)) {
-                errorElement.textContent = "This email is invalid.";
-            } else {
-                errorElement.textContent = "";
-            }
-        }
-
-        function validatePassword(password1, password2) {
-            const errorElement = document.getElementById('password2_error');
-            if (password1.value !== password2.value) {
-                errorElement.textContent = "The passwords do not match.";
-            } else {
-                errorElement.textContent = "";
-            }
-        }
+        // Show/Hide Password Toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        // Show the toggle button when the user starts typing in the password field
+        passwordInput.addEventListener('input', () => {
+            togglePassword.style.display = passwordInput.value ? 'block' : 'none';
+        });
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.textContent = type === 'password' ? 'SHOW' : 'HIDE';
+        });
     </script>
 </body>
 </html>
