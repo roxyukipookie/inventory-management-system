@@ -1,11 +1,16 @@
 <a id="readme-top"></a>
 
+[![Contributors][contributors-shield]][contributors-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/roxyukipookie/inventory-management-system
 ">
-    <img src="static/images/LOGO_inv.png" alt="Logo" width="100" height="100">
+    <img src="stock_inventory/static/images/LOGO.png" alt="Logo" width="100" height="100">
   </a>
 
 <h3 align="center">Product Inventory Management System</h3>
@@ -53,7 +58,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Screen Shot][product-screenshot]](https://github.com/roxyukipookie/inventory-management-system)
 
 This project aims to address the challenges faced by small businesses in managing their product inventory effectively. This application will transform existing processes by providing an automated, user-friendly system that simplifies inventory management. The application will support small business owners by enabling them to track stock levels in real-time, manage product details, receive alerts for low stock levels, and maintain accurate sales records.
 
@@ -67,6 +72,55 @@ This project aims to address the challenges faced by small businesses in managin
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To get a local copy of this project up and running, follow these simple steps.
+
+### Prerequisites
+
+#### 1. Install Python
+Install ```python-3.12.5```. Follow the steps from the below reference document based on your Operating System.
+Reference: [https://docs.python-guide.org/starting/installation/](https://docs.python-guide.org/starting/installation/) 
+
+#### 2. Setup virtual environment
+```bash
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+venv/scripts/Activate
+
+# Install dependencies
+pip install django-excel
+pip pillow
+```
+
+#### 3. Clone git repository
+```bash
+git clone "https://github.com/roxyukipookie/inventory-management-system.git"
+```
+
+#### 4. Install requirements
+```bash
+cd stock_inventory/
+pip install -r requirements.txt
+```
+
+#### 5. Run the server
+```bash
+# Make migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Run the server
+python manage.py runserver
+
+# your server is up on port 8000
+```
+Try opening [http://localhost:8000](http://localhost:8000) in the browser.
+Now you are good to go.
 
 
 # Links:
@@ -90,7 +144,7 @@ https://lucid.app/lucidchart/b5c83653-cc57-4b7e-9603-799dd79cbe4c/edit?viewport_
 [license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: stock_inventory/static/images/screenshot.png
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [Django-shield]: https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white
