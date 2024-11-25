@@ -3,7 +3,6 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -131,6 +130,12 @@ Useful examples of how a project can be used. Additional screenshots, code examp
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Top contributors:
+
+<a href="https://github.com/roxyukipookie/inventory-management-system/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=roxyukipookie/inventory-management-system" alt="contrib.rocks image" />
+</a>
 
 
 # Links:
