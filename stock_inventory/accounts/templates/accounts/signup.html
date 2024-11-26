@@ -8,7 +8,7 @@
     <title>Register</title>
     <style>
         body {
-            background-color: black; /* Black background for the entire page */
+            background-color: black;
             color: white;
             margin: 0;
         }
@@ -46,42 +46,100 @@
             width: 350px;
             border-radius: 8px;
         }
+        .logo {
+            margin-bottom: 20px;
+            height: 60px;
+        }
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
-        input[type="text"], input[type="email"], input[type="password"] {
+        .footer-text {
+            font-size: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .additional-links {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .additional-links a {
+            color: #4A5EEC;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        input[type="text"], input[type="email"], input[type="password"], select {
             width: 100%;
             padding: 8px 5px;
             border: none;
-            border-bottom: 2px solid #4A5EEC; /* Creates a bottom line */
+            border-bottom: 2px solid #4A5EEC;
             background: transparent;
             color: white;
             font-size: 16px;
         }
-        input::placeholder {
-            color: #bbb; /* Light color for placeholder text */
+        input::placeholder, select::placeholder {
+            color: #bbb;
         }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+        input:focus, select:focus {
             outline: none;
-            border-bottom: 2px solid #fff; /* White line when focused */
-        }
-        input[type="checkbox"] {
-            margin-right: 10px;
+            border-bottom: 2px solid #fff;
         }
         .btn-primary {
             width: 100%;
             background-color: #4A5EEC;
             border-color: #4A5EEC;
         }
-        .logo {
-            height: 60px;
-            margin-bottom: 20px;
-        }
-        .additional-links {
+        .error-message {
+            color: red;
             font-size: 12px;
+            margin-top: 5px;
         }
-        .footer-text {
-            font-size: 12px;
+        .profile-upload {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #4A5EEC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            background-color: black;
+            cursor: pointer;
+            position: relative;
+            border-radius: 10px;
+        }
+        .profile-upload input {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            cursor: pointer;
+        }
+        .profile-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            border-radius: 10px;
+        }
+        .profile-upload.active img {
+            display: block;
+        }
+        #togglePassword {
+            background: transparent;
+            border: none;
+            color: #4A5EEC;
+            cursor: pointer;
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none; /* Hidden by default */
+        }
+        #togglePassword:focus {
+            outline: none;
         }
     </style>
 </head>
@@ -92,22 +150,53 @@
             <div class="register-box">
                 <h1>Get Started</h1>
                 <p>Please enter your details</p>
-                <form method="post">
+
+                {% if messages %}
+                <div>
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <form method="post" id="signup-form" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <!-- Profile Picture Upload -->
                     <div class="form-group">
-                        <input type="text" name="first_name" placeholder="First Name" required>
+                        <div class="profile-upload" id="profile-upload">
+                            <img id="profile-preview" src="#" alt="Profile Picture Preview">
+                            <input type="file" name="profile_picture" id="profile-picture" accept="image/*" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="last_name" placeholder="Last Name" required>
+                        <input type="text" name="username" id="username" placeholder="Username" required>
+                        <div id="username_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
+                        <div id="first_name_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password1" placeholder="Password" required>
+                        <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
+                        <div id="last_name_error" class="error-message"></div>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password2" placeholder="Confirm Password" required>
+                        <input type="email" name="email" id="email" placeholder="Email" required>
+                        <span id="email_error" class="error-message"></span>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                        <button type="button" id="togglePassword">SHOW</button>
+                    </div>
+                    <div class="form-group">
+                        <select name="role" id="role" required>
+                            <option value="" disabled selected>Select Role</option>
+                            {% for key, value in form.fields.role.choices %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group additional-links">
                         <label>
@@ -117,7 +206,7 @@
                     <button type="submit" class="btn btn-primary">Register</button>
                 </form>
                 <div class="footer-text" style="margin-top: 15px; text-align: center;">
-                    Already have an account? <a href="http://127.0.0.1:8000/accounts/login/" style="color: #4A5EEC;">Login</a>
+                    Already have an account? <a href="{% url 'login' %}" style="color: #4A5EEC;">Login</a>
                 </div>
             </div>
         </div>
@@ -127,6 +216,41 @@
             <img src="{% static 'images/Dashboard2.png' %}" alt="Inventory Dashboard">
         </div>
     </div>
-    
+
+    <script>
+        const profileInput = document.getElementById('profile-picture');
+        const profilePreview = document.getElementById('profile-preview');
+
+        // Profile Picture Preview
+        profileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePreview.src = e.target.result;
+                    profilePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                profilePreview.style.display = 'none';
+            }
+        });
+
+        // Show/Hide Password Toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        // Show the toggle button when the user starts typing in the password field
+        passwordInput.addEventListener('input', () => {
+            togglePassword.style.display = passwordInput.value ? 'block' : 'none';
+        });
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.textContent = type === 'password' ? 'SHOW' : 'HIDE';
+        });
+    </script>
 </body>
 </html>

@@ -1,56 +1,70 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .forms import SignUpForm
-from django.contrib import messages
-from django import forms
+# views.py
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import login, authenticate
+from .forms import RegistrationForm
+from .models import CustomUser
+from django.contrib.auth.decorators import login_required
+
+# Registration view
 def signup(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            # Check if username already exists
-            username = form.cleaned_data.get('username')
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username already taken. Please choose a different one.')
-                print("Username already taken.")  # Debug message
+            user = form.save()
+            # Check role and set is_active for Owner
+            if user.role == 'Owner':
+                user.is_active = False  # Owner must be activated by admin
+                user.save()
+                messages.success(request, 'Registration successful. Please wait for admin verification.')
+                return redirect('login')  # Redirect to login after successful registration
             else:
-                user = form.save()
-                login(request, user)
-                print("User registered and logged in. Redirecting to dashboard...")  # Debug message
-                return redirect('dashboard_view')  # Redirect to dashboard
+                messages.success(request, 'Registration successful! You can log in now.')
+                return redirect('login')
         else:
-            print("Form is not valid. Errors:", form.errors)  # Debug message
+            messages.error(request, 'Registration failed. Please try again.')
     else:
-        form = SignUpForm()
+        form = RegistrationForm()
+
     return render(request, 'accounts/signup.html', {'form': form})
 
-def dashboard_view(request):
-    return render(request, 'accounts/dashboard.html')
-
+# Login view
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password1')
-
-        try:
-            # Get the user with the provided email
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            user = None
-        
-        if user:
-            # Use the username for authentication (User object will have username)
-            user = authenticate(request, username=user.username, password=password)
-
-            if user is not None:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            if user.is_active:
                 login(request, user)
-                return redirect('dashboard_view')
+                messages.success(request, 'Login successful.')
+                return redirect('dashboard_view')  # Redirect to dashboard after successful login
             else:
-                messages.error(request, 'Invalid email or password')
+                messages.error(request, 'Your account is not active. Please wait for admin verification.')
         else:
-            messages.error(request, 'Email not found')
-    
+            return render(request, 'accounts/login.html', {'error': 'Invalid credentials'})
     return render(request, 'accounts/login.html')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'dashboard/dashboard.html')
+
+@login_required
+def sales_view(request):
+    return render(request, 'sales/sales.html')
+
+@login_required
+def inventory_view(request):
+    return render(request, 'inventory/inventory.html')
+
+@login_required
+def inventory_view(request):
+    return render(request, 'history/history.html')
+
+
+def redirect_to_login(request):
+    if request.user.is_authenticated:
+        return redirect('login')  # Redirect to dashboard if logged in
+    else:
+        return redirect('login')  # Otherwise, redirect to login page

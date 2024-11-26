@@ -48,7 +48,7 @@
         .form-group {
             margin-bottom: 20px;
         }
-        input[type="email"], input[type="password"] {
+        input[type="text"], input[type="password"] {
             width: 100%;
             padding: 8px 5px;
             border: none;
@@ -60,7 +60,7 @@
         input::placeholder {
             color: #bbb;
         }
-        input[type="email"]:focus, input[type="password"]:focus {
+        input[type="text"]:focus, input[type="password"]:focus {
             outline: none;
             border-bottom: 2px solid #fff;
         }
@@ -85,8 +85,6 @@
             gap: 8px; /* Space between logo and text */
         }
 
-
-        
         .footer-text {
             font-size: 12px;
             margin-top: 20px;
@@ -97,6 +95,7 @@
         }
         .logo {
             margin-bottom: 20px;
+            height: 60px;
         }
         
         .additional-links {
@@ -119,17 +118,32 @@
 <body>
     <div class="container">
         <div class="left">
-            <img src="{% static 'images/LOGO.png' %}" alt="Logo" class="logo">
+            <img src="{% static 'images/logo2.png' %}" alt="Logo" class="logo">
             <div class="register-box">
                 <h1>Welcome Back!</h1>
                 <p>Please enter your details</p>
+
+                {% if messages %}
+                <div>
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 <form method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Email">
+                        <input type="text" name="username" placeholder="Username" required>
                     </div>
-                    <div class="form-group">
-                        <input type="password" name="password1" placeholder="Password">
+                    <div class="form-group" style="position: relative;">
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                        <button type="button" id="togglePassword" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #4A5EEC; cursor: pointer;">
+                            SHOW
+                        </button>
+                        <div id="password_error" class="error-message"></div>
                     </div>
                     <div class="form-group additional-links">
                         <label>
@@ -156,8 +170,32 @@
         <div class="right">
             <h3>The simplest way to manage your <br>stock inventory</h3>
             <p>Enter your credentials to access your account</p>
-            <img src="{% static 'images/Dashboard.png' %}" alt="Inventory Dashboard">
+            <img src="{% static 'images/Dashboard2.png' %}" alt="Inventory Dashboard">
         </div>
     </div>
+    <script>
+        const passwordField = document.getElementById('password');
+        const togglePasswordButton = document.getElementById('togglePassword');
+
+        // Show or hide the password and update the button text
+        togglePasswordButton.addEventListener('click', () => {
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                togglePasswordButton.textContent = 'HIDE';
+            } else {
+                passwordField.type = 'password';
+                togglePasswordButton.textContent = 'SHOW';
+            }
+        });
+
+        // Show the toggle button when the user starts typing
+        passwordField.addEventListener('input', () => {
+            if (passwordField.value.length > 0) {
+                togglePasswordButton.style.display = 'block';
+            } else {
+                togglePasswordButton.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

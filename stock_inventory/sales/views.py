@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from dashboard.models import Product, Category
 from .forms import UpdateSalesForm
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def sales(request):
     return render(request, 'sales.html')
 
