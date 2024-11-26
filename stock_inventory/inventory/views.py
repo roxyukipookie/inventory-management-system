@@ -54,7 +54,7 @@ def add_category(request):
     else:
         form = CategoryForm()
 
-    return render(request, 'inventory.html', {'form': form})
+    return render(request, 'add_category.html', {'form': form})
 
 def delete_product(request, barcode):  
     product = get_object_or_404(Product, barcode=barcode)  
