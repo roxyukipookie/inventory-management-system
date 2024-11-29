@@ -30,7 +30,7 @@ class ProductForm(forms.ModelForm):
             raise forms.ValidationError("A product with this barcode already exists.")
         if not barcode.isdigit():
             raise forms.ValidationError("The barcode must contain only numbers.")
-        if len(product.barcode) < 12:
+        if len(barcode) != 12:
             raise forms.ValidationError("The barcode must be 12 digits long.")
         return barcode
 
