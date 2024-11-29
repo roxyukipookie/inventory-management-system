@@ -288,7 +288,19 @@
   z-index: 10;
 }
 
+#categorySalesChart {
+  width: 550px; 
+  height: 70px; 
+  margin: 0 auto; 
+}
+
 #salesChart {
+  width: 550px; 
+  height: 30px; 
+  margin: 0 auto; 
+}
+
+#categorySalesChart {
   width: 550px; 
   height: 70px; 
   margin: 0 auto; 
@@ -1032,6 +1044,9 @@ text-decoration: none;
 }
 
 .export_button:hover {
-  background-color: rgba(228, 135, 39, 0.8); /* Slightly darker on hover */
+  background-color: rgba(228, 135, 39, 0.8); 
 }
 
+.modal-wide {
+  max-width: 100%; 
+}

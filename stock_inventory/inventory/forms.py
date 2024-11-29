@@ -5,17 +5,6 @@ from .models import Category
 import random
 
 class ProductForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(ProductForm, self).__init__(*args, **kwargs)
-        # Check if the instance does not already have a barcode to avoid overwriting
-        if not self.instance.pk:
-            self.fields['barcode'].initial = self.generate_barcode()
-            self.fields['barcode'].widget.attrs['readonly'] = True
-
-    @staticmethod
-    def generate_barcode():
-        # Generate a random 8-digit barcode (ensure it's unique based on your requirements)
-        return random.randint(100000000000, 999999999999)
     
     def clean(self):
         cleaned_data = super().clean()
@@ -27,6 +16,30 @@ class ProductForm(forms.ModelForm):
 
         return cleaned_data
     
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        product = self.instance
+        if Product.objects.filter(name=name).exclude(id=product.id).exists():
+            raise forms.ValidationError("A product with this name already exists.")
+        return name
+    
+    def clean_barcode(self):
+        barcode = self.cleaned_data.get('barcode')
+        product = self.instance
+        if Product.objects.filter(barcode=barcode).exclude(id=product.id).exists():
+            raise forms.ValidationError("A product with this barcode already exists.")
+        if not barcode.isdigit():
+            raise forms.ValidationError("The barcode must contain only numbers.")
+        if len(product.barcode) < 12:
+            raise forms.ValidationError("The barcode must be 12 digits long.")
+        return barcode
+
+    def clean_quantity(self):
+            quantity = self.cleaned_data.get('quantity')
+            if quantity < 0:
+                raise forms.ValidationError("Quantity cannot be negative.")
+            return quantity
+    
     class Meta:
         model = Product
         fields = ['name', 'category', 'barcode', 'description', 'mfg_date', 'exp_date', 'quantity', 'price', 'alert_threshold', 'image'] #fields to display
@@ -34,7 +47,7 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'name' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Product Name'}),
             'category' : forms.Select(attrs={'class': 'form-control'}),
-            'barcode' : forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Barcode', 'readonly': 'readonly'}),
+            'barcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Barcode', 'inputmode': 'numeric'}),
             'description' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Description'}),
             'mfg_date' : forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Mng. Date', 'type': 'date'}),
             'exp_date' : forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Exp. Date', 'type': 'date'}),
@@ -56,12 +69,6 @@ class ProductForm(forms.ModelForm):
             'alert_threshold' : 'Low Stock Threshold',
             'image': 'Product Image',
         }
-        
-        def clean_quantity(self):
-            quantity = self.cleaned_data.get('quantity')
-            if quantity < 0:
-                raise forms.ValidationError("Quantity cannot be negative.")
-            return quantity
         
 class CategoryForm(forms.ModelForm):
     class Meta:

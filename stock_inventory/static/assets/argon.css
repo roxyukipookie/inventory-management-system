@@ -3651,12 +3651,17 @@ input[type="button"].btn-block {
   min-height: 1px;
   padding: 1.5rem; }
 
+.card-categorySalesChart {
+  flex: 1 1 auto;
+  height: 350px;
+  padding: 1.5rem; }
+
 .col-xl-4 {
   position: relative;
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
-  max-height: 500px; /* Set a fixed height */
+  max-height: 500px; 
 }
 
 .card-title {

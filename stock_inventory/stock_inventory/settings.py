@@ -30,6 +30,9 @@ ALLOWED_HOSTS = []
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+TIME_ZONE = 'Asia/Manila'
+USE_TZ = True
+
 
 
 # Application definition

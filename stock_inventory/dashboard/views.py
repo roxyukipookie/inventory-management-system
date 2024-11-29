@@ -25,7 +25,11 @@ def dashboard_view(request):
     product_names = [product.name for product in products]
     remaining_quantities = [product.quantity for product in products]
     sold_quantities = [product.sold_quantity for product in products]
+    sales_by_category = (Product.objects.values("category__name").annotate(total_sales=Sum("sold_quantity")).filter(category__isnull=False).order_by("-total_sales"))
+    category_names = [item["category__name"] for item in sales_by_category]
+    category_sales = [item["total_sales"] for item in sales_by_category]
 
+    all_products = Product.objects.all()
     total_products = Product.objects.count()
     total_stock = Product.objects.aggregate(total_quantity=Sum('quantity'))['total_quantity']
     low_stock_items = Product.objects.filter(quantity__lt=F('alert_threshold')).count()
@@ -34,8 +38,10 @@ def dashboard_view(request):
     recently_added_products = Product.objects.order_by('-created_at')[:5]
     notifications = Notification.objects.filter(is_read=False).order_by('-created_at')
 
+    print(category_names, category_sales)
 
     context = {
+        'all_products': all_products,
         'total_products': total_products,
         'total_stock': total_stock,
         'low_stock_items': low_stock_items,
@@ -45,7 +51,9 @@ def dashboard_view(request):
         'notifications': notifications,  
         'product_names': product_names,  
         'remaining_quantities': remaining_quantities,  
-        'sold_quantities': sold_quantities  
+        'sold_quantities': sold_quantities,
+        "category_names": json.dumps(category_names),  
+        "category_sales": json.dumps(category_sales),    
     }
     return render(request, 'dashboard.html', context)
 
@@ -291,6 +299,8 @@ def edit_role_view(request):
         return JsonResponse({"success": True, "role": new_role})
 
     return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+
 
 
 

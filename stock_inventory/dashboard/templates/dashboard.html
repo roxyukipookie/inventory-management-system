@@ -16,10 +16,6 @@
         <div class="col-lg-6 col-7">
           <h6 class="h2 text-white d-inline-block mb-0">Welcome, {{ request.user.username }}</h6>
         </div>
-        <div class="col-lg-6 col-5 text-right">
-          <a href="#" class="btn btn-sm btn-neutral">New</a>
-          <a href="#" class="btn btn-sm btn-neutral">Filters</a>
-        </div>
       </div>
       <!-- Card stats -->
       <div class="row">
@@ -193,7 +189,7 @@
                   maintainAspectRatio: false,
                   plugins: {
                     legend: {
-                      display: false // This removes the legend (labels)
+                      display: false // This removes the legend 
                     }
                   }
                 }
@@ -244,53 +240,142 @@
         <div class="card-header bg-transparent">
           <div class="row align-items-center">
             <div class="col">
-              <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
-              <h5 class="h3 mb-0">Top Selling Products</h5>
+              <h6 class="text-uppercase text-muted ls-1 mb-1">Overview</h6>
+              <h5 class="h3 mb-0">Sales by Category</h5>
             </div>
           </div>
         </div>
-        <div class="card-bodyTopProducts">
-            <!-- Projects table -->
-            <table class="table align-items-center table-flush">
-              <thead class="thead-light">
-                <tr>
-                  <th scope="col">Rank</th>
-                  <th scope="col">Product</th>
-                  <th scope="col">Number of Sales</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for product in top_products_sold %}
-                <tr>
-                  <th scope="row">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</th>
-                  <td class="frame1169-frame11557">{{ product.name }}</td>
-                  <td class="frame1169-frame11558">{{ product.sold_quantity }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+        <div class="card-categorySalesChart">
+          <canvas id="categorySalesChart"></canvas>
+          <style>
+            #categorySalesChart {
+              width: 900px;
+              height: 100px;
+            }
+          </style>
+          <script>
+            // data passed from the Django view
+            const categoryNames = {{ category_names|safe }};
+            const categorySales = {{ category_sales|safe }};
+        
+            const ctx2 = document.getElementById('categorySalesChart').getContext('2d');
+        
+            const categorySalesChart = new Chart(ctx2, {
+              type: 'pie',
+              data: {
+                labels: categoryNames,
+                datasets: [
+                  {
+                    label: 'Category Sales',
+                    data: categorySales,
+                    backgroundColor: [
+                      '#5e72e4',
+                      '#fb6340',
+                      '#11cdef',
+                      '#2dce89',
+                      '#f5365c',
+                      '#ffd600',
+                      '#8965e0',
+                      '#f5365c',
+                      '#172b4d',
+                      '#5603ad',
+                      '#f3a4b5',
+                      '#11cdef',
+                    ],
+                    borderColor: ['#fff'], // Optional: Add white borders
+                    borderWidth: 1
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'top', // Legend position
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (tooltipItem) {
+                        const label = tooltipItem.label || '';
+                        const value = tooltipItem.raw || 0;
+                        return `${label}: ${value}`;
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          </script>
+        </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row ml-0">
     <div class="col-xl-8">
       <div class="card">
-        <div class="card-header border-0">
+        <div class="card-header bg-transparent">
           <div class="row align-items-center">
             <div class="col">
-              <h3 class="mb-0">Recently Added Products</h3>
+              <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
+              <h5 class="h3 mb-0">Recently Added Products</h5>
             </div>
             <div class="col text-right">
+              <button type="button" class="btn btn-sm btn-primary" name="view_products" data-bs-toggle="modal" data-bs-target="#viewProductsModal">See all</button>
               <a href="{% url 'export_products' %}" class="btn btn-sm btn-primary">Export in excel</a>
+            
+              <!-- See all Products Modal -->
+               <div class="modal fade" id="viewProductsModal" tabindex="-1" aria-labelledby="viewProductsModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg modal-wide">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="viewProductsModalLabel">All Products</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="table-responsive">
+                          <table class="table align-items-center table-flush text-center">
+                            <thead class="thead-light">
+                              <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Barcode</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Quantity in stock</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Mfg. Date</th>
+                                <th scope="col">Exp. Date</th>
+                                <th scope="col">Date Added</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for product in all_products %}
+                              <tr>
+                                <td scope="row">{{ product.name }}</td>
+                                <td scope="row">{{ product.barcode }}</td>
+                                <td scope="row">{{ product.description }}</td>
+                                <td scope="row">{{ product.category }}</td>
+                                <td scope="row">{{ product.quantity }}</td>
+                                <td scope="row">₱{{ product.price }}</td>
+                                <td scope="row">{{ product.mfg_date }}</td>
+                                <td scope="row">{{ product.exp_date }}</td>
+                                <td scope="row">{{ product.created_at }}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               </div>
             </div>
           </div>
         </div>
+        <div class="card-bodyTopProducts">
         <div class="table-responsive">
-          <!-- Projects table -->
-          <table class="table align-items-center table-flush">
-            <thead class="thead-light">
+          <table class="table align-items-center table-flush text-center">
+            <thead class="thead-light align-items-center text-center">
               <tr>
                 <th scope="col">No</th>
                 <th scope="col">Product</th>
@@ -302,42 +387,52 @@
               {% for product in recently_added_products %}
               <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td class="frame1169-frame11557">{{ product.name }}</td>
-                <td class="frame1169-frame11558">₱{{ product.price }}</td>
-                <td class="frame1169-frame11559">{{ product.created_at }}</td>
+                <td scope="row">{{ product.name }}</td>
+                <td scope="row">₱{{ product.price }}</td>
+                <td scope="row">{{ product.created_at }}</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
+        </div>
       </div>
     </div>
     <div class="col-xl-4">
-      <div class="card">
-        <div class="card-header border-0">
+      <div class="card mr-3">
+        <div class="card-header bg-transparent">
           <div class="row align-items-center">
             <div class="col">
-              <h3 class="mb-0">Recent Transactions</h3>
+              <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
+              <h5 class="h3 mb-0">Top Selling Products</h5>
             </div>
             <div class="col text-right">
               <a href="#!" class="btn btn-sm btn-primary">See all</a>
             </div>
           </div>
         </div>
-        <div class="table-responsive">
-          <!-- Projects table -->
-          <table class="table align-items-center table-flush">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col">Column 1</th>
-                <th scope="col">Column 2</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
+        <div class="card-bodyTopProducts">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush text-center">
+              <thead class="thead-light align-items-center text-center">
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Number of Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in top_products_sold %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</th>
+                  <td scope="row">{{ product.name }}</td>
+                  <td scope="row">{{ product.sold_quantity }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
     </div>
   </div>
 
