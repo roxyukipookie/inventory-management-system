@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Edit Product{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<body>
+    <div class="editProductForm-container">
+        <h3 class="editProductForm-title">Edit Product</h3> 
+        <a href="{% url 'inventory' %}" style="color: black;" class="{% if request.resolver_match.url_name == 'inventory' %}active{% endif %}">Inventory</a> /
+        <a href="{% url 'edit_product' product.barcode %}" class="{% if request.resolver_match.url_name == 'edit_product' %}active{% endif %}">Edit Product</a>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table class="form-table">
+                <thead>
+                    <tr>
+                        <th class="headerQuantity">Quantity</th>
+                        <th class="headerPrice">Selling Price</th>
+                        <th class="headerPrice">Low Stock Threshold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rowQuantity">{{ form.quantity }}</td>
+                        <td class="rowPrice">{{ form.price }}</td>
+                        <td class="rowThreshold">{{ form.alert_threshold }}</td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            <div class="form-group">
+                <label>Product Name:</label>
+                {{ form.name }}
+                <label>Description:</label>
+                {{ form.description }}
+                <label>Barcode:</label>
+                {{ form.barcode }}
+                <label>Category:</label>
+                {{ form.category }}
+                <label>Product Image:</label>
+                {{ form.image }}
+            </div>
+    
+            <button type="submit" class="submit-button">Update Product</button>
+        </form>
+    </div>
+</body>
+{% endblock %}

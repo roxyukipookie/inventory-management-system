@@ -1,0 +1,114 @@
+/* Styles for Add Product */
+.titleBlock {
+    top: 100px;
+    left: 87px;
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    box-sizing: content-box;
+  }
+  
+  .titleBlock a.active {
+    color: rgb(97, 129, 225); 
+  }
+  
+  .titleBlock-title {
+    color: #000000;            
+    font-size: 24px;          
+    font-weight: bold;        
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: .0rem; 
+    letter-spacing: 1px;      
+  }
+  
+  .titleBlock-description {
+    color: #282828;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .addProductForm-container {
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    margin-top: 20px;
+    top: 100px;
+    left: 87px;
+    width: 1330px;
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    padding: 20px;
+  }
+  
+  .addProductForm-title {
+    color: #000000;            
+    font-size: 24px;          
+    font-weight: bold;        
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 1%; 
+    letter-spacing: 1px;    
+  }
+  
+  /* Styles for form fields */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  textarea,
+  select {
+      width: 100%; /* Full width */
+      padding: 10px; /* Padding inside fields */
+      margin: 10px 0; /* Space between fields */
+      border: 1px solid rgba(50, 60, 71, 1); /* Border color */
+      border-radius: 5px; /* Rounded corners */
+      box-sizing: border-box; /* Include padding and border in width */
+      font-size: 16px; /* Font size */
+  }
+  
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  input[type="email"]:focus,
+  textarea:focus,
+  select:focus {
+      outline: none; /* Remove default outline */
+      border-color: rgba(228, 135, 39, 1); /* Change border color on focus */
+      box-shadow: 0 0 5px rgba(228, 135, 39, 0.5); /* Add a glow effect */
+  }
+  
+  .submit-button {
+    background-color: rgba(228, 135, 39, 1); /* Button color */
+    color: white; /* Button text color */
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    transition: background-color 0.3s; /* Transition for hover effect */
+    display: block; /* Center the button */
+    margin: 20px auto; /* Center the button horizontally */
+  }
+  
+  .submit-button:hover {
+    background-color: rgba(50, 60, 71, 1); /* Darker color on hover */
+  }
+  
+  
+  .form-table th:nth-child(even) {
+    background-color:  #172b4d; 
+    color: white;
+    text-align: center;
+    }
+    
+  .form-table th:nth-child(odd) {
+    background-color: #5e72e4; 
+    color: white;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px; /* Space between fields */
+  }
+  
+  .form-group label {
+    display: block; /* Block display for better spacing */
+    margin-bottom: 5px; /* Space between label and input */
+    color: rgba(50, 60, 71, 1); /* Label color */
+    font-weight: bold; /* Bold labels */
+  }

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} sales terminal {% endblock %}
+
+{% block content %}
+<div class="sales_container">
+
+    <!---Sales Terminal-->
+    <div class="products_table">
+        <h2>SALES TERMINAL</h2>
+
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Barcode</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="salesTableBody">
+                <tr id="noProductRow">
+                    <td colspan="4">No products selected</td>
+                </tr>
+                <!-- Example of dynamically added rows -->
+                <tr data-name="Example Product Name">
+                    <td>Example Product Name</td>
+                    <td>Example Description</td>
+                    <td>$10.00</td>
+                    <td><input type="number" class="product-quantity" value="1" min="1"></td>
+                </tr>
+            </tbody>
+            
+        </table>
+
+        <div id="noProductMessage" class="no-products-selected">
+            No products selected
+        </div>
+
+        <footer class="footer-btns">
+            <button class="fbtn" id="cncl" onclick="cancelSelection()">Cancel</button>
+            <button class="fbtn" id="sbttl" onclick="calculateSubtotal()">Subtotal</button>
+            <button class="fbtn" id="totl" type="button">Total</button>
+            <p id="subtotalDisplay"></p>
+        </footer>
+
+        
+    </div>
+
+    <!-- Products Tab -->
+    <div class="products-tab">
+        <div class="category_tab">
+            <section class="filter-option">
+                <h2>PRODUCTS</h2>
+                <form method="get" action="{% url 'sales_terminal' %}">
+                    <select class="form_category" name="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category and selected_category|stringformat:"i" == category.id|stringformat:"i" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </section>
+
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Barcode</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr class="product-row" data-name="{{ product.name }}" data-barcode="{{ product.barcode }}" data-description="{{ product.description }}" data-price="{{ product.price }}">
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.barcode }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Quantity Input -->
+        <div class="quantity-input">
+            <p><strong>Select the number of quantity first:</strong></p>
+            <input type="number" id="quantityInput" placeholder="Enter quantity" min="1">
+            <button id="quantityButton">Reset</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

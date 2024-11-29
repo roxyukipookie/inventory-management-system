@@ -1,0 +1,256 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Register</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+            padding: 0;
+        }
+        .left {
+            flex: 1;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .right {
+            width: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            margin-right: 0px;
+        }
+        .right h3, .right p, .right img {
+            margin-bottom: 20px;
+            color: black;
+        }
+        .register-box {
+            padding: 20px;
+            background: black;
+            width: 350px;
+            border-radius: 8px;
+        }
+        .logo {
+            margin-bottom: 20px;
+            height: 60px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .footer-text {
+            font-size: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .additional-links {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .additional-links a {
+            color: #4A5EEC;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        input[type="text"], input[type="email"], input[type="password"], select {
+            width: 100%;
+            padding: 8px 5px;
+            border: none;
+            border-bottom: 2px solid #4A5EEC;
+            background: transparent;
+            color: white;
+            font-size: 16px;
+        }
+        input::placeholder, select::placeholder {
+            color: #bbb;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-bottom: 2px solid #fff;
+        }
+        .btn-primary {
+            width: 100%;
+            background-color: #4A5EEC;
+            border-color: #4A5EEC;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .profile-upload {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #4A5EEC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            background-color: black;
+            cursor: pointer;
+            position: relative;
+            border-radius: 10px;
+        }
+        .profile-upload input {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            cursor: pointer;
+        }
+        .profile-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            border-radius: 10px;
+        }
+        .profile-upload.active img {
+            display: block;
+        }
+        #togglePassword {
+            background: transparent;
+            border: none;
+            color: #4A5EEC;
+            cursor: pointer;
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none; /* Hidden by default */
+        }
+        #togglePassword:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <img src="{% static 'images/logo2.png' %}" alt="Logo" class="logo">
+            <div class="register-box">
+                <h1>Get Started</h1>
+                <p>Please enter your details</p>
+
+                {% if messages %}
+                <div>
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <form method="post" id="signup-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Profile Picture Upload -->
+                    <div class="form-group">
+                        <div class="profile-upload" id="profile-upload">
+                            <img id="profile-preview" src="#" alt="Profile Picture Preview">
+                            <input type="file" name="profile_picture" id="profile-picture" accept="image/*" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="username" id="username" placeholder="Username" required>
+                        <div id="username_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
+                        <div id="first_name_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
+                        <div id="last_name_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" id="email" placeholder="Email" required>
+                        <span id="email_error" class="error-message"></span>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                        <button type="button" id="togglePassword">SHOW</button>
+                    </div>
+                    <div class="form-group">
+                        <select name="role" id="role" required>
+                            <option value="" disabled selected>Select Role</option>
+                            {% for key, value in form.fields.role.choices %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group additional-links">
+                        <label>
+                            <input type="checkbox" required> I agree to the Terms & Privacy
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <div class="footer-text" style="margin-top: 15px; text-align: center;">
+                    Already have an account? <a href="{% url 'login' %}" style="color: #4A5EEC;">Login</a>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <h3>The simplest way to manage your <br> stock inventory</h3>
+            <p>Enter your credentials to access your account</p>
+            <img src="{% static 'images/Dashboard2.png' %}" alt="Inventory Dashboard">
+        </div>
+    </div>
+
+    <script>
+        const profileInput = document.getElementById('profile-picture');
+        const profilePreview = document.getElementById('profile-preview');
+
+        // Profile Picture Preview
+        profileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePreview.src = e.target.result;
+                    profilePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                profilePreview.style.display = 'none';
+            }
+        });
+
+        // Show/Hide Password Toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        // Show the toggle button when the user starts typing in the password field
+        passwordInput.addEventListener('input', () => {
+            togglePassword.style.display = passwordInput.value ? 'block' : 'none';
+        });
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.textContent = type === 'password' ? 'SHOW' : 'HIDE';
+        });
+    </script>
+</body>
+</html>
