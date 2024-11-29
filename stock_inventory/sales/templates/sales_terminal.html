@@ -15,6 +15,7 @@
             <thead>
                 <tr>
                     <th>Product Name</th>
+                    <th>Barcode</th>
                     <th>Description</th>
                     <th>Price</th>
                     <th>Quantity</th>
@@ -24,7 +25,15 @@
                 <tr id="noProductRow">
                     <td colspan="4">No products selected</td>
                 </tr>
+                <!-- Example of dynamically added rows -->
+                <tr data-name="Example Product Name">
+                    <td>Example Product Name</td>
+                    <td>Example Description</td>
+                    <td>$10.00</td>
+                    <td><input type="number" class="product-quantity" value="1" min="1"></td>
+                </tr>
             </tbody>
+            
         </table>
 
         <div id="noProductMessage" class="no-products-selected">
@@ -62,14 +71,16 @@
                 <thead>
                     <tr>
                         <th>Product Name</th>
+                        <th>Barcode</th>
                         <th>Description</th>
                         <th>Price</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for product in products %}
-                    <tr class="product-row" data-name="{{ product.name }}" data-description="{{ product.description }}" data-price="{{ product.price }}">
+                    <tr class="product-row" data-name="{{ product.name }}" data-barcode="{{ product.barcode }}" data-description="{{ product.description }}" data-price="{{ product.price }}">
                         <td>{{ product.name }}</td>
+                        <td>{{ product.barcode }}</td>
                         <td>{{ product.description }}</td>
                         <td>{{ product.price }}</td>
                     </tr>
