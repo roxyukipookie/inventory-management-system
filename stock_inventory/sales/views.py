@@ -1,6 +1,8 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from dashboard.models import Product, Category
+from accounts.models import UserProfile
 from .forms import UpdateSalesForm
 from django.contrib.auth.decorators import login_required
 

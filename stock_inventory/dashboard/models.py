@@ -5,7 +5,12 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from PIL import Image
 
+# Use dynamic import for custom user model
+CustomUser = settings.AUTH_USER_MODEL
+
+# Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
@@ -26,7 +31,6 @@ def save_profile(sender, instance, **kwargs):
         # Create profile if missing
         Profile.objects.create(user=instance)
 
-# Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=255)
     barcode = models.IntegerField(default=0)
@@ -105,3 +109,7 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+
+
