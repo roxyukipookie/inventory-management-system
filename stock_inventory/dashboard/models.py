@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from inventory.models import Category
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -32,8 +31,8 @@ def save_profile(sender, instance, **kwargs):
         Profile.objects.create(user=instance)
 
 class Product(models.Model):
-    name = models.CharField(max_length=255)
-    barcode = models.IntegerField(default=0)
+    name = models.CharField(max_length=255, unique=True)
+    barcode = models.CharField(max_length=12, unique=True)
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) 
     total_sales = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -45,6 +44,10 @@ class Product(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     alert_threshold = models.PositiveIntegerField(default=10)  
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='products')
+    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return self.name
@@ -66,7 +69,8 @@ class Product(models.Model):
                 title="New Product Added",
                 message=f"A new product '{self.name}' has been added to the inventory.",
                 notification_type='new-product',
-                icon='img/shipped.png'  
+                icon='img/shipped.png',  
+                owner=self.owner  # Linking notification to the owner
             )
         else:
             # If the product quantity has increased (indicating stock replenishment)
@@ -75,7 +79,8 @@ class Product(models.Model):
                     title="Stock Replenished",
                     message=f"The stock of '{self.name}' has been replenished. Now {self.quantity} in stock.",
                     notification_type='stock-replenished',
-                    icon='img/reload.png'
+                    icon='img/reload.png',
+                    owner=self.owner  # Linking notification to the owner
                 )
 
         # Check if product is out of stock
@@ -85,7 +90,8 @@ class Product(models.Model):
                 title="Out of stock",
                 message=f"The product '{self.name}' has run out of stock.",
                 notification_type='out-of-stock',
-                icon='img/out.png'
+                icon='img/out.png',
+                owner=self.owner  # Linking notification to the owner
             )
         
         # Check if product is low on stock (below alert threshold)
@@ -95,7 +101,8 @@ class Product(models.Model):
                 title="Low Stock",
                 message=f"The stock level of '{self.name}' is below the threshold ({self.quantity} remaining).",
                 notification_type='low-stock',
-                icon='img/warning.svg'
+                icon='img/warning.svg',
+                owner=self.owner  # Linking notification to the owner
             )
 
 class Notification(models.Model):
@@ -106,6 +113,8 @@ class Notification(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     is_read = models.BooleanField(default=False)
     notification_type = models.CharField(max_length=50, default='general')  # e.g., 'low-stock', 'out-of-stock', 'new-stock'
+
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)  # Added owner
 
     def __str__(self):
         return self.title

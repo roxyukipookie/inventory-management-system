@@ -1,0 +1,253 @@
+  /* ROLE MANAGEMENT HTML CSS */
+  .table-container {
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
+    border: 1px solid #E0E0E0; /* Add border to the container */
+  }
+  .role-management-content {
+    margin-top: 20px;/* Adjust this value based on your navbar height */
+    padding: 0; /* Remove extra padding */
+    background-color: #F7F3ED;
+    border-radius: 10px;
+    min-height: 400px;
+    width: 100%; /* Span full width */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  .roles-header-container {
+    background-color: #FBE4D1; /* Light orange color */
+    padding: 0px 0; /* Vertical padding for spacing */
+    width: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  /* Adjusting Tabs */
+  .tabs {
+    padding: 0 40px;
+    margin-bottom: 10px;
+  }
+  
+  /* Container for all content */
+  .main-content-wrapper {
+    /*padding: 0 40px; /* Adds extra padding on the left and right */
+    /* Pushes content down to avoid navbar overlap */
+    overflow: hidden;
+  }
+  
+  .second-main-content {
+    padding: 20px 40px; /* Removes side padding to allow full width */
+    background-color: #172b4d; 
+    /*opacity: 0.5;*/
+    min-height: 100vh; /* Ensures it covers the full height of the viewport */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100vw; /* Full viewport width */
+  }
+  
+  
+  .tab {
+    padding: 40px 20px;
+    cursor: pointer;
+    color: #6E6E6E;
+    text-decoration: none;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  .tab.active {
+    border-bottom: 3px solid #5e72e4;
+    color: #000000;
+    text-decoration: none;
+  }
+  
+  
+  /* Labels Header*/
+  .labels-container {
+    display: flex; /* Aligns the labels horizontally */
+    justify-content: space-between; /* Distributes space between labels */
+    /*margin-bottom: 10px; /* Adds space below the labels */
+  }
+  
+  .label {
+    background-color: rgba(248, 180, 0, 0.20); /* Slightly deeper orange than the second main content */
+    padding: 10px; /* Adds padding inside the label */
+    /*border-radius: 5px; /* Rounds the corners of the label */
+    color: #6E6E6E; /* Text color for visibility */
+    font-weight: bold; /* Makes the text bold */
+    width: calc(50% - 5px); /* Adjusts width to fit two labels with some space */
+    text-align: left; /* Centers the text */
+  }
+  
+  .label.name-permissions {
+    border-top-left-radius: 5px; /* Round top-left corner */
+    border-bottom-left-radius: 5px; /* Round bottom-left corner */
+    padding-left: 20px;
+  }
+  
+  .actions {
+    text-align: right; /* Aligns text to the right for the actions label */
+    border-top-right-radius: 5px; /* Round top-right corner */
+    border-bottom-right-radius: 5px; /* Round bottom-right corner */
+    padding-right: 60px;
+  }
+  
+  /* Search Box */
+  .tabs-container {
+    display: flex;            /* Enable flexbox layout */
+    justify-content: space-between; /* Space items evenly */
+    align-items: center;      /* Center items vertically */
+    margin-bottom: 15px;     /* Add space below the tabs */
+  }
+  .search-container {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the center */
+    margin-left: auto;   /* Pushes the search box to the right */
+    margin-right: 40px;
+    
+  }
+  
+  .search-input {
+    padding: 8px;
+    border: 1px solid #ccc; /* Adjust border color as needed */
+    border-radius: 4px;     /* Rounds the corners */
+    margin-right: 5px;      /* Space between input and button */
+  }
+  
+  .search-button {
+    background-color: transparent; /* No background color */
+    border: none;                 /* Removes default button border */
+    cursor: pointer;              /* Changes cursor to pointer */
+  }
+  
+  .search-button img {
+    width: 20px;    /* Adjust size as needed */
+    height: 20px;   /* Adjust size as needed */
+  }
+  
+  
+  /* Roles Header */
+  .roles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    /*margin: 0 auto; /* Centers content within the light orange container */
+    padding: 0 10px; /* Adds padding on the left and right */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  .roles-header h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  
+  .roles-count {
+    color: #ffffff;
+    font-weight: normal;
+  }
+  
+  /* Add Role Button */
+  .add-role-button {
+    padding: 10px 20px;
+    background-color: #174A4E;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Roles Container */
+  .roles-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    border: 1px solid #E0E0E0;
+  }
+  
+  .roles-container th, .roles-container td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #E0E0E0;
+    vertical-align: middle;
+  }
+  
+  
+  
+  /* Role Card */
+  .role-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #E0E0E0;
+  }
+  
+  .role-card:last-child {
+    border-bottom: 1px solid #E0E0E0;
+  }
+  
+  .role-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .role-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #DD6A00;
+  }
+  
+  .role-permissions {
+    font-size: 14px;
+    color: #6E6E6E;
+  }
+  
+  /* Role Actions */
+  .role-actions {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .action-edit, .action-delete {
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #6E6E6E;
+  }
+  
+  .action-edit:hover, .action-delete:hover {
+    text-decoration: underline;
+  }
+  
+
+
+  /* Shared styles for User Management and Role Management */
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th, .table-container td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.role-row .field-name, .role-row .field-permissions {
+    font-size: 14px;
+    color: #6E6E6E;
+}
+
+.role-row .field-actions .action-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.action-checkbox-column input {
+    margin: 0;
+}

@@ -8,9 +8,8 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
 import json
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 import logging
 from accounts.models import UserProfile 
@@ -20,36 +19,34 @@ import pyexcel
 import pandas as pd
 
 
-from .models import Profile
-from django.http import HttpResponseForbidden
-
-
-@login_required
 def dashboard_view(request):
-    products = Product.objects.all()
+    user = request.user
+    user_role = 'staff' if UserProfile.objects.filter(user=request.user, owner__isnull=False).exists() else 'owner'
+
+    # Determine the owner of the logged-in user
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        owner = user  # If the user is not staff, they are the owner
+
+    # Only get products owned by the determined owner
+    products = Product.objects.filter(owner=owner)
 
     # Data for the chart
     product_names = [product.name for product in products]
     remaining_quantities = [product.quantity for product in products]
-    sold_quantities = [product.sold_quantity for product in products]
+    sold_quantities = [product.total_sold_quantity for product in products]  # Use cumulative sold quantity
 
-    total_products = Product.objects.count()
-    total_stock = Product.objects.aggregate(total_quantity=Sum('quantity'))['total_quantity']
-    low_stock_items = Product.objects.filter(quantity__lt=F('alert_threshold')).count()
-    out_of_stock_items = Product.objects.filter(quantity=0).count()  
-    top_products_sold = Product.objects.order_by('-sold_quantity')[:5]
-    recently_added_products = Product.objects.order_by('-created_at')[:5]
-    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')
+    # Dashboard statistics
+    total_products = products.count()  # Count products owned by the owner
+    total_stock = products.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+    low_stock_items = products.filter(quantity__lt=F('alert_threshold')).count()
+    out_of_stock_items = products.filter(quantity=0).count()
+    top_products_sold = products.order_by('-total_sold_quantity')[:5]  # Top products by cumulative sales
+    recently_added_products = products.order_by('-created_at')[:5]
 
-    # Fetch the logged-in user's profile picture (if it exists)
-    profile_picture = None
-    if request.user.is_authenticated:
-        try:
-            profile = request.user.profile
-            profile_picture = profile.profile_picture.url if profile.profile_picture else None
-        except Profile.DoesNotExist:
-            profile_picture = None
-
+    # Context for rendering
     context = {
         'total_products': total_products,
         'total_stock': total_stock,
@@ -57,18 +54,24 @@ def dashboard_view(request):
         'out_of_stock_items': out_of_stock_items,
         'top_products_sold': top_products_sold,
         'recently_added_products': recently_added_products,
-        'notifications': notifications,  
-        'product_names': product_names,  
-        'remaining_quantities': remaining_quantities,  
+        'product_names': product_names,
+        'remaining_quantities': remaining_quantities,
         'sold_quantities': sold_quantities,
-        'profile_picture': profile_picture,
-        'username': request.user.username,
+        'user_role': user_role,
     }
     return render(request, 'dashboard.html', context)
 
 def get_notifications(request):
-    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')[:5]
-    unread_count = Notification.objects.filter(is_read=False).count()  # Count unread notifications
+    user = request.user
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner
+    except UserProfile.DoesNotExist:
+        owner = user
+
+    # Filter notifications by the owner of the logged-in user
+    notifications = Notification.objects.filter(owner=owner, is_read=False).order_by('-created_at')[:5]
+    unread_count = Notification.objects.filter(owner=owner, is_read=False).count()
 
     notifications_data = []
     for notification in notifications:
@@ -82,8 +85,10 @@ def get_notifications(request):
 
     return JsonResponse({
         'notifications': notifications_data,
-        'unread_count': unread_count  # Return unread count
+        'unread_count': unread_count
     }, safe=False)
+
+
 
 def export_products(request):
     products = Product.objects.all().values(
@@ -99,38 +104,27 @@ def export_products(request):
 
     return response
 
-@login_required
 def role_management_view(request):
     return render(request, 'role_management.html')
 
 @login_required
 def user_management_view(request):
-    # Fetch only users who are staff
-    users = User.objects.filter(role='Staff')
+    User = get_user_model()
+
+    if request.user.is_owner:
+        # Fetch only users who are staff and linked to the current owner
+        users = User.objects.filter(role='Staff', owner=request.user)
+        user_count = users.count()
+    else:
+        # If the user is not an owner, display an empty list or show an error
+        users = []
+        user_count = 0
     
-    # Get the count of staff users
-    user_count = users.count()
-
-    return render(request, 'user_management.html', {
+    context = {
         'users': users,
-        'user_count': user_count
-    })
-
-@login_required
-def inventory_view(request):
-    # Restrict to superuser
-    if not request.user.is_owner:
-        return HttpResponseForbidden("You do not have permission to access this page.")
-    # Continue with the logic for displaying inventory
-    return render(request, 'inventory.html')
-
-@login_required
-def history_view(request):
-    # Restrict to superuser
-    if not request.user.is_owner:
-        return HttpResponseForbidden("You do not have permission to access this page.")
-    # Continue with the logic for displaying history
-    return render(request, 'history.html')
+        'user_count': user_count,
+    }
+    return render(request, 'user_management.html', context)
 
 @csrf_exempt
 def add_user(request):
@@ -138,21 +132,20 @@ def add_user(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
-        username = request.POST.get('username')  # New username field
+        username = request.POST.get('username')
         password = request.POST.get('password')
         role = request.POST.get('role', '').lower()
         profile_picture = request.FILES.get('profile_picture')  # Profile picture upload
 
         try:
             # Step 1: Create the new user
-            user = User.objects.create_user(
+            user = CustomUser.objects.create_user(
                 username=username,
                 first_name=first_name,
                 last_name=last_name,
                 email=email
             )
             user.set_password(password)
-            user.save()
 
             # Step 2: Create the UserProfile with the role and profile picture
             if not UserProfile.objects.filter(user=user).exists():
@@ -160,6 +153,12 @@ def add_user(request):
                     user=user,
                     profile_picture=profile_picture  # Save profile picture
                 )
+
+                # Set the logged-in user as the owner for this new user
+                user.owner = request.user  # Set the `owner` field in the `CustomUser` model
+                profile.owner = request.user  # Also set in UserProfile (just for consistency)
+                user.save()  # Save the user with the owner set
+                profile.save()  # Save the profile
 
                 # Set role based on form input
                 if role == 'staff':
@@ -175,8 +174,8 @@ def add_user(request):
                     user.is_superuser = False
                     profile.role = 'n/a'
 
-                user.save()  # Save updated permissions
-                profile.save()  # Save profile with role and picture
+                user.save()  # Save updated user permissions
+                profile.save()  # Save updated profile
 
             return JsonResponse({
                 'success': True,
@@ -192,133 +191,33 @@ def add_user(request):
             })
 
         except Exception as e:
-            # Print exact error for debugging
             print("Error creating user:", e)
-            traceback.print_exc()
-            return JsonResponse({'success': False, 'message': 'Error creating user. Please check server logs for details.'})
+            traceback.print_exc()  # This will give you a detailed error traceback in the console
+            return JsonResponse({'success': False, 'message': str(e)})
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
-
         
 @csrf_exempt
-def delete_users(request):
-    if request.method == 'POST':
-        try:
-            user_ids = request.POST.getlist('user_ids')
-            User.objects.filter(id__in=user_ids).delete()
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)})
-
-"""User = get_user_model()
-logger = logging.getLogger(__name__)
-
-@csrf_exempt  # Consider using CSRF token handling in production
-def reset_password_view(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            logger.debug(f"Received data: {data}")  # Log the raw data received
-            user_id = data.get('user_id')
-            old_password = data.get('old_password')
-            new_password = data.get('new_password')
-
-            user = User.objects.get(id=user_id)
-            logger.debug(f"Attempting to check password for user: {user.username}")
-
-            if user.check_password(old_password):
-                user.set_password(new_password)
-                user.save()
-                logger.debug("Password has been successfully changed.")
-                return JsonResponse({'success': True, 'message': 'Password reset successfully.'})
-            else:
-                logger.debug("Old password is incorrect.")
-                return JsonResponse({'success': False, 'message': 'Old password is incorrect.'})
-        except User.DoesNotExist:
-            logger.error("User not found.")
-            return JsonResponse({'success': False, 'message': 'User not found.'})
-        except json.JSONDecodeError:
-            logger.error("Invalid JSON.")
-            return JsonResponse({'success': False, 'message': 'Invalid JSON.'})
-        except Exception as e:
-            logger.error(f"An error occurred: {str(e)}")
-            return JsonResponse({'success': False, 'message': str(e)})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})"""
-
-User = get_user_model()
-
-"""@csrf_exempt
-def edit_role_view(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            user_id = data.get('user_id')
-            new_role = data.get('role')  # Expecting 'staff' or 'owner'
-
-            # Retrieve the user and verify existence
-            user = User.objects.get(id=user_id)
-            #profile = user.profile  # Access the related UserProfile instance
-            profile, created = UserProfile.objects.get_or_create(user=user)
-
-            
-            # Update the role in UserProfile
-            profile.role = new_role
-            profile.save()  # Save the profile changes
-            
-            # Check if the role was saved correctly
-            updated_profile = UserProfile.objects.get(user=user)
-            print("Updated role:", updated_profile.role)  # Debugging statement
-
-            return JsonResponse({
-                'success': True,
-                'role': updated_profile.role
-            })
-
-        except User.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'User not found.'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})"""
-
-# views.py
-@csrf_exempt
-def edit_role_view(request):
-    if request.method == 'POST':
-        # Extract user_id and role from the request body
+@login_required
+@require_POST
+def delete_user_view(request):
+    try:
         data = json.loads(request.body)
-        print(data)
-        user_id = int(data.get('user_id'))
-        new_role = data.get('role')
-        
-        try:
-            user = CustomUser.objects.get(id=user_id)
-        except CustomUser.DoesNotExist:
-            return JsonResponse({"success": False, "message": "User not found."}, status=400)
+        user_ids = data.get('user_ids', [])
 
-        # Update the role of the user
-        if new_role == 'owner':
-            user.is_superuser = True
-            user.is_staff = True
-        elif new_role == 'staff':
-            user.is_superuser = False
-            user.is_staff = True
-        else:
-            user.is_superuser = False
-            user.is_staff = False
-        
-        user.save()
+        deleted_users = []
 
-        # Return the updated role information
-        return JsonResponse({"success": True, "role": new_role})
+        for user_id in user_ids:
+            try:
+                user = CustomUser.objects.get(id=user_id)
+                # Directly delete the user
+                user.delete()
+                deleted_users.append(user_id)
+            except User.DoesNotExist:
+                # Skip users that do not exist
+                continue
 
-    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
-
-def custom_logout_view(request):
-    logout(request)
-    return redirect('login')
-
-
-
+        return JsonResponse({'success': True, 'deleted_users': deleted_users})
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)

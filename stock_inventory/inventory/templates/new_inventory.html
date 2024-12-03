@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-4 fs-1">Inventory</h6>
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Inventory</li>
+              </ol>
+            </div>
+            <div class="col-lg-6 col-5 d-flex justify-content-end align-items-center" style="margin-top: 50px;">
+                <!-- Search form -->
+                <form class="navbar-search navbar-search-light form-inline" id="navbar-search-main" method="get" action="{% url 'inventory' %}">
+                    <div class="form-group mb-0">
+                        <div class="input-group input-group-alternative input-group-merge">
+                            <div class="input-group-prepend">
+                                <button type="submit" class="input-group-text"><i class="fas fa-search"></i></button>
+                            </div>
+                            <input class="form-control pt-1 mt-2"
+                                   placeholder="Search"
+                                   type="text"
+                                   name="search"
+                                   value="{{ query }}"
+                                   id = "search-input"
+                            />
+                        </div>
+                    </div>
+                </form>
+                <form method="get" action="{% url 'inventory' %}" style="display: inline;">
+                    <input type="hidden" name="search" value="">
+                    <button class="close-icon" type="submit" style="background: none; border: none; cursor: pointer; padding-right: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" style="fill: white;">
+                            <path
+                                d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+        <div class="menu"> <!--Menu Tab-->
+            <section class="product-status">
+                <h2>Product Status</h2>
+                <div class="status-group">
+                    <div class="status">
+                        <span>Products</span>
+                        <span class="count green">{{ total_products }}</span>
+                    </div>
+                    <div class="status">
+                        <span>All</span>
+                        <span class="count blue">{{ total_stock }}</span>
+                    </div>
+                    <div class="status">
+                        <span>Out of stock</span>
+                        <span class="count red">{{out_of_stock_items }}</span>
+                    </div>
+                    <div class="status">
+                        <span>Low</span>
+                        <span class="count orange">{{ low_stock_items }}</span>
+                    </div>
+                </div>
+            </section>
+    
+            <section class="filter-option">
+                <h2>Sort By</h2>
+                <div class="dropdown">
+                    <span>Alphabetical</span>
+                    <form>
+                        <select class="sort_category" name="sort">
+                            <option class="sort-order" value="">A-Z</option>
+
+                        </select>
+                    </form>
+
+                    <span class="sort-order">A-Z</span>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="filter-option">
+                <h2>CATEGORIES</h2>
+                <form method="get" action="{% url 'inventory' %}"
+                    style="display: flex; align-items: center; flex-grow: 1;">
+                    <select class="form_category" name="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category and selected_category|stringformat:"i" == category.id|stringformat:"i" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </section>
+        </div> <!--Menu Tab-->
+        
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Products</h3>
+            <button type="button" class="btn btn-primary btn-sm"  name="add_product" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
+            
+            <!-- Add Product Modal -->
+            <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" enctype="multipart/form-data" action="">
+                                {% csrf_token %}
+            
+                                <!-- Product Name -->
+                                <div class="form-group">
+                                    <label for="productName">Product Name:</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.name.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Description -->
+                                <div class="form-group">
+                                    <label for="description">Description:</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.description.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Barcode -->
+                                <div class="form-group">
+                                    <label for="barcode">Barcode:</label>
+                                    {{ form.barcode }}
+                                    {% if form.barcode.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.barcode.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Category -->
+                                <div class="form-group">
+                                    <label for="category">Category:</label>
+                                    {{ form.category }}
+                                    <a href="{% url 'add_category' %}" class="btn-secondary">Add New Category</a>
+                                    {% if form.category.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.category.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Manufacturing Date -->
+                                <div class="form-group">
+                                    <label for="mfgDate">Mfg. Date:</label>
+                                    {{ form.mfg_date }}
+                                    {% if form.mfg_date.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.mfg_date.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Expiry Date -->
+                                <div class="form-group">
+                                    <label for="expDate">Exp. Date:</label>
+                                    {{ form.exp_date }}
+                                    {% if form.exp_date.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.exp_date.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Product Image -->
+                                <div class="form-group">
+                                    <label for="productImage">Product Image:</label>
+                                    {{ form.image }}
+                                    {% if form.image.errors %}
+                                        <div class="error text-danger">
+                                            {% for error in form.image.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+            
+                                <!-- Quantity, Price, Low Stock Threshold -->
+                                <div class="form-table-wrapper">
+                                    <table class="form-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Quantity</th>
+                                                <th>Selling Price</th>
+                                                <th>Low Stock Threshold</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ form.quantity }}</td>
+                                                <td>{{ form.price }}</td>
+                                                <td>{{ form.alert_threshold }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+            
+                                {% if form.quantity.errors %}
+                                    <div class="error text-danger">
+                                        {% for error in form.quantity.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+            
+                                {% if form.price.errors %}
+                                    <div class="error text-danger">
+                                        {% for error in form.price.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if form.alert_threshold.errors %}
+                                    <div class="error text-danger">
+                                        {% for error in form.alert_threshold.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                <button type="submit" class="btn btn-primary mt-2">Save Product</button>
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        {% if form.errors %}
+                                            var addProductModal = new bootstrap.Modal(document.getElementById('addProductModal'));
+                                            addProductModal.show();
+                                        {% endif %}
+                                    });
+                                </script>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort">Product Image</th>
+                  <th scope="col">Barcode</th>
+                  <th scope="col" class="sort">Product Name</th>
+                  <th scope="col" class="sort">Category</th>
+                  <th scope="col" class="sort">Description</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Mfg. Date</th>
+                  <th scope="col">Exp. Date</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% for product in products %}
+                <td>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal{{ product.id }}" class="avatar rounded-circle mr-3">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    </a>
+
+                    <!-- Image Modal-->
+                    <div class="modal fade" id="imageModal{{ product.id }}" tabindex="-1" aria-labelledby="imageModalLabel{{ product.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel{{ product.id }}">{{ product.name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Image Section -->
+                                    <div class="text-center mb-4">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded">
+                                        {% else %}
+                                            <p>No image available</p>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Product Information Section -->
+                                    <div class="product-details">
+                                        <h6 class="text-muted">Barcode</h6>
+                                        <p>{{ product.barcode }}</p>
+
+                                        <h6 class="text-muted">Description</h6>
+                                        <p>{{ product.description|default:"No description provided." }}</p>
+
+                                        <h6 class="text-muted">Price</h6>
+                                        <p>PHP{{ product.price|default:"0.00" }}</p>
+
+                                        <h6 class="text-muted">Available Stock</h6>
+
+                                        <h6 class="text-muted">Category</h6>
+                                        <p>{{ product.category.name|default:"Uncategorized" }}</p>
+
+                                        <h6 class="text-muted">Manufacturing Date</h6>
+                                        <p>{{ product.mfg_date|default:"No Date Specified" }}</p>
+
+                                        <h6 class="text-muted">Expiry Date</h6>
+                                        <p>{{ product.exp_date|default:"No Date Specified" }}</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="{% url 'edit_product' product.barcode %}">
+                                        <button type="button" class="btn btn-primary">Edit</button>
+                                    </a>
+                                    <a href="{% url 'delete_product' product.barcode %}" onclick="return confirm('Are you sure you want to delete this product?');">
+                                        <button type="button" class="btn btn-danger">Delete</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </td>
+                <td>{{product.barcode}}</td>
+                <td>{{ product.name }}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.quantity}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.mfg_date}}</td>
+                <td>{{product.exp_date}}</td>
+                <td class="text-right">
+                    <div class="dropdown">
+                      <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="custom-ellipsis">&#x22EE;</span>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                        <a class="dropdown-item" href="{% url 'edit_product' product.barcode %}">Edit</a>
+                        <a class="dropdown-item" href="{% url 'delete_product' product.barcode %}" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                      </div>
+                    </div>
+                  </td>
+            </tr>
+                {% endfor %}  
+            </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

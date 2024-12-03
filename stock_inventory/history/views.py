@@ -1,16 +1,29 @@
 from django.shortcuts import render
 from dashboard.models import Product
+from accounts.models import UserProfile
 
 def history(request):
-    print(Product.objects.all())
-    products = Product.objects.all()
-    print(products)
+    # Get the logged-in user
+    user = request.user
 
-    recently_added_products = Product.objects.order_by('-created_at')
+    # Check if the logged-in user is staff and has an associated owner
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # Get the owner of the logged-in staff
+    except UserProfile.DoesNotExist:
+        owner = None
+
+    # If the user is a staff member, show products of their associated owner
+    if owner:
+        products = Product.objects.filter(owner=owner)
+        recently_added_products = products.order_by('-created_at')
+    else:
+        # If the user is an owner, show their own products
+        products = Product.objects.filter(owner=user)
+        recently_added_products = products.order_by('-created_at')
 
     context = {
-        'recently_added_products' : recently_added_products
-
+        'recently_added_products': recently_added_products,
     }
-    
+
     return render(request, 'history.html', context)

@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate
 from .forms import RegistrationForm
 from .models import CustomUser
 from django.contrib.auth.decorators import login_required
+from .models import UserProfile
 
 # Registration view
 def signup(request):
@@ -50,21 +51,17 @@ def login_view(request):
 def dashboard_view(request):
     return render(request, 'dashboard/dashboard.html')
 
-@login_required
-def sales_view(request):
-    return render(request, 'sales/sales.html')
-
-@login_required
-def inventory_view(request):
-    return render(request, 'inventory/inventory.html')
-
-@login_required
-def inventory_view(request):
-    return render(request, 'history/history.html')
-
 
 def redirect_to_login(request):
     if request.user.is_authenticated:
         return redirect('login')  # Redirect to dashboard if logged in
     else:
         return redirect('login')  # Otherwise, redirect to login page
+    
+
+def get_user_role(user):
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        return 'staff' if user_profile.owner else 'owner'
+    except UserProfile.DoesNotExist:
+        return 'owner'  # Default to owner if no UserProfile is set up

@@ -9,7 +9,7 @@
         <h3 class="editProductForm-title">Edit Product</h3> 
         <a href="{% url 'inventory' %}" style="color: black;" class="{% if request.resolver_match.url_name == 'inventory' %}active{% endif %}">Inventory</a> /
         <a href="{% url 'edit_product' product.barcode %}" class="{% if request.resolver_match.url_name == 'edit_product' %}active{% endif %}">Edit Product</a>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <table class="form-table">
                 <thead>
@@ -37,6 +37,8 @@
                 {{ form.barcode }}
                 <label>Category:</label>
                 {{ form.category }}
+                <label>Product Image:</label>
+                {{ form.image }}
             </div>
     
             <button type="submit" class="submit-button">Update Product</button>

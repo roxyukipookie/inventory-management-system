@@ -28,6 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+TIME_ZONE = 'Asia/Manila'
+USE_TZ = True
+
+
 
 # Application definition
 
@@ -43,7 +49,8 @@ INSTALLED_APPS = [
     'dashboard',
     'inventory',
     'sales',
-    'history'
+    'history',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -107,8 +114,6 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -126,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'accounts/static'),  # Adjust to match your actual folder structure
+    os.path.join(BASE_DIR, 'static'),  # Adjust to match your actual folder structure
     #BASE_DIR / 'dashboard/static'
 ]
 
@@ -134,9 +139,4 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 LOGOUT_REDIRECT_URL = '/accounts/login/'
-

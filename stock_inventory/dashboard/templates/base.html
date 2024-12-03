@@ -3,158 +3,217 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{% static 'assets/base_style.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/dashboardStyle.css' %}">
-    <link rel="stylesheet" href="{% static 'css/inventory_style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/add_product.css' %}">
-    <link rel="stylesheet" href="{% static 'css/invoice_style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sales_management.css' %}">
-    <link rel="stylesheet" href="{% static 'css/update_sales.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sales_terminal.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/static/assets/argon.css?v=1.2.0" type="text/css">
+  <link rel="stylesheet" href="{% static 'assets/base_style.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dashboardStyle.css' %}">
+  <link rel="stylesheet" href="{% static 'inventory_css/inventory_style.css' %}">
+  <link rel="stylesheet" href="{% static 'inventory_css/add_product.css' %}">
+  <link rel="stylesheet" href="{% static 'inventory_css/product_table.css' %}">
+  <link rel="stylesheet" href="{% static 'sales_css/sales_management.css' %}">
+  <link rel="stylesheet" href="{% static 'sales_css/update_sales.css' %}">
+  <link rel="stylesheet" href="{% static 'sales_css/sales_terminal.css' %}">
+  <link rel="stylesheet" href="{% static 'history_css/history_style.css' %}"> 
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Scripts -->
+  <script src="{% static 'sales_css/sales_script.js' %}" defer></script>
 </head>
 
 <body>
-    <nav>
-        <ul class="sidebar">
-            <li onclick="hideSideBar()">
-                <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#000000">
-                        <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-                    </svg>
-                </a>
-            </li>
-            <li><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
-            <li><a href="{% url 'sales_management' %}">Sales</a></li>
-            <li><a href="{% url 'inventory' %}">Inventory</a></li>
-            <li><a href="{% url 'history' %}">History</a></li>
-            
-        </ul>
-        <ul>
-            <li><img class="logo" src="{% static 'images/LOGO_inv.png' %}" /></li>
-            <li class="hideNavbar"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
-            <li class="hideNavbar"><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
-            <li class="hideNavbar"><a href="{% url 'inventory' %}">Inventory</a></li>
-            <li class="hideNavbar"><a href="{% url 'history' %}">History</a></li>
-            <li onclick="toggleNotificationPopup()">
-                <a>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#">
-                        <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
-                    </svg>
-                </a>
-            </li>
-            <li>
-              <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img class="profile" src="{% static 'images/pic.png' %}" />
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-                <a class="dropdown-item" href="{% url 'user_management_view' %}">Staff Management</a>
-                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-              </div>
-            </li>
-            <li class="menu-btn" onclick="showSideBar()">
-                <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#000000">
-                        <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-                    </svg>
-                </a>
-                
-            </li>
+  <nav>
+    <ul class="sidebar">
+      <li onclick="hideSideBar()"><a href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#000000">
+            <path
+              d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+          </svg></a></li>
+      <li><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
+      <li><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
+      
+      {% if request.user.is_owner %}
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li><a href="{% url 'history' %}">History</a></li>
+      
+      {% endif %}
+    </ul>
 
-            
-            
-        </ul>
-    </nav>
+    <ul>
+      <li><img class="logo" src="{% static 'images/LOGO.png' %}" /></li>
+      <li class="hideNavbar"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
+      <li class="hideNavbar"><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
+      {% if request.user.is_owner %}
+        <li class="hideNavbar"><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li class="hideNavbar"><a href="{% url 'history' %}">History</a></li>
 
-    <div id="notificationPopup" style="display:none; position: fixed; bottom: 20px; right: 20px; background: #fff; border: 1px solid #ccc; padding: 20px; width: 300px; z-index: 1000;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h4 style="margin: 0;">Notifications</h4>
-            <img src="{% static 'img/close.svg' %}" onclick="toggleNotificationPopup()" style="cursor: pointer; width: 20px; height: 20px;">
-        </div>
-        <ul id="notificationList" style="max-height: 200px; overflow-y: auto; padding: 0; list-style-type: none;">
+      {% endif %}
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="ni ni-bell-55">
+            <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#">
+              <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
+            </svg>
+          </i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
+          <div class="px-3 py-3 d-flex justify-content-between align-items-center">
+            <h6 class="text-sm text-muted m-0">
+              You have <strong class="text-primary">{{ notifications|length }}</strong> notifications.
+            </h6>
+            <button class="btn-close" aria-label="Close" onclick="closeDropdown(this)"></button>
+          </div>
+          <div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
             {% for notification in notifications %}
-                <li style="display: flex; align-items: center; margin-bottom: 10px;">
+              <a href="#!" class="list-group-item list-group-item-action">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <!-- Avatar -->
                     <img src="{% static notification.icon %}" style="width: 20px; height: 20px; margin-right: 10px;">
-                    <span style="flex-grow: 1;">{{ notification.title }} - {{ notification.message }} <br> <small style="color: gray;">{{ notification.created_at|date:"Y-m-d H:i:s" }}</small></span>
-                </li>
+                  </div>
+                  <div class="col ml--2">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <h4 class="mb-0 text-sm">{{ notification.title }}</h4>
+                      </div>
+                      <div class="text-right text-muted">
+                        <small>{{ notification.time }}</small>
+                      </div>
+                    </div>
+                    <p class="text-sm mb-0">{{ notification.message }}</p>
+                  </div>
+                </div>
+              </a>
             {% empty %}
-                <li>No new notifications</li>
+              <div class="text-center p-3">
+                <p class="text-sm text-muted mb-0">No new notifications.</p>
+              </div>
             {% endfor %}
-        </ul>
-    </div>
+          </div>
+          <!-- View all -->
+          <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+        </div>
+      </li>
 
-    <div class="container2">
-        {% block content %} {% endblock %}
-    </div>
+      <li class="nav-item dropdown">
+        <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div class="media align-items-center">
+            <span class="avatar avatar-sm rounded-circle">
+              <img alt="Image placeholder" src="{% static 'images/pic.png' %}">
+            </span>
+            <div class="media-body ml-2 d-none d-lg-block">
+              <span class="mb-0 text-sm font-weight-bold">
+                {{ request.user.username }}
+              </span>
+            </div>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-header noti-title">
+            <h6 class="text-overflow m-0">Hello!</h6>
+          </div>
+          <a href="{% url 'profile_view' %}" class="dropdown-item">
+            <i class="ni ni-single-02"></i>
+            <span>My profile</span>
+          </a>
+          {% if request.user.is_owner %}
+          <a href="{% url 'user_management_view' %}" class="dropdown-item">
+            <i class="ni ni-single-02"></i>
+            <span>Management</span>
+          </a>
+          {% endif %}
+          <div class="dropdown-divider"></div>
+          <a href="\" class="dropdown-item">
+            <i class="ni ni-user-run text-red"></i>
+            <span>Logout</span>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </nav>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  
 
-    <script type="text/javascript">
-        function showSideBar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.style.display = 'flex';
-        }
-
-        function hideSideBar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.style.display = 'none';
-        }
-
-        function toggleNotificationPopup() {
+  <div class="container2">{% block content %} {% endblock %}</div>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  
+  <script type="text/javascript">
+    function showSideBar(){
+      const sidebar  = document.querySelector('.sidebar')
+      sidebar.style.display = 'flex'
+    }
+    function hideSideBar(){
+      const sidebar  = document.querySelector('.sidebar')
+      sidebar.style.display = 'none'
+    } 
+    function toggleNotificationPopup() {
             var popup = document.getElementById("notificationPopup");
             if (popup.style.display === "none" || popup.style.display === "") {
                 popup.style.display = "block";
-                fetchNotifications();
+                fetchNotifications();  // Fetch notifications when opening
             } else {
                 popup.style.display = "none";
             }
         }
-
+  
         function fetchNotifications() {
-            fetch('/get-notifications/')
-                .then(response => response.json())
-                .then(data => {
-                    var notificationList = document.getElementById('notificationList');
-                    notificationList.innerHTML = '';
-
-                    const iconMapping = {
-                        'out-of-stock': 'img/out.png',
-                        'low-stock': 'img/warning.svg',
-                        'new-stock': 'img/new.png',
-                        'general': 'img/general.png'
-                    };
-
-                    data.forEach(function(notification) {
-                        var li = document.createElement('li');
-
-                        var icon = document.createElement('img');
-                        icon.src = iconMapping[notification.notification_type] || 'img/default.png';
-                        icon.alt = notification.notification_type;
-                        icon.style.width = '20px';
-                        icon.style.height = '20px';
-                        icon.style.marginRight = '10px';
-
-                        li.appendChild(icon);
-                        li.appendChild(document.createTextNode(notification.title + " - " + notification.message));
-
-                        notificationList.appendChild(li);
-                    });
-
-                    if (data.length === 0) {
-                        notificationList.innerHTML = '<li>No new notifications</li>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching notifications:', error);
-                });
+          fetch('/get-notifications/')  // Ensure this URL matches your endpoint
+              .then(response => response.json())
+              .then(data => {
+                  var notificationList = document.getElementById('notificationList');
+                  notificationList.innerHTML = '';  // Clear old notifications
+  
+                  // Icon mapping based on notification type
+                  const iconMapping = {
+                      'out-of-stock': 'img/out.png',
+                      'low-stock': 'img/warning.svg',
+                      // Add more mappings as needed
+                      'new-stock': 'img/new.png',
+                      'general': 'img/general.png'
+                  };
+  
+                  data.forEach(function(notification) {
+                      var li = document.createElement('li');
+  
+                      // Create an image element for the icon
+                      var icon = document.createElement('img');
+                      icon.src = iconMapping[notification.notification_type] || 'img/default.png'; // Fallback to a default icon if type not found
+                      icon.alt = notification.notification_type; // Set alt text for accessibility
+                      icon.style.width = '20px'; // Set width of the icon
+                      icon.style.height = '20px'; // Set height of the icon
+                      icon.style.marginRight = '10px'; // Add some space between the icon and text
+  
+                      // Append the icon and the text to the list item
+                      li.appendChild(icon);
+                      li.appendChild(document.createTextNode(notification.title + " - " + notification.message));
+                      
+                      notificationList.appendChild(li);
+                  });
+  
+                  // If no notifications, show a default message
+                  if (data.length === 0) {
+                      notificationList.innerHTML = '<li>No new notifications</li>';
+                  }
+              })
+              .catch(error => {
+                  console.error('Error fetching notifications:', error);
+              });
         }
-
+        // Periodically check for new notifications every 30 seconds
         setInterval(fetchNotifications, 30000);
-    </script>
+  </script>
 </body>
 
 </html>
+
