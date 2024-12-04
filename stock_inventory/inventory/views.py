@@ -70,7 +70,6 @@ def inventory(request):
     })
 
 
-
 def history(request):
     return render(request, 'history.html')
 

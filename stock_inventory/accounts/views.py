@@ -51,13 +51,11 @@ def login_view(request):
 def dashboard_view(request):
     return render(request, 'dashboard/dashboard.html')
 
-
 def redirect_to_login(request):
     if request.user.is_authenticated:
         return redirect('login')  # Redirect to dashboard if logged in
     else:
         return redirect('login')  # Otherwise, redirect to login page
-    
 
 def get_user_role(user):
     try:

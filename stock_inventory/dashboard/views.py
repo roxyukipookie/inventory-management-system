@@ -37,17 +37,25 @@ def dashboard_view(request):
     product_names = [product.name for product in products]
     remaining_quantities = [product.quantity for product in products]
     sold_quantities = [product.total_sold_quantity for product in products]  # Use cumulative sold quantity
+    sales_by_category = (Product.objects.values("category__name").annotate(total_sales=Sum("sold_quantity")).filter(category__isnull=False).order_by("-total_sales"))
+    category_names = [item["category__name"] for item in sales_by_category]
+    category_sales = [item["total_sales"] for item in sales_by_category]
 
     # Dashboard statistics
+    all_products = Product.objects.all()
     total_products = products.count()  # Count products owned by the owner
     total_stock = products.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
     low_stock_items = products.filter(quantity__lt=F('alert_threshold')).count()
     out_of_stock_items = products.filter(quantity=0).count()
     top_products_sold = products.order_by('-total_sold_quantity')[:5]  # Top products by cumulative sales
     recently_added_products = products.order_by('-created_at')[:5]
+    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')
+
+    print(category_names, category_sales)
 
     # Context for rendering
     context = {
+        'all_products': all_products,
         'total_products': total_products,
         'total_stock': total_stock,
         'low_stock_items': low_stock_items,
@@ -58,6 +66,8 @@ def dashboard_view(request):
         'remaining_quantities': remaining_quantities,
         'sold_quantities': sold_quantities,
         'user_role': user_role,
+        "category_names": json.dumps(category_names),  
+        "category_sales": json.dumps(category_sales),
     }
     return render(request, 'dashboard.html', context)
 
@@ -217,7 +227,6 @@ def delete_user_view(request):
             except User.DoesNotExist:
                 # Skip users that do not exist
                 continue
-
         return JsonResponse({'success': True, 'deleted_users': deleted_users})
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)

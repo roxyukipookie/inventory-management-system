@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from dashboard.models import Product, Category
 from accounts.models import UserProfile
+from .models import SalesTerminal
+from django.http import JsonResponse
 from .forms import UpdateSalesForm
 import json
 

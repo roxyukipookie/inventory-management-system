@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
         if self.role == 'Owner':
             self.owner = None  # Clear the owner field for Owner users
         super().save(*args, **kwargs)
-    
+
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Use AUTH_USER_MODEL here
     bio = models.TextField(blank=True)
