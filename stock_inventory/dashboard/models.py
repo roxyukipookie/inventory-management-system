@@ -117,22 +117,3 @@ class Notification(models.Model):
     def __str__(self):
         return self.title
 
-class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-
-    def __str__(self):
-        return self.user.username
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_profile(sender, instance, **kwargs):
-    try:
-        instance.profile.save()
-    except Profile.DoesNotExist:
-        # Create profile if missing
-        Profile.objects.create(user=instance)
