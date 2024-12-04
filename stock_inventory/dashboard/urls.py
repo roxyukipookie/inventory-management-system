@@ -9,6 +9,4 @@ urlpatterns = [
     path('user-management/', views.user_management_view, name='user_management_view'),
     path('add-user/', views.add_user, name='add_user'),
     path('delete-user/', views.delete_user_view, name='delete_user_view'),
-    #path('reset-password/', views.reset_password_view, name='reset_password'),
-    path('edit-role/', views.edit_role_view, name='edit_role_view'),
 ]

@@ -16,7 +16,7 @@
     <div class="main-content-wrapper">
         <div class="tabs-container">
             <div class="tabs">
-                <a href="{% url 'role_management_view' %}" class="tab">Role Management</a>
+   
                 <a href="{% url 'user_management_view' %}" class="tab active">User Management</a>
             </div>
 
@@ -41,10 +41,9 @@
                         <table id="user_table">
                             <thead>
                                 <tr>
-                                    <!--<th scope="col" class="action-checkbox-column">
-                                        <input type="checkbox" class="user-checkbox" name="_selected_action" value="{{ user.id }}" onclick="updateDeleteButtonState()">
-                                    </th>-->
+                                    
                                     <th scope="col" class="column-avatar">Profile</th>
+                                    <th scope="col" class="column-username">Username</th>
                                     <th scope="col" class="column-name">Name</th>
                                     <th scope="col" class="column-status">Role</th>
                                     <th scope="col" class="column-actions">Actions</th>
@@ -53,13 +52,13 @@
                             <tbody>
                                 {% for user in users %}
                                 <tr class="user-row">
-                                    <!--<td class="action-checkbox">
-                                        <input type="checkbox" name="_selected_action" value="{{ user.id }}" class="user-checkbox">
-                                    </td>-->
+                                    
                                     
                                     <td class="field-avatar">
                                         <img src="{% static 'img/user.png' %}" alt="User Profile" class="user-avatar" style="width: 40px; height: 40px;">
                                     </td>
+
+                                    <td>{{ user.username }}</td>
                                     
                                     <td class="field-name">
                                         <span class="user-name">{{ user.first_name|default:"No " }} {{ user.last_name|default:"Name" }}</span><br>
@@ -68,12 +67,12 @@
                                     
                                     <td class="field-status">
                                         <span id="roleText-{{ user.id }}">
-                                            {% if user.is_superuser %}
-                                                Owner
-                                            {% elif user.is_staff %}
+                                            {% if user.profile.role == 'staff' %}
                                                 Staff
+                                            {% elif user.profile.role == 'owner' %}
+                                                Owner
                                             {% else %}
-                                                N/A
+                                                Staff
                                             {% endif %}
                                         </span>
                                         <select id="roleDropdown-{{ user.id }}" style="display: none;" onchange="updateRoleText({{ user.id }})">
@@ -82,14 +81,10 @@
                                             <option value="na" {% if user.profile.role == 'n/a' %}selected{% endif %}>N/A</option>
                                         </select>
                                     </td>
+
                                     
                                     <td class="field-actions">
-                                        <a href="#" class="action-edit-role" onclick="enableEditRole({{ user.id }})">
-                                            <img src="{% static 'img/edit.png' %}" alt="Edit Role" class="action-icon"> Edit Role
-                                        </a>
-                                        <button id="checkButton-{{ user.id }}" style="display: none;" onclick="saveRole({{ user.id }})">✔</button>
-                                        <button id="cancelButton-{{ user.id }}" style="display: none;" onclick="cancelEdit({{ user.id }})">✖</button>
-
+         
                                         <a href="#" class="action-delete" onclick="openDeleteModal({{ user.id }}, '{{ user.first_name }} {{ user.last_name }}')">
                                             <img src="{% static 'img/delete.png' %}" alt="Delete" class="action-icon"> Delete
                                         </a>
@@ -108,27 +103,16 @@
         </div>
     </div>
 
-    <!-- Profile Edit Modal -->
-    <div id="profileEditModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; z-index: 1000; width: 300px;">
-        <h2>Edit Profile</h2>
-        <label for="profileImage">Upload Profile Image:</label>
-        <input type="file" id="profileImage" accept="image/*" onchange="previewImage(event)">
-        <img id="profileImagePreview" src="" alt="Profile Preview" style="width: 40px; height: 40px; display: block; margin-top: 10px;"><br>
-
-        <label for="roleSelect">Role:</label>
-        <select id="roleSelect">
-            <option value="owner">Owner</option>
-            <option value="staff">Staff</option>
-        </select><br><br>
-
-        <button onclick="saveProfileChanges()">✓</button>
-        <button onclick="cancelProfileEdit()">X</button>
-    </div>
-
-    <!-- Add New User Modal -->
+    <!-- Add Staff Modal -->
     <div id="addUserModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 5px; padding: 20px; width: 300px; z-index: 1000;">
-        <h3>Add New User</h3>
+        <h3>Add New Staff</h3>
         <form id="addUserForm">
+            <label for="profile_picture">Profile Picture:</label>
+            <input type="file" name="profile_picture">
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName" name="first_name" required><br><br>
 
@@ -141,11 +125,13 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
 
+        
+
             <label for="role">Role:</label>
             <select id="role" name="role">
                 <option value="na">N/A</option>
                 <option value="staff">Staff</option>
-                <option value="owner">Owner</option>
+                <!--<option value="owner">Owner</option>-->
             </select><br><br>
 
             <button type="button" onclick="submitAddUserForm()">Submit</button>
@@ -184,7 +170,7 @@
             });
         });
 
-        // Add User Modal
+        // Add Staff Modal
         function openAddUserModal() {
             document.getElementById("addUserModal").style.display = "block";
             document.getElementById("dimOverlay").style.display = "block";
@@ -239,6 +225,7 @@
 
                     // Reset the form
                     document.getElementById("addUserForm").reset();
+                    
                 } else {
                     alert("Error adding user: " + data.message);
                 }
@@ -256,134 +243,51 @@
 
         // Delete User Modal
         let usersToDelete = [];
-        const loggedInUserId = {{ request.user.id }};
 
         function openDeleteModal(userId = null, userName = '') {
-            usersToDelete = [];
-
             if (userId) {
-                const checkbox = document.querySelector(`input[name="_selected_action"][value="${userId}"]`);
-                if (checkbox && (userId !== loggedInUserId)) {
-                    usersToDelete.push(userId);
-                }
-            } else {
-                document.querySelectorAll(".user-checkbox:checked").forEach(checkbox => {
-                    const row = checkbox.closest("tr");
-                    const roleCell = row.querySelector(".field-status").innerText.trim();
-                    const userId = checkbox.value;
-                    if (userId !== loggedInUserId && roleCell !== 'Owner') {
-                        usersToDelete.push(userId);
-                    }
-                });
-            }
+                usersToDelete = [userId];
 
-            if (usersToDelete.length > 0) {
-                const deleteMessage = usersToDelete.length === 1 ? 
-                    `Are you sure you want to delete ${userName}?` : 
-                    `Are you sure you want to delete ${usersToDelete.length} users?`;
-                
+                const deleteMessage = `Are you sure you want to delete ${userName}?`;
                 document.getElementById("deleteMessage").innerText = deleteMessage;
                 document.getElementById("deleteModal").style.display = "block";
                 document.getElementById("dimOverlay").style.display = "block";
-            } else {
-                alert("Cannot delete logged-in user or users with 'Owner' role.");
             }
         }
 
         function confirmDelete() {
-            fetch("{% url 'delete_user_view' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ user_ids: usersToDelete })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    usersToDelete.forEach(userId => {
-                        const row = document.querySelector(`input[name="_selected_action"][value="${userId}"]`).closest("tr");
-                        if (row) {
-                            row.remove();
-                        }
-                    });
-                    closeDeleteModal();
-                } else {
-                    alert("Error deleting users: " + data.message);
-                }
-            })
-            .catch(error => console.error("Error:", error));
+            if (usersToDelete.length > 0) {
+                fetch("{% url 'delete_user_view' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ user_ids: usersToDelete }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        usersToDelete.forEach(userId => {
+                            const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                            if (row) {
+                                row.remove();
+                            }
+                        });
+                        closeDeleteModal();
+                        window.location.reload();
+                    } else {
+                        alert("Error deleting users: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            }
         }
 
         function closeDeleteModal() {
             document.getElementById("deleteModal").style.display = "none";
             document.getElementById("dimOverlay").style.display = "none";
-            usersToDelete = [];  // Reset user selection
-        }
-
-        // Edit Role Functions
-        function enableEditRole(userId) {
-            document.getElementById("roleText-" + userId).style.display = "none";
-            document.getElementById("roleDropdown-" + userId).style.display = "inline";
-            document.getElementById("checkButton-" + userId).style.display = "inline";
-            document.getElementById("cancelButton-" + userId).style.display = "inline";
-        }
-
-        function updateRoleText(userId) {
-            const dropdown = document.getElementById("roleDropdown-" + userId);
-            const selectedOption = dropdown.options[dropdown.selectedIndex].value;
-            const roleText = document.getElementById("roleText-" + userId);
-
-            if (selectedOption === 'owner') {
-                roleText.textContent = "Owner";
-            } else if (selectedOption === 'staff') {
-                roleText.textContent = "Staff";
-            } else {
-                roleText.textContent = "N/A";
-            }
-        }
-
-        function cancelEdit(userId) {
-            document.getElementById("roleText-" + userId).style.display = "inline";
-            document.getElementById("roleDropdown-" + userId).style.display = "none";
-            document.getElementById("checkButton-" + userId).style.display = "none";
-            document.getElementById("cancelButton-" + userId).style.display = "none";
-        }
-
-        /*function saveRole(userId) {
-            const newRole = document.getElementById(`roleDropdown-${userId}`).value;
-
-            fetch("{% url 'edit_role_view' %}", { // Ensure this URL is correct
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    role: newRole  // Sending the role instead of is_superuser/is_staff
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update role text
-                    const roleText = data.role.charAt(0).toUpperCase() + data.role.slice(1);
-                    document.getElementById(`roleText-${userId}`).innerText = roleText;
-                    alert("Role updated successfully.");
-                } else {
-                    alert("Error updating role: " + data.message);
-                }
-                cancelEdit(userId);
-                location.reload();  // Force refresh to see updated role
-            })
-            .catch(error => console.error("Error:", error));
-        }*/
-        function saveRole(userId) {
-            // Perform save role logic (e.g., send request to save updated role)
-            console.log("Role Saved!");
-            cancelEdit(userId);
+            usersToDelete = [];
         }
     </script>
 </body>

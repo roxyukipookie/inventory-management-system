@@ -33,82 +33,92 @@
 <body>
   <nav>
     <ul class="sidebar">
-      <li onclick=hideSideBar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26px"
-            viewBox="0 -960 960 960" width="26px" fill="#000000">
+      <li onclick="hideSideBar()"><a href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#000000">
             <path
               d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
           </svg></a></li>
       <li><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
       <li><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
-      <li><a href="{% url 'inventory' %}">Inventory</a></li>
-      <li><a href="{% url 'history' %}">History</a></li>
+      
+      {% if request.user.is_owner %}
+        <li><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li><a href="{% url 'history' %}">History</a></li>
+      
+      {% endif %}
     </ul>
+
     <ul>
       <li><img class="logo" src="{% static 'images/LOGO.png' %}" /></li>
       <li class="hideNavbar"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
       <li class="hideNavbar"><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
-      <li class="hideNavbar"><a href="{% url 'inventory' %}">Inventory</a></li>
-      <li class="hideNavbar"><a href="{% url 'history' %}">History</a></li>
+      {% if request.user.is_owner %}
+        <li class="hideNavbar"><a href="{% url 'inventory' %}">Inventory</a></li>
+        <li class="hideNavbar"><a href="{% url 'history' %}">History</a></li>
+
+      {% endif %}
+      
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="ni ni-bell-55">
-                <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#">
-                    <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
-                </svg>
-            </i>
+          <i class="ni ni-bell-55">
+            <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#">
+              <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
+            </svg>
+          </i>
         </a>
         <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
-            <div class="px-3 py-3 d-flex justify-content-between align-items-center">
-                <h6 class="text-sm text-muted m-0">
-                    You have <strong class="text-primary">{{ notifications|length }}</strong> notifications.
-                </h6>
-                <button class="btn-close" aria-label="Close" onclick="closeDropdown(this)"></button>
-            </div>
-            <div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
-                {% for notification in notifications %}
-                <a href="#!" class="list-group-item list-group-item-action">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <!-- Avatar -->
-                            <img src="{% static notification.icon %}" style="width: 20px; height: 20px; margin-right: 10px;">
-                        </div>
-                        <div class="col ml--2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h4 class="mb-0 text-sm">{{ notification.title }}</h4>
-                                </div>
-                                <div class="text-right text-muted">
-                                    <small>{{ notification.time }}</small>
-                                </div>
-                            </div>
-                            <p class="text-sm mb-0">{{ notification.message }}</p>
-                        </div>
+          <div class="px-3 py-3 d-flex justify-content-between align-items-center">
+            <h6 class="text-sm text-muted m-0">
+              You have <strong class="text-primary">{{ notifications|length }}</strong> notifications.
+            </h6>
+            <button class="btn-close" aria-label="Close" onclick="closeDropdown(this)"></button>
+          </div>
+          <div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
+            {% for notification in notifications %}
+              <a href="#!" class="list-group-item list-group-item-action">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <!-- Avatar -->
+                    <img src="{% static notification.icon %}" style="width: 20px; height: 20px; margin-right: 10px;">
+                  </div>
+                  <div class="col ml--2">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <h4 class="mb-0 text-sm">{{ notification.title }}</h4>
+                      </div>
+                      <div class="text-right text-muted">
+                        <small>{{ notification.time }}</small>
+                      </div>
                     </div>
-                </a>
-                {% empty %}
-                <div class="text-center p-3">
-                    <p class="text-sm text-muted mb-0">No new notifications.</p>
+                    <p class="text-sm mb-0">{{ notification.message }}</p>
+                  </div>
                 </div>
-                {% endfor %}
-            </div>
-            <!-- View all -->
-            <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+              </a>
+            {% empty %}
+              <div class="text-center p-3">
+                <p class="text-sm text-muted mb-0">No new notifications.</p>
+              </div>
+            {% endfor %}
+          </div>
+          <!-- View all -->
+          <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
         </div>
       </li>
-      <li class="nav-item dropdown"> <!--greyish square caused by inventorystyle dropdown-->
+
+      <li class="nav-item dropdown">
         <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
               <img alt="Image placeholder" src="{% static 'images/pic.png' %}">
             </span>
-            <div class="media-body  ml-2  d-none d-lg-block">
-              <span class="mb-0 text-sm  font-weight-bold">
+            <div class="media-body ml-2 d-none d-lg-block">
+              <span class="mb-0 text-sm font-weight-bold">
                 {{ request.user.username }}
               </span>
             </div>
           </div>
         </a>
-        <div class="dropdown-menu  dropdown-menu-right ">
+        <div class="dropdown-menu dropdown-menu-right">
           <div class="dropdown-header noti-title">
             <h6 class="text-overflow m-0">Hello!</h6>
           </div>
@@ -116,10 +126,12 @@
             <i class="ni ni-single-02"></i>
             <span>My profile</span>
           </a>
-          <a href="{% url 'role_management_view' %}" class="dropdown-item">
+          {% if request.user.is_owner %}
+          <a href="{% url 'user_management_view' %}" class="dropdown-item">
             <i class="ni ni-single-02"></i>
             <span>Management</span>
           </a>
+          {% endif %}
           <div class="dropdown-divider"></div>
           <a href="\" class="dropdown-item">
             <i class="ni ni-user-run text-red"></i>
@@ -133,7 +145,6 @@
           </svg></a></li>
     </ul>
   </nav>
-
   <div class="container2">{% block content %} {% endblock %}</div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

@@ -1,6 +1,8 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from dashboard.models import Product, Category
+from accounts.models import UserProfile
 from .models import SalesTerminal
 from django.http import JsonResponse
 from .forms import UpdateSalesForm
@@ -10,29 +12,48 @@ def sales(request):
     return render(request, 'sales.html')
 
 def sales_management(request):
-    print(Product.objects.all())
-    products = Product.objects.all()
-    print(products)
+    user = request.user
 
-    recently_added_products = Product.objects.order_by('-created_at')
+    # Get the owner of the logged-in staff, if applicable
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        owner = user  # If the user is not staff, they are the owner
+
+    # Filter products by owner
+    products = Product.objects.filter(owner=owner).order_by('-created_at')
 
     context = {
-        'recently_added_products' : recently_added_products
-
+        'recently_added_products': products,
     }
 
     return render(request, 'sales_management.html', context)
 
+
 def sales_terminal(request):
     query = request.GET.get('search', '')
     category_id = request.GET.get('category', None)
+    user = request.user
 
-    products = Product.objects.all()
-    categories = Category.objects.all()
+    # Get the owner of the logged-in staff, if applicable
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner
+    except UserProfile.DoesNotExist:
+        owner = user
 
+    # Filter products by the owner
+    products = Product.objects.filter(owner=owner)
+
+    # Filter categories associated with the owner's products
+    categories = Category.objects.filter(products__owner=owner).distinct()
+
+    # Apply search query filter if provided
     if query:
         products = products.filter(name__icontains=query)
 
+    # Apply category filter if provided
     if category_id:
         products = products.filter(category_id=category_id)
 
@@ -43,9 +64,19 @@ def sales_terminal(request):
         'selected_category': category_id,
     })
 
+
 def update_sales(request, product_id):
-    print("POST data received:", request.POST)
-    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+
+    # Get the owner of the logged-in staff, if applicable
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner
+    except UserProfile.DoesNotExist:
+        owner = user
+
+    # Ensure the product belongs to the owner
+    product = get_object_or_404(Product, id=product_id, owner=owner)
 
     if request.method == "POST":
         form = UpdateSalesForm(request.POST, instance=product)
@@ -55,16 +86,16 @@ def update_sales(request, product_id):
             if sold_quantity > product.quantity:
                 form.add_error('sold_quantity', 'Cannot sell more than available stock.')
             else:
-                product.quantity -= sold_quantity  
-                product.sold_quantity = sold_quantity  # Only for current transaction display
+                product.quantity -= sold_quantity
+                product.sold_quantity = sold_quantity  # For current transaction display
                 product.total_sold_quantity += sold_quantity  # Cumulative total
-                product.total_sales += sold_quantity * product.price  
+                product.total_sales += sold_quantity * product.price
 
-                product.save()  
-                print(f"Updated quantity: {product.quantity}, Total sales: {product.total_sales}")
-                return redirect('sales_management')  
+                product.save()
+                messages.success(request, "Sales updated successfully.")
+                return redirect('sales_management')
         else:
-            print(form.errors)  
+            messages.error(request, "Please correct the errors in the form.")
     else:
         form = UpdateSalesForm(instance=product)  # Pre-fill the form with product data
 
