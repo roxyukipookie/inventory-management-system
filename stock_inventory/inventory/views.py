@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from accounts.models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 def inventory(request):
     query = request.GET.get('search', '')

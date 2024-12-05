@@ -1,147 +1,131 @@
-from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from dashboard.models import Product, Category
-from accounts.models import UserProfile
 from .models import SalesTerminal
 from django.http import JsonResponse
-from .forms import UpdateSalesForm
+from django.views.decorators.csrf import csrf_protect
+from .forms import SalesTerminalForm
+from decimal import Decimal
 import json
 
-def sales(request):
-    return render(request, 'sales.html')
+# Sales_terminal View
+def sales_terminal(request):
+    products_in_terminal = request.session.get("sales_terminal", [])
+    categories = Category.objects.all()
+    selected_category = request.GET.get("category")
 
-def sales_management(request):
-    user = request.user
+    total_price = Decimal("0.00")
 
-    # Get the owner of the logged-in staff, if applicable
-    try:
-        user_profile = UserProfile.objects.get(user=user)
-        owner = user_profile.owner  # The owner linked to the staff
-    except UserProfile.DoesNotExist:
-        owner = user  # If the user is not staff, they are the owner
+    for product in products_in_terminal:
+        total_price += Decimal(product["price"] * product["quantity"])
 
-    # Filter products by owner
-    products = Product.objects.filter(owner=owner).order_by('-created_at')
+    if selected_category:
+        products = Product.objects.filter(category_id=selected_category)
+    else:
+        products = Product.objects.all()
 
     context = {
-        'recently_added_products': products,
+        "categories": categories,
+        "selected_category": selected_category,
+        "products": products,
+        "sales_products": products_in_terminal,
+        "total_price": total_price,
     }
+    return render(request, "sales_terminal.html", context)
 
-    return render(request, 'sales_management.html', context)
-
-
-def sales_terminal(request):
-    query = request.GET.get('search', '')
-    category_id = request.GET.get('category', None)
-    user = request.user
-
-    # Get the owner of the logged-in staff, if applicable
-    try:
-        user_profile = UserProfile.objects.get(user=user)
-        owner = user_profile.owner
-    except UserProfile.DoesNotExist:
-        owner = user
-
-    # Filter products by the owner
-    products = Product.objects.filter(owner=owner)
-
-    # Filter categories associated with the owner's products
-    categories = Category.objects.filter(products__owner=owner).distinct()
-
-    # Apply search query filter if provided
-    if query:
-        products = products.filter(name__icontains=query)
-
-    # Apply category filter if provided
-    if category_id:
-        products = products.filter(category_id=category_id)
-
-    return render(request, 'sales_terminal.html', {
-        'products': products,
-        'categories': categories,
-        'query': query,
-        'selected_category': category_id,
-    })
-
-
-def update_sales(request, product_id):
-    user = request.user
-
-    # Get the owner of the logged-in staff, if applicable
-    try:
-        user_profile = UserProfile.objects.get(user=user)
-        owner = user_profile.owner
-    except UserProfile.DoesNotExist:
-        owner = user
-
-    # Ensure the product belongs to the owner
-    product = get_object_or_404(Product, id=product_id, owner=owner)
-
+#Logic for product selection
+@csrf_protect
+def add_to_sales_terminal(request):
     if request.method == "POST":
-        form = UpdateSalesForm(request.POST, instance=product)
-        if form.is_valid():
-            sold_quantity = form.cleaned_data['sold_quantity']
+        # Extract quantity and product details
+        quantity = request.POST.get("quantity", "1")  # Default to "1" (string) to avoid NoneType error
 
-            if sold_quantity > product.quantity:
-                form.add_error('sold_quantity', 'Cannot sell more than available stock.')
-            else:
-                product.quantity -= sold_quantity
-                product.sold_quantity = sold_quantity  # For current transaction display
-                product.total_sold_quantity += sold_quantity  # Cumulative total
-                product.total_sales += sold_quantity * product.price
-
-                product.save()
-                messages.success(request, "Sales updated successfully.")
-                return redirect('sales_management')
+        # Validate that quantity is a positive integer
+        if not quantity.isdigit() or int(quantity) <= 0:
+            quantity = 1
         else:
-            messages.error(request, "Please correct the errors in the form.")
-    else:
-        form = UpdateSalesForm(instance=product)  # Pre-fill the form with product data
+            quantity = int(quantity)   
 
-    return render(request, 'update_sales.html', {'form': form, 'product': product})
+        barcode = request.POST.get("barcode")
+        # Fetch the product from the database using the barcode
+        product = Product.objects.get(barcode=barcode)         
 
-def update_quantities(request):
-    if request.method == "POST":
+        product_name = request.POST.get("product_name")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+
+        # Initialize sales terminal session if it doesn't exist
+        if "sales_terminal" not in request.session:
+            request.session["sales_terminal"] = []
+
+        sales_terminal = request.session["sales_terminal"]
+
+        # Convert price from Decimal to float
+        price = float(product.price)
+
+        # Check if the product already exists in the sales terminal
+        product_exists = False
+        for item in sales_terminal:
+            if item["barcode"] == product.barcode:  # Check by unique barcode
+                item["quantity"] += quantity
+                product_exists = True
+                break
+
+        # If the product doesn't exist, add it to the session
+        if not product_exists:
+            sales_terminal.append({
+                "name": product.name,
+                "barcode": product.barcode,
+                "description": product.description,
+                "price": price,
+                "quantity": quantity,
+            })
+
+        # Mark the session as modified and redirect
+        request.session.modified = True
+        return redirect("sales_terminal")
+
+    return redirect("sales_terminal")
+
+
+# CLear Btn
+def clear_sales_terminal(request):
+    # Remove sales terminal data from the session
+    if "sales_terminal" in request.session:
+        del request.session["sales_terminal"]
+    return redirect("sales_terminal")  # Redirect back to the sales terminal page
+
+# Total Btn
+def process_total(request):
+    # Ensure sales_terminal exists in session
+    sales_terminal = request.session.get("sales_terminal", [])
+    if not sales_terminal:
+        messages.error(request, "Sales terminal is empty. Cannot process total.")
+        return redirect("sales_terminal")
+
+    # Loop through sales_terminal and update database quantities
+    for item in sales_terminal:
         try:
-            data = json.loads(request.body)
-            products = data.get("products", [])
-            errors = []
+            # Find the product in the database by barcode
+            product = Product.objects.get(barcode=item["barcode"])
+            
+            # Check if enough quantity is available
+            if product.quantity >= item["quantity"]:
+                product.quantity -= item["quantity"]
+                product.save()
+            else:
+                messages.error(
+                    request,
+                    f"Not enough stock for {product.name}. Available: {product.quantity}, Required: {item['quantity']}"
+                )
+                return redirect("sales_terminal")
+        except Product.DoesNotExist:
+            messages.error(request, f"Product with barcode {item['barcode']} not found.")
+            return redirect("sales_terminal")
+    
+    # Clear sales terminal after processing
+    del request.session["sales_terminal"]
+    request.session.modified = True
 
-            for product_data in products:
-                barcode = product_data.get("barcode")
-                quantity = product_data.get("quantity")
-
-                if not barcode or not quantity:
-                    continue  # Skip invalid entries
-
-                # Fetch the product by barcode
-                product = Product.objects.filter(barcode=barcode).first()
-                if product:
-                    if product.quantity >= quantity:
-                        # Create a sale record
-                        total_price = product.price * quantity
-                        sale = SalesTerminal.objects.create(
-                            product=product,
-                            quantity_sold=quantity,
-                            total_price=total_price
-                        )
-
-                        # Deduct stock and update sold quantities
-                        product.sold_quantity += quantity
-                        product.total_sold_quantity += quantity
-                        product.quantity -= quantity
-                        product.save()
-                    else:
-                        errors.append(f"Insufficient stock for {product.name} (Available: {product.quantity}, Requested: {quantity})")
-                else:
-                    errors.append(f"Product with barcode {barcode} not found.")
-
-            if errors:
-                return JsonResponse({"success": False, "errors": errors})
-
-            return JsonResponse({"success": True})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
-
-    return JsonResponse({"success": False, "error": "Invalid request method"})
+    messages.success(request, "Sales terminal processed successfully!")
+    return redirect("sales_terminal")
