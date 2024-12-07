@@ -111,7 +111,6 @@ class Notification(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     is_read = models.BooleanField(default=False)
     notification_type = models.CharField(max_length=50, default='general')  # e.g., 'low-stock', 'out-of-stock', 'new-stock'
-
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)  # Added owner
 
     def __str__(self):

@@ -44,7 +44,7 @@ def inventory(request):
         products = products.filter(category_id=category_id)
 
     # Product form handling
-    form = ProductForm(request.POST or None, request.FILES or None)
+    form = ProductForm(request.POST or None, request.FILES or None, owner=owner)
     if request.method == 'POST':
         if form.is_valid():
             # Assign the logged-in user as the owner of the new product
