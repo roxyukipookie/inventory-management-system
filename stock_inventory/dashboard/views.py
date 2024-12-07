@@ -39,7 +39,7 @@ def dashboard_view(request):
     product_names = [product.name for product in products]
     remaining_quantities = [product.quantity for product in products]
     sold_quantities = [product.total_sold_quantity for product in products]  # Use cumulative sold quantity
-    sales_by_category = (Product.objects.filter(owner=owner, category__isnull=False).values("category__name").annotate(total_sales=Sum("sold_quantity")).order_by("-total_sales"))   
+    sales_by_category = (Product.objects.filter(owner=owner, category__isnull=False).values("category__name").annotate(total_sales=Sum("total_sold_quantity")).order_by("-total_sales"))   
     category_names = [item["category__name"] for item in sales_by_category]
     category_sales = [item["total_sales"] for item in sales_by_category]
 

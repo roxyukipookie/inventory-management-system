@@ -68,6 +68,7 @@ class Product(models.Model):
                 message=f"A new product '{self.name}' has been added to the inventory.",
                 notification_type='new-product',
                 icon='img/shipped.png',  
+                related_product=self,
                 owner=self.owner  # Linking notification to the owner
             )
         else:
@@ -78,6 +79,7 @@ class Product(models.Model):
                     message=f"The stock of '{self.name}' has been replenished. Now {self.quantity} in stock.",
                     notification_type='stock-replenished',
                     icon='img/reload.png',
+                    related_product=self,
                     owner=self.owner  # Linking notification to the owner
                 )
 
@@ -89,6 +91,7 @@ class Product(models.Model):
                 message=f"The product '{self.name}' has run out of stock.",
                 notification_type='out-of-stock',
                 icon='img/out.png',
+                related_product=self,
                 owner=self.owner  # Linking notification to the owner
             )
         
@@ -100,6 +103,7 @@ class Product(models.Model):
                 message=f"The stock level of '{self.name}' is below the threshold ({self.quantity} remaining).",
                 notification_type='low-stock',
                 icon='img/warning.svg',
+                related_product=self,
                 owner=self.owner  # Linking notification to the owner
             )
 

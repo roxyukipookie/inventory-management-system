@@ -426,7 +426,7 @@
                 <tr>
                   <th scope="row">{{ forloop.counter }}{% if forloop.counter == 1 %}st{% elif forloop.counter == 2 %}nd{% elif forloop.counter == 3 %}rd{% else %}th{% endif %}</th>
                   <td scope="row">{{ product.name }}</td>
-                  <td scope="row">{{ product.sold_quantity }}</td>
+                  <td scope="row">{{ product.total_sold_quantity }}</td>
                 </tr>
                 {% endfor %}
               </tbody>

@@ -5,13 +5,25 @@ from .models import SalesTerminal
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from .forms import SalesTerminalForm
+from accounts.models import UserProfile
 from decimal import Decimal
 import json
 
 # Sales_terminal View
 def sales_terminal(request):
+    # Get the logged-in user
+    user = request.user
+
+    # Get the owner of the logged-in staff, if applicable
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        # If the user is not staff or no owner exists, assume the user is the owner
+        owner = user
+
     products_in_terminal = request.session.get("sales_terminal", [])
-    categories = Category.objects.all()
+    categories = Category.objects.filter(owner=owner)
     selected_category = request.GET.get("category")
 
     total_price = Decimal("0.00")
@@ -20,9 +32,9 @@ def sales_terminal(request):
         total_price += Decimal(product["price"] * product["quantity"])
 
     if selected_category:
-        products = Product.objects.filter(category_id=selected_category)
+        products = Product.objects.filter(category_id=selected_category, owner=owner)
     else:
-        products = Product.objects.all()
+        products = Product.objects.filter(owner=owner)
 
     context = {
         "categories": categories,
@@ -112,6 +124,7 @@ def process_total(request):
             # Check if enough quantity is available
             if product.quantity >= item["quantity"]:
                 product.quantity -= item["quantity"]
+                product.total_sold_quantity += item["quantity"]
                 product.save()
             else:
                 messages.error(
