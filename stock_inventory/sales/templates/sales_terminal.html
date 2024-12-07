@@ -6,8 +6,7 @@
 
 {% block content %}
 <div class="sales_container">
-
-    <!---Sales Terminal-->
+    <!-- Sales Terminal -->
     <div class="products_table">
         <h2>SALES TERMINAL</h2>
 
@@ -22,41 +21,50 @@
                 </tr>
             </thead>
             <tbody id="salesTableBody">
+                {% if sales_products %}
+                {% for product in sales_products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.quantity }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
                 <tr id="noProductRow">
-                    <td colspan="4">No products selected</td>
+                    <td colspan="5">No products selected</td>
                 </tr>
-                <!-- Example of dynamically added rows -->
-                <tr data-name="Example Product Name">
-                    <td>Example Product Name</td>
-                    <td>Example Description</td>
-                    <td>$10.00</td>
-                    <td><input type="number" class="product-quantity" value="1" min="1"></td>
-                </tr>
+                {% endif %}
             </tbody>
-            
         </table>
 
-        <div id="noProductMessage" class="no-products-selected">
-            No products selected
+        <div class="total-container">
+            <h3>Total Price: {{ total_price }}</h3>
         </div>
 
         <footer class="footer-btns">
-            <button class="fbtn" id="cncl" onclick="cancelSelection()">Cancel</button>
-            <button class="fbtn" id="sbttl" onclick="calculateSubtotal()">Subtotal</button>
-            <button class="fbtn" id="totl" type="button">Total</button>
-            <p id="subtotalDisplay"></p>
+            <button class="fbtn" id="cncl" type="button" onclick="location.href='{% url 'clear_sales_terminal' %}'">Cancel</button>
+            <button class="fbtn" id="totl" type="button" onclick="location.href=' {% url 'process_total' %} '">Total</button>
         </footer>
-
-        
     </div>
 
     <!-- Products Tab -->
     <div class="products-tab">
+        <div class="quantity-input">
+            <label for="quantityInput"><strong>Enter Quantity:</strong></label>
+            <form method="post" action="{% url 'add_to_sales_terminal' %}">
+                {% csrf_token %}
+                <input type="number" id="quantityInput" name="quantity" placeholder="Enter quantity" min="1" required>
+                <input type="hidden" id="productSelected" name="barcode">
+            </form>
+        </div>
+
         <div class="category_tab">
             <section class="filter-option">
                 <h2>PRODUCTS</h2>
                 <form method="get" action="{% url 'sales_terminal' %}">
-                    <select class="form_category" name="category" onchange="this.form.submit()">
+                    <select name="category" onchange="this.form.submit()">
                         <option value="">All Categories</option>
                         {% for category in categories %}
                         <option value="{{ category.id }}" {% if selected_category and selected_category|stringformat:"i" == category.id|stringformat:"i" %}selected{% endif %}>
@@ -68,33 +76,18 @@
             </section>
 
             <table class="product-table">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Barcode</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
                 <tbody>
                     {% for product in products %}
-                    <tr class="product-row" data-name="{{ product.name }}" data-barcode="{{ product.barcode }}" data-description="{{ product.description }}" data-price="{{ product.price }}">
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.barcode }}</td>
-                        <td>{{ product.description }}</td>
-                        <td>{{ product.price }}</td>
-                    </tr>
+                        <button type="button" class="product-button" onclick="selectProduct('{{ product.barcode}}')">
+                            {{ product.name }}
+                        </button>
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
 
-        <!-- Quantity Input -->
-        <div class="quantity-input">
-            <p><strong>Select the number of quantity first:</strong></p>
-            <input type="number" id="quantityInput" placeholder="Enter quantity" min="1">
-            <button id="quantityButton">Reset</button>
         </div>
+        
     </div>
 </div>
+
 {% endblock %}

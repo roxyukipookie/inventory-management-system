@@ -1,4 +1,3 @@
-
 from django.db import models
 from dashboard.models import Product
 from django.utils import timezone
