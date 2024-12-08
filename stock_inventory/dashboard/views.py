@@ -74,30 +74,30 @@ def dashboard_view(request):
 
 def get_notifications(request):
     user = request.user
+
     try:
+        # If user is a staff, get their owner's notifications
         user_profile = UserProfile.objects.get(user=user)
         owner = user_profile.owner
     except UserProfile.DoesNotExist:
+        # If the user is an owner, show their notifications
         owner = user
 
-    print(f"Owner: {owner}")
-
-    # Filter notifications by the owner of the logged-in user
+    # Filter notifications where the 'owner' matches the current user's owner
     notifications = Notification.objects.filter(owner=owner, is_read=False).order_by('-created_at')[:5]
 
-    notifications_data = []
-    for notification in notifications:
-        notifications_data.append({
+    notifications_data = [
+        {
             'title': notification.title,
             'message': notification.message,
             'icon': notification.icon,
             'created_at': notification.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'notification_type': notification.notification_type
-        })
+        }
+        for notification in notifications
+    ]
 
-    return JsonResponse({
-        'notifications': notifications_data,
-    }, safe=False)
+    return JsonResponse({'notifications': notifications_data}, safe=False)
 
 
 

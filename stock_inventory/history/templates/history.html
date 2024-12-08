@@ -59,6 +59,8 @@
                         0
                     {% elif notification.notification_type == 'low-stock' %}
                         {{ notification.related_product.quantity }}
+                    {% elif notification.notification_type == 'stock-replenished' %}
+                      +{{ notification.inputted_quantity }}
                     {% else %}
                         +{{ notification.related_product.quantity }}
                     {% endif %}

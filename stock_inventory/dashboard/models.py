@@ -53,6 +53,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         is_new_product = self.pk is None
         old_quantity = 0
+        inputted_quantity = self.quantity 
 
         # Only apply replenishment logic when explicitly indicated
         replenishing = kwargs.pop('replenishing', False)
@@ -76,13 +77,15 @@ class Product(models.Model):
                 owner=self.owner
             )
         elif replenishing:
+            replenished_amount = inputted_quantity
             Notification.objects.create(
                 title="Stock Replenished",
                 message=f"The stock of '{self.name}' has been replenished. Now {self.quantity} in stock.",
                 notification_type='stock-replenished',
                 icon='img/reload.png',
                 related_product=self,
-                owner=self.owner
+                owner=self.owner,
+                inputted_quantity=replenished_amount
             )
 
         # Check for stock thresholds
@@ -106,8 +109,6 @@ class Product(models.Model):
             )
 
 
-
-
 class Notification(models.Model):
     title = models.CharField(max_length=255, default='notification')
     related_product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
@@ -115,8 +116,9 @@ class Notification(models.Model):
     icon = models.CharField(max_length=255, default='img/icon.png')  # URL or static path for the icon
     created_at = models.DateTimeField(default=timezone.now)
     is_read = models.BooleanField(default=False)
-    notification_type = models.CharField(max_length=50, default='general')  # e.g., 'low-stock', 'out-of-stock', 'new-stock'
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)  # Added owner
+    notification_type = models.CharField(max_length=50, default='general')  
+    inputted_quantity = models.PositiveIntegerField(default=0)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True) 
 
     def __str__(self):
         return self.title
