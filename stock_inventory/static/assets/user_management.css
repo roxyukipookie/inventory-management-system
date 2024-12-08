@@ -1,5 +1,37 @@
 
 /* USER MANAGEMENT HTML CSS */
+/* Apply uniform styling to all text and password input fields */
+input[type="text"], input[type="password"], input[type="email"], select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin: 0px;
+  box-sizing: border-box; /* Ensures padding doesn't affect the width */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Ensure the password field stays consistent in height when toggling visibility */
+.form-group {
+  position: relative;
+  margin-bottom: 15px; /* Space between input fields */
+}
+
+/* Adjust the toggle button for the password field */
+#togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 70%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  padding: 0; /* Removes any padding so it doesn't affect layout */
+}
+
+
 
 /* Scrollable Table Container */
 .table-container {
@@ -34,7 +66,7 @@
 
 .second-main-content {
   padding: 20px 40px;
-  background-color: #172b4d; 
+  background-color: #1976d2; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -99,28 +131,32 @@
 }
 
 .search-container {
+  position: relative;
   display: flex;
   align-items: center;
-  margin-left: auto;
   margin-right: 40px;
 }
 
 .search-input {
-  padding: 8px;
+  width: 200px;
+  padding: 8px 12px;
+  border-radius: 25px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 5px;
+  font-size: 14px;
 }
 
-.search-button {
-  background-color: transparent;
+.clear-button {
+  background: transparent;
   border: none;
   cursor: pointer;
+  position: absolute;
+  right: 10px;
+  font-size: 20px;
+  color: #ccc;
 }
 
-.search-button img {
-  width: 20px;
-  height: 20px;
+.clear-button:hover {
+  color: #000;
 }
 
 /* Users Header */
@@ -176,7 +212,7 @@
 
 /* Header Styling */
 thead th {
-  background-color: #1c345d;
+  background-color: #1976d2;
   color: #fff;
   font-weight: bold;
 }
@@ -202,10 +238,14 @@ thead th {
 }
 
 /* Name and Email Styling */
-.field-name .user-name {
+.field-name .username {
   font-size: 18px;
   font-weight: bold;
-  color: #1c345d;
+
+}
+.field-name .user-name {
+  font-size: 18px;
+  color: #6E6E6E;
 }
 
 .field-name .user-email {
@@ -241,10 +281,131 @@ thead th {
 }
 .field-actions a {
   text-decoration: none;
-  color: #6E6E6E;
+  color: red;
   font-size: 14px;
+  font-weight: bold;
 }
 
 .field-actions a:hover {
   text-decoration: underline;
+}
+
+
+/* General Styles for Modals */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 9999; /* On top of other elements */
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 20;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scrolling if needed */
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+}
+
+/* Shared styles for modal content */
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  margin: 5% auto; /* Center vertically and horizontally */
+  padding: 20px;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 20%;
+  overflow-y: auto; /* Enable scrolling if needed */
+  font-family: Arial, Helvetica, sans-serif;
+  transform: scale(0.8); /* Initial scale for animation */
+  opacity: 0; /* Initial opacity for animation */
+  transition: all 0.3s ease-in-out;
+  border: none;
+}
+
+/* Specific styles for Add Staff Modal */
+.addStaff-modal-content {
+  height: 80%;
+}
+
+.addStaff-modal-content.open {
+  transform: scale(1); /* Scale to normal size */
+  opacity: 1; /* Fully visible */
+}
+
+/* Specific styles for Delete Modal */
+.delete-modal-content {
+  margin-top: 300px;
+  max-height: 27%; /* Limit max height */
+}
+
+.delete-modal-content.open {
+  transform: scale(1); /* Scale to normal size */
+  opacity: 1; /* Fully visible */
+}
+
+/* Modal Title */
+.modal-content h2 {
+  color: #000;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 20px;
+  padding: 0;
+  border: none;
+}
+
+/* Close button */
+.modal-content .close {
+  color: #aaa;
+  font-size: 30px;
+  font-weight: bold;
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  cursor: pointer;
+  z-index: 10; /* Ensure it is above other modal content */
+}
+
+.modal-content .close:hover {
+  background-color: rgba(25, 118, 210, 0.2);
+  color: #1976d2;
+}
+
+/* Form field styles */
+.modal-content .form-actions {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  gap: 10px; /* Add spacing between buttons */
+}
+
+.modal-content .submit-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.modal-content .submit-button:hover {
+  background-color: rgba(50, 60, 71, 1);
+}
+
+/* Cancel button for delete modal */
+.modal-content .cancel-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.modal-content .cancel-button:hover {
+  background-color: #d32f2f;
 }
