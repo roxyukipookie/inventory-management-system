@@ -104,7 +104,9 @@ def edit_product(request, barcode):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
+            inputted_quantity = form.cleaned_data['quantity']
+            product.quantity = inputted_quantity  # Update the quantity
+            product.save(replenishing=True)  # Save with replenishing=True
             messages.success(request, 'Product updated successfully!')
             return redirect('inventory')
         else:
@@ -112,6 +114,5 @@ def edit_product(request, barcode):
             print(form.errors)
     else:
         form = ProductForm(instance=product)
-        
 
     return render(request, 'edit_product.html', {'form': form, 'product': product})
