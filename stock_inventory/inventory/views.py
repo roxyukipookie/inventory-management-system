@@ -75,12 +75,24 @@ def history(request):
     return render(request, 'history.html')
 
 def add_category(request):
+    # Get the logged-in user
+    user = request.user
+
+    # Determine the owner (either the logged-in user or staff's owner)
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        owner = user  # If no owner exists, assume the user is the owner
+
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.owner = owner  # Assign the logged-in owner
+            category.save()
             messages.success(request, 'Category added successfully!')
-            return redirect('inventory')  # Redirect to the add product page or any other page
+            return redirect('inventory')
         else:
             messages.error(request, 'There was an error adding the category. Please check the details.')
     else:
