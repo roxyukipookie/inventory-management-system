@@ -145,7 +145,7 @@ Useful examples of how a project can be used. Additional screenshots, code examp
 
 ## Resources
 The following are the resources of this application
-ERD [ERD Diagram](stock_inventory/static/images/erd.png)
+* [ERD Diagram](stock_inventory/static/images/erd.png)
 
 ### Top contributors:
 
