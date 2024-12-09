@@ -15,7 +15,7 @@
 <h3 align="center">Product Inventory Management System</h3>
 
   <p align="center">
-    The Inventory Management System is a Django-based web application designed to streamline the management of product inventories for businesses. It allows users to add, update, and monitor product details such as name, quantity, price, category, and manufacturing or expiration dates. The system tracks sales performance, calculates total sales, and manages stock levels with automated notifications for low stock or out-of-stock products. Additional features include the ability to export product data to Excel for analysis and reporting, a user-friendly interface, and a robust notification system to keep users informed about inventory changes in real-time. This solution is ideal for businesses seeking an efficient and reliable way to manage their inventory operations.
+    The Inventory Management System is a Django-based web application designed to streamline the management of product inventories for businesses. This solution is ideal for businesses seeking an efficient and reliable way to manage their inventory operations.
     <br />
     <a href="https://github.com/roxyukipookie/inventory-management-system"><strong>Explore the docs »</strong></a>
     <br />
@@ -36,6 +36,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#features">Features</a></li>
       </ul>
     </li>
     <li>
@@ -69,6 +70,17 @@ This project aims to address the challenges faced by small businesses in managin
 * [![HTML][HTML-shield]][HTML-url]
 * [![CSS][CSS-shield]][CSS-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Features
+
+1. **User Registration and Authentication:** Users can create accounts and log in securely.
+2. **Dashboard:** Users can view key metrics, such as total stock quantity, products running low on stock, and recent transactions
+3. **Product Management:** Users can add, update, and delete products, including details like name, description, quantity, and price.
+4. **Transaction History:** View the list of past transactions, including product sales and inventory adjustments.
+5. **Role-Based Access Control:** Different user roles with varying levels of access to features and data.
+6. **Notifications:** Receive alerts for low stock levels, new product arrivals, and more.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -157,7 +169,7 @@ https://lucid.app/lucidchart/b5c83653-cc57-4b7e-9603-799dd79cbe4c/edit?viewport_
 [issues-url]: https://github.com/roxyukipookie/inventory-management-system/issues
 [license-shield]: https://img.shields.io/github/license/roxyukipookie/inventory-management-system.svg?style=for-the-badge
 [license-url]: https://github.com/roxyukipookie/inventory-management-system/blob/master/LICENSE.txt
-[product-screenshot]: stock_inventory/static/images/screenshot.png
+[product-screenshot]: stock_inventory/static/images/screenshot2.png
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [Django-shield]: https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white
