@@ -52,7 +52,7 @@
     <ul>
       <li><img class="logo" src="{% static 'images/LOGO.png' %}" /></li>
       <li class="hideNavbar"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
-      <li class="hideNavbar"><a href="{% url 'new_sales_terminal' %}">Sales Terminal</a></li>
+      <li class="hideNavbar"><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
       {% if request.user.is_owner %}
         <li class="hideNavbar"><a href="{% url 'inventory' %}">Inventory</a></li>
         <li class="hideNavbar"><a href="{% url 'history' %}">History</a></li>

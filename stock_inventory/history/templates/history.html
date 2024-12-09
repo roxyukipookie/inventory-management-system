@@ -82,18 +82,14 @@
               </tr>
             </thead>
             <tbody>
+              {% for sale in sales_history %}
               <tr>
-                <td>Product A</td>
-                <td>5</td>
-                <td>$50</td>
-                <td>2024-06-14</td>
+                  <td>{{ sale.product.name }}</td>
+                  <td>{{ sale.quantity_sold }}</td>
+                  <td>${{ sale.total_price }}</td>
+                  <td>{{ sale.sale_time|date:"Y-m-d" }}</td>
               </tr>
-              <tr>
-                <td>Product B</td>
-                <td>3</td>
-                <td>$30</td>
-                <td>2024-06-16</td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>

@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from dashboard.models import Product, Category
-from .models import SalesTerminal
+from history.models import Sales_History
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from .forms import SalesTerminalForm
 from accounts.models import UserProfile
+from django.utils import timezone
 from decimal import Decimal
 import json
 
@@ -126,6 +127,14 @@ def process_total(request):
                 product.quantity -= item["quantity"]
                 product.total_sold_quantity += item["quantity"]
                 product.save()
+
+                 # SAVE TO SALES_HISTORY
+                Sales_History.objects.create(
+                    product=product,
+                    quantity_sold=item["quantity"],
+                    total_price=product.price * item["quantity"],  # ASSUMING PRODUCT HAS A PRICE FIELD
+                    sale_time=timezone.now(),
+                )
             else:
                 messages.error(
                     request,

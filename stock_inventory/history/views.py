@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from dashboard.models import Product
 from accounts.models import UserProfile
+from .models import Sales_History
 
 def history(request):
+    sales_history = Sales_History.objects.all().order_by('-sale_time')
     # Get the logged-in user
     user = request.user
 
@@ -24,6 +26,7 @@ def history(request):
 
     context = {
         'recently_added_products': recently_added_products,
+        'sales_history': sales_history,
     }
 
     return render(request, 'history.html', context)
