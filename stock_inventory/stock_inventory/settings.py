@@ -32,7 +32,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 TIME_ZONE = 'Asia/Manila'
 USE_TZ = True
-
+LOGIN_URL = '/login/'
 
 
 # Application definition

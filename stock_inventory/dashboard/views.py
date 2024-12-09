@@ -1,9 +1,11 @@
 import traceback
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse
 from django.db.models import F, Sum 
 from .models import Product, Notification
+from inventory.models import Category
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -18,7 +20,7 @@ import django_excel as excel
 import pyexcel
 import pandas as pd
 
-
+@login_required(login_url='/accounts/login/')
 def dashboard_view(request):
     user = request.user
     user_role = 'staff' if UserProfile.objects.filter(user=request.user, owner__isnull=False).exists() else 'owner'
@@ -30,26 +32,25 @@ def dashboard_view(request):
     except UserProfile.DoesNotExist:
         owner = user  # If the user is not staff, they are the owner
 
-    # Only get products owned by the determined owner
-    products = Product.objects.filter(owner=owner)
+    
+    products = Product.objects.filter(owner=owner) # Only get products owned by the determined owner
 
     # Data for the chart
     product_names = [product.name for product in products]
     remaining_quantities = [product.quantity for product in products]
     sold_quantities = [product.total_sold_quantity for product in products]  # Use cumulative sold quantity
-    sales_by_category = (Product.objects.values("category__name").annotate(total_sales=Sum("sold_quantity")).filter(category__isnull=False).order_by("-total_sales"))
+    sales_by_category = (Product.objects.filter(owner=owner, category__isnull=False).values("category__name").annotate(total_sales=Sum("total_sold_quantity")).order_by("-total_sales"))   
     category_names = [item["category__name"] for item in sales_by_category]
     category_sales = [item["total_sales"] for item in sales_by_category]
 
     # Dashboard statistics
-    all_products = Product.objects.all()
+    all_products = products
     total_products = products.count()  # Count products owned by the owner
     total_stock = products.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
     low_stock_items = products.filter(quantity__lt=F('alert_threshold')).count()
     out_of_stock_items = products.filter(quantity=0).count()
     top_products_sold = products.order_by('-total_sold_quantity')[:5]  # Top products by cumulative sales
     recently_added_products = products.order_by('-created_at')[:5]
-    notifications = Notification.objects.filter(is_read=False).order_by('-created_at')
 
     print(category_names, category_sales)
 
@@ -73,43 +74,57 @@ def dashboard_view(request):
 
 def get_notifications(request):
     user = request.user
+
     try:
+        # If user is a staff, get their owner's notifications
         user_profile = UserProfile.objects.get(user=user)
         owner = user_profile.owner
     except UserProfile.DoesNotExist:
+        # If the user is an owner, show their notifications
         owner = user
 
-    # Filter notifications by the owner of the logged-in user
+    # Filter notifications where the 'owner' matches the current user's owner
     notifications = Notification.objects.filter(owner=owner, is_read=False).order_by('-created_at')[:5]
-    unread_count = Notification.objects.filter(owner=owner, is_read=False).count()
 
-    notifications_data = []
-    for notification in notifications:
-        notifications_data.append({
+    notifications_data = [
+        {
             'title': notification.title,
             'message': notification.message,
             'icon': notification.icon,
             'created_at': notification.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'notification_type': notification.notification_type
-        })
+        }
+        for notification in notifications
+    ]
 
-    return JsonResponse({
-        'notifications': notifications_data,
-        'unread_count': unread_count
-    }, safe=False)
+    return JsonResponse({'notifications': notifications_data}, safe=False)
 
 
 
 def export_products(request):
-    products = Product.objects.all().values(
+    user = request.user
+
+    # Determine the owner of the logged-in user
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        owner = user  # If the user is not staff, they are the owner
+
+    products = Product.objects.filter(owner=owner).values(
         'name', 'quantity', 'price', 'sold_quantity', 'total_sales', 'mfg_date', 'exp_date', 'description'
     )
     df = pd.DataFrame(list(products))
+    if df.empty:
+        return HttpResponse("No products found for this owner.", status=404)
 
+    # Response to generate an Excel file
     response = HttpResponse(
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     response['Content-Disposition'] = 'attachment; filename="products.xlsx"'
+
+    #Export to excel
     df.to_excel(response, index=False, engine='openpyxl')
 
     return response
@@ -230,3 +245,7 @@ def delete_user_view(request):
         return JsonResponse({'success': True, 'deleted_users': deleted_users})
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)
+
+def logout_view(request):
+    logout(request)  # Ends the user session
+    return redirect('login')

@@ -88,7 +88,7 @@
                         <h4 class="mb-0 text-sm">{{ notification.title }}</h4>
                       </div>
                       <div class="text-right text-muted">
-                        <small>{{ notification.time }}</small>
+                        <small>{{ notification.created_at }}</small>
                       </div>
                     </div>
                     <p class="text-sm mb-0">{{ notification.message }}</p>
@@ -102,7 +102,7 @@
             {% endfor %}
           </div>
           <!-- View all -->
-          <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+          <a href="{% url 'history' %}" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
         </div>
       </li>
 
@@ -134,7 +134,7 @@
           </a>
           {% endif %}
           <div class="dropdown-divider"></div>
-          <a href="\" class="dropdown-item">
+          <a href="{% url 'logout' %}" class="dropdown-item">
             <i class="ni ni-user-run text-red"></i>
             <span>Logout</span>
           </a>
@@ -159,61 +159,6 @@
       const sidebar  = document.querySelector('.sidebar')
       sidebar.style.display = 'none'
     } 
-    function toggleNotificationPopup() {
-            var popup = document.getElementById("notificationPopup");
-            if (popup.style.display === "none" || popup.style.display === "") {
-                popup.style.display = "block";
-                fetchNotifications();  // Fetch notifications when opening
-            } else {
-                popup.style.display = "none";
-            }
-        }
-  
-        function fetchNotifications() {
-          fetch('/get-notifications/')  // Ensure this URL matches your endpoint
-              .then(response => response.json())
-              .then(data => {
-                  var notificationList = document.getElementById('notificationList');
-                  notificationList.innerHTML = '';  // Clear old notifications
-  
-                  // Icon mapping based on notification type
-                  const iconMapping = {
-                      'out-of-stock': 'img/out.png',
-                      'low-stock': 'img/warning.svg',
-                      // Add more mappings as needed
-                      'new-stock': 'img/new.png',
-                      'general': 'img/general.png'
-                  };
-  
-                  data.forEach(function(notification) {
-                      var li = document.createElement('li');
-  
-                      // Create an image element for the icon
-                      var icon = document.createElement('img');
-                      icon.src = iconMapping[notification.notification_type] || 'img/default.png'; // Fallback to a default icon if type not found
-                      icon.alt = notification.notification_type; // Set alt text for accessibility
-                      icon.style.width = '20px'; // Set width of the icon
-                      icon.style.height = '20px'; // Set height of the icon
-                      icon.style.marginRight = '10px'; // Add some space between the icon and text
-  
-                      // Append the icon and the text to the list item
-                      li.appendChild(icon);
-                      li.appendChild(document.createTextNode(notification.title + " - " + notification.message));
-                      
-                      notificationList.appendChild(li);
-                  });
-  
-                  // If no notifications, show a default message
-                  if (data.length === 0) {
-                      notificationList.innerHTML = '<li>No new notifications</li>';
-                  }
-              })
-              .catch(error => {
-                  console.error('Error fetching notifications:', error);
-              });
-        }
-        // Periodically check for new notifications every 30 seconds
-        setInterval(fetchNotifications, 30000);
   </script>
 </body>
 
