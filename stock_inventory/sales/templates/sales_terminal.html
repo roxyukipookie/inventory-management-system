@@ -11,7 +11,7 @@
         <h2>SALES TERMINAL</h2>
 
         <table class="product-table">
-            <thead>
+            <thead >
                 <tr>
                     <th>Product Name</th>
                     <th>Barcode</th>
@@ -74,16 +74,14 @@
                     </select>
                 </form>
             </section>
-
-            <table class="product-table">
-                <tbody>
-                    {% for product in products %}
-                        <button type="button" class="product-button" onclick="selectProduct('{{ product.barcode}}')">
-                            {{ product.name }}
-                        </button>
-                    {% endfor %}
-                </tbody>
-            </table>
+            
+            <div class="product-select">
+                {% for product in products %}
+                    <button type="button" class="product-button" onclick="selectProduct('{{ product.barcode}}')">
+                        {{ product.name }}
+                    </button>
+                {% endfor %}
+            </div>
 
         </div>
         

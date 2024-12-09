@@ -72,6 +72,21 @@
   border-bottom: 3px solid #FFB365;
 }
 
+.sales_container .product-select{
+  display: flex;
+  flex-direction: column;
+}
+
+.sales_container .product-button{
+  border: none;
+  background-color: aqua;
+  border-radius: 3px;
+  font-size: 20px;
+  margin-bottom: 10px;
+  width: 95px;
+  height: 40px;
+}
+
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -134,3 +149,5 @@
 #subtotalDisplay{
   margin-left: auto;
 }
+
+

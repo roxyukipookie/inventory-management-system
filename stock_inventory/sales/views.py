@@ -129,3 +129,7 @@ def process_total(request):
 
     messages.success(request, "Sales terminal processed successfully!")
     return redirect("sales_terminal")
+
+
+def new_sales_terminal(request):
+    return render(request, 'new_sales_terminal.html')

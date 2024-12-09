@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %} Sales Terminal {% endblock title %}
+
+{% block content %}
+
+<div class="header-custom">
+    
+</div>
+
+<div class="sales_term_cont">
+
+    <div class="sales-terminal">
+        
+        <!-- Sales Terminal -->
+        <div class="products_table">
+            <h2>SALES TERMINAL</h2>
+
+            <table class="product-table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Barcode</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTableBody">
+                    {% if sales_products %}
+                    {% for product in sales_products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.barcode }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr id="noProductRow">
+                        <td colspan="5">No products selected</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="total-container">
+                <h3>Total Price: {{ total_price }}</h3>
+            </div>
+
+            <footer class="footer-btns">
+                <button class="fbtn" id="cncl" type="button" onclick="location.href='{% url 'clear_sales_terminal' %}'">Cancel</button>
+                <button class="fbtn" id="totl" type="button" onclick="location.href=' {% url 'process_total' %} '">Total</button>
+            </footer>
+        </div>
+
+    </div>
+
+    <div class="products-tab">
+
+    </div>
+    
+</div>
+
+{% endblock content %}
