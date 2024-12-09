@@ -145,7 +145,10 @@ Useful examples of how a project can be used. Additional screenshots, code examp
 
 ## Resources
 The following are the resources of this application
-ERD [ERD Diagram](stock_inventory/static/images/erd.png)
+* [ERD Diagram](stock_inventory/static/images/erd.png)
+* [Gant Chart](stock_inventory/static/images/gantchart.png)
+* [UX/UI Design](https://www.figma.com/design/UDq0B6N5ZnCryDHuMJXyVh/Product-Inventory?node-id=0-1&t=sn1B2BC1Vyj0MxTz-1)
+* [Functional Business Requirement - Draft](inventory-management-system/01-Functional-Business-Requirement-Document-DRAFT.docx)
 
 ### Top contributors:
 
