@@ -15,7 +15,7 @@
 <h3 align="center">Product Inventory Management System</h3>
 
   <p align="center">
-    The Inventory Management System is a Django-based web application designed to streamline the management of product inventories for businesses. It allows users to add, update, and monitor product details such as name, quantity, price, category, and manufacturing or expiration dates. The system tracks sales performance, calculates total sales, and manages stock levels with automated notifications for low stock or out-of-stock products. Additional features include the ability to export product data to Excel for analysis and reporting, a user-friendly interface, and a robust notification system to keep users informed about inventory changes in real-time. This solution is ideal for businesses seeking an efficient and reliable way to manage their inventory operations.
+    The Inventory Management System is a Django-based web application designed to streamline the management of product inventories for businesses. This solution is ideal for businesses seeking an efficient and reliable way to manage their inventory operations.
     <br />
     <a href="https://github.com/roxyukipookie/inventory-management-system"><strong>Explore the docs »</strong></a>
     <br />
