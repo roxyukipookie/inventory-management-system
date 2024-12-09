@@ -52,56 +52,62 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         is_new_product = self.pk is None
-        old_quantity = None
+        old_quantity = 0
+        inputted_quantity = self.quantity 
+
+        # Only apply replenishment logic when explicitly indicated
+        replenishing = kwargs.pop('replenishing', False)
 
         # If the product already exists, get its current quantity
-        if not is_new_product:
+        if not is_new_product and replenishing:
             old_quantity = Product.objects.get(pk=self.pk).quantity
+            self.quantity = old_quantity + self.quantity
 
-        # Call the parent class's save method first
+        # Call the parent class's save method to persist changes
         super(Product, self).save(*args, **kwargs)
 
-        # If this is a new product, create a notification
+        # Notifications
         if is_new_product:
             Notification.objects.create(
                 title="New Product Added",
                 message=f"A new product '{self.name}' has been added to the inventory.",
                 notification_type='new-product',
-                icon='img/shipped.png',  
-                owner=self.owner  # Linking notification to the owner
+                icon='img/shipped.png',
+                related_product=self,
+                owner=self.owner
             )
-        else:
-            # If the product quantity has increased (indicating stock replenishment)
-            if old_quantity is not None and self.quantity > old_quantity:
-                Notification.objects.create(
-                    title="Stock Replenished",
-                    message=f"The stock of '{self.name}' has been replenished. Now {self.quantity} in stock.",
-                    notification_type='stock-replenished',
-                    icon='img/reload.png',
-                    owner=self.owner  # Linking notification to the owner
-                )
-
-        # Check if product is out of stock
-        if self.quantity == 0:
-            # Create a new out-of-stock notification
+        elif replenishing:
+            replenished_amount = inputted_quantity
             Notification.objects.create(
-                title="Out of stock",
+                title="Stock Replenished",
+                message=f"The stock of '{self.name}' has been replenished. Now {self.quantity} in stock.",
+                notification_type='stock-replenished',
+                icon='img/reload.png',
+                related_product=self,
+                owner=self.owner,
+                inputted_quantity=replenished_amount
+            )
+
+        # Check for stock thresholds
+        if self.quantity == 0:
+            Notification.objects.create(
+                title="Out of Stock",
                 message=f"The product '{self.name}' has run out of stock.",
                 notification_type='out-of-stock',
                 icon='img/out.png',
-                owner=self.owner  # Linking notification to the owner
+                related_product=self,
+                owner=self.owner
             )
-        
-        # Check if product is low on stock (below alert threshold)
-        elif self.quantity < self.alert_threshold:
-            # Create a new low-stock notification
+        elif 0 < self.quantity < self.alert_threshold:
             Notification.objects.create(
                 title="Low Stock",
                 message=f"The stock level of '{self.name}' is below the threshold ({self.quantity} remaining).",
                 notification_type='low-stock',
                 icon='img/warning.svg',
-                owner=self.owner  # Linking notification to the owner
+                related_product=self,
+                owner=self.owner
             )
+
 
 class Notification(models.Model):
     title = models.CharField(max_length=255, default='notification')
@@ -110,29 +116,10 @@ class Notification(models.Model):
     icon = models.CharField(max_length=255, default='img/icon.png')  # URL or static path for the icon
     created_at = models.DateTimeField(default=timezone.now)
     is_read = models.BooleanField(default=False)
-    notification_type = models.CharField(max_length=50, default='general')  # e.g., 'low-stock', 'out-of-stock', 'new-stock'
-
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)  # Added owner
+    notification_type = models.CharField(max_length=50, default='general')  
+    inputted_quantity = models.PositiveIntegerField(default=0)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True) 
 
     def __str__(self):
         return self.title
 
-class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-
-    def __str__(self):
-        return self.user.username
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_profile(sender, instance, **kwargs):
-    try:
-        instance.profile.save()
-    except Profile.DoesNotExist:
-        # Create profile if missing
-        Profile.objects.create(user=instance)

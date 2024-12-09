@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from accounts.models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 def inventory(request):
     query = request.GET.get('search', '')
@@ -44,7 +45,7 @@ def inventory(request):
         products = products.filter(category_id=category_id)
 
     # Product form handling
-    form = ProductForm(request.POST or None, request.FILES or None)
+    form = ProductForm(request.POST or None, request.FILES or None, owner=owner)
     if request.method == 'POST':
         if form.is_valid():
             # Assign the logged-in user as the owner of the new product
@@ -74,12 +75,24 @@ def history(request):
     return render(request, 'history.html')
 
 def add_category(request):
+    # Get the logged-in user
+    user = request.user
+
+    # Determine the owner (either the logged-in user or staff's owner)
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        owner = user  # If no owner exists, assume the user is the owner
+
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.owner = owner  # Assign the logged-in owner
+            category.save()
             messages.success(request, 'Category added successfully!')
-            return redirect('inventory')  # Redirect to the add product page or any other page
+            return redirect('inventory')
         else:
             messages.error(request, 'There was an error adding the category. Please check the details.')
     else:
@@ -103,7 +116,9 @@ def edit_product(request, barcode):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
+            inputted_quantity = form.cleaned_data['quantity']
+            product.quantity = inputted_quantity  # Update the quantity
+            product.save(replenishing=True)  # Save with replenishing=True
             messages.success(request, 'Product updated successfully!')
             return redirect('inventory')
         else:
@@ -111,6 +126,5 @@ def edit_product(request, barcode):
             print(form.errors)
     else:
         form = ProductForm(instance=product)
-        
 
     return render(request, 'edit_product.html', {'form': form, 'product': product})

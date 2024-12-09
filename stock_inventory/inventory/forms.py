@@ -5,6 +5,14 @@ from .models import Category
 import random
 
 class ProductForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # Retrieve the owner from kwargs if passed
+        owner = kwargs.pop('owner', None)
+        super(ProductForm, self).__init__(*args, **kwargs)
+        
+        # Filter the category queryset by the owner if an owner is provided
+        if owner:
+            self.fields['category'].queryset = Category.objects.filter(owner=owner)
     
     def clean(self):
         cleaned_data = super().clean()
