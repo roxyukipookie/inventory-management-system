@@ -46,7 +46,6 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#resources">Resources</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -133,15 +132,6 @@ python manage.py runserver
 Try opening [http://localhost:8000](http://localhost:8000) in the browser.
 Now you are good to go.
 
-<!-- USAGE EXAMPLES -->
-## Usage
-Useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space.
-
-### Dashboard:
-[![Product Screen Shot][product-screenshot]](https://github.com/roxyukipookie/inventory-management-system)
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Resources
 The following are the resources of this application
