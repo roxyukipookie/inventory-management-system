@@ -47,7 +47,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#resources">Resources</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -143,6 +143,10 @@ Useful examples of how a project can be used. Additional screenshots, code examp
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Resources
+The following are the resources of this application
+ERD [ERD Diagram](stock_inventory/static/images/erd.png)
+
 ### Top contributors:
 
 <a href="https://github.com/roxyukipookie/inventory-management-system/graphs/contributors">
@@ -170,6 +174,7 @@ https://lucid.app/lucidchart/b5c83653-cc57-4b7e-9603-799dd79cbe4c/edit?viewport_
 [license-shield]: https://img.shields.io/github/license/roxyukipookie/inventory-management-system.svg?style=for-the-badge
 [license-url]: https://github.com/roxyukipookie/inventory-management-system/blob/master/LICENSE.txt
 [product-screenshot]: stock_inventory/static/images/screenshot2.png
+[erd]: stock_inventory/static/images/erd.png
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [Django-shield]: https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white
