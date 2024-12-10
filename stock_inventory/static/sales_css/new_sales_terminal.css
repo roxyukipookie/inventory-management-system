@@ -1,9 +1,3 @@
-.table-responsive{
-    min-height: 50vh;
-    overflow: auto;
-    flex-shrink: 1;
-}
-
 .menu{
     max-height: 50vh;
     overflow: auto;
@@ -17,6 +11,7 @@
 
 .product-button{
     border: none;
+    background-color: white;
     flex-wrap: nowrap;
-        
+    padding-right: 10px;    
 }
