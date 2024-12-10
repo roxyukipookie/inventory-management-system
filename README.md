@@ -132,7 +132,7 @@ Now you are good to go.
 ## Resources
 The following are the resources of this application
 * [ERD Diagram](stock_inventory/static/images/erd.png)
-* [Gant Chart](stock_inventory/static/images/gantchart.png)
+* [Gant Chart](Gantt Chart (Product Inventory).xlsx)
 * [UX/UI Design](https://www.figma.com/design/UDq0B6N5ZnCryDHuMJXyVh/Product-Inventory?node-id=0-1&t=sn1B2BC1Vyj0MxTz-1)
 * [Functional Business Requirement - Draft](01-Functional-Business-Requirement-Document-DRAFT.docx)
 
