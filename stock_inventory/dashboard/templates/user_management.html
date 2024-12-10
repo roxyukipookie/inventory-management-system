@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-
+ 
 {% load static %}
-
+ 
 {% block content %}
 <head>
     <title>User Management</title>
@@ -19,14 +19,14 @@
    
                 <a href="{% url 'user_management_view' %}" class="tab active">User Management</a>
             </div>
-
+ 
             <!-- Search Box and Button -->
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Search" aria-label="Search" id="searchInput">
                 <button class="clear-button" id="clearButton" style="display: block;">&times;</button>
             </div>
         </div>
-
+ 
         <div class="second-main-content">
             <div class="users-header">
                 <h2>User Count <span class="users-count">| {{ user_count }}</span></h2>
@@ -55,7 +55,7 @@
                                     <td class="field-avatar">
                                         <img src="{% static 'img/user.png' %}" alt="User Profile" class="user-avatar" style="width: 40px; height: 40px;">
                                     </td>
-
+ 
                                     <td class="field-name"><span class="username">{{ user.username }}</span></td>
                                     
                                     <td class="field-name">
@@ -79,7 +79,7 @@
                                             <option value="na" {% if user.profile.role == 'n/a' %}selected{% endif %}>N/A</option>
                                         </select>
                                     </td>
-
+ 
                                     
                                     <td class="field-actions">
          
@@ -100,12 +100,12 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- Add Staff Modal -->
     <div id="addUserModal" class="modal">
-        <div class="modal-content addStaff-modal-content">
+        <div class="modal-container add-user-modal">
             <span class="close" onclick="closeAddUserModal()">&times;</span>
-            <h2>Add New Staff</h2>
+            <h2 class="modal-title">Add New Staff</h2>
             <form id="addStaffForm">
                 {% csrf_token %}
                 <div class="form-group">
@@ -144,22 +144,21 @@
             </form>
         </div>
     </div>
-
-
+ 
+ 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
-        <div class="modal-content delete-modal-content">
+        <div class="modal-container delete-user-modal">
             <span class="close" onclick="closeDeleteModal()">&times;</span>
-            <h2>Confirm Delete</h2>
-            <p id="deleteMessage">Are you sure you want to delete the selected user(s)?</p>
+            <h3 id="deleteMessage">Are you sure you want to delete the selected user(s)?</h3>
             <div class="form-actions">
                 <button type="button" class="submit-button" onclick="confirmDelete()">Confirm</button>
             </div>
         </div>
     </div>
     
-
-
+ 
+ 
     <script>
         // Show/Hide Password Toggle
         const togglePassword = document.getElementById('togglePassword');
@@ -176,59 +175,59 @@
             passwordInput.type = type;
             togglePassword.textContent = type === 'password' ? 'SHOW' : 'HIDE';
         });
-
+ 
         // DOM Content Loaded Event Listener for other functionalities
         document.addEventListener("DOMContentLoaded", function() {
             const searchInput = document.getElementById("searchInput");
             const clearButton = document.getElementById("clearButton");
             const userRows = document.querySelectorAll(".user-row");
             const userCountElement = document.querySelector(".users-count"); // This selects the element showing the user count
-
+ 
             // Function to update the displayed user count
             function updateUserCount() {
                 const visibleRows = Array.from(userRows).filter(row => row.style.display !== "none");
                 const visibleCount = visibleRows.length;
                 userCountElement.textContent = `| ${visibleCount}`; // Update the user count text
             }
-
+ 
             searchInput.addEventListener("keyup", function() {
                 const filter = searchInput.value.toLowerCase();
                 clearButton.style.display = filter ? 'block' : 'none'; // Show/hide clear button based on input value
-
+ 
                 userRows.forEach(row => {
                     const nameCell = row.querySelector(".field-name");
                     const emailCell = row.querySelector(".user-email");
                     const nameText = nameCell.textContent || nameCell.innerText;
                     const emailText = emailCell.textContent || emailCell.innerText;
-
+ 
                     if (nameText.toLowerCase().indexOf(filter) > -1 || emailText.toLowerCase().indexOf(filter) > -1) {
                         row.style.display = "";
                     } else {
                         row.style.display = "none";
                     }
                 });
-
+ 
                 // Update the user count after filtering
                 updateUserCount();
             });
-
+ 
             clearButton.addEventListener("click", function() {
                 searchInput.value = '';
                 clearButton.style.display = 'none';
                 searchInput.focus();
                 userRows.forEach(row => row.style.display = "");
-
+ 
                 // Update the user count when clearing the search
                 updateUserCount();
             });
-
+ 
             // Initialize the user count when the page loads
             updateUserCount();
         });
-
-
-
-
+ 
+ 
+ 
+ 
         function validatePassword() {
             const passwordField = document.getElementById("password");
             const passwordWarning = document.getElementById("passwordWarning");
@@ -238,36 +237,36 @@
                 passwordWarning.style.display = "none";
             }
         }
-
-
+ 
+ 
         function openAddUserModal() {
             const modal = document.getElementById('addUserModal');
-            const modalContent = modal.querySelector('.addStaff-modal-content');
+            const modalContent = modal.querySelector('.add-user-modal');
             modal.style.display = 'block';
             setTimeout(() => modalContent.classList.add('open'), 10); // Allow time for initial render
         }
-
+ 
         function closeAddUserModal() {
             const modal = document.getElementById('addUserModal');
-            const modalContent = modal.querySelector('.addStaff-modal-content');
+            const modalContent = modal.querySelector('.add-user-modal');
             modalContent.classList.remove('open');
             setTimeout(() => (modal.style.display = 'none'), 300); // Match CSS transition time
         }
-
-
+ 
+ 
         function submitAddUserForm() {
             const passwordField = document.getElementById("password");
-
+ 
             // Check if password is at least 8 characters long
             if (passwordField.value.length < 8) {
                 // Display alert box
                 alert("Password must be 8 characters long or more.");
                 return; // Prevent form submission
             }
-
+ 
             // Proceed with form submission if valid
             const formData = new FormData(document.getElementById("addStaffForm"));
-
+ 
             fetch("{% url 'add_user' %}", {
                 method: "POST",
                 headers: {
@@ -281,14 +280,14 @@
                     // Add the new user row to the table
                     const userTable = document.getElementById("user_table").getElementsByTagName("tbody")[0];
                     const newRow = document.createElement("tr");
-
+ 
                     newRow.innerHTML = `          
                         <td class="field-avatar">
                             <img src="{% static 'img/user.png' %}" alt="User Profile" class="user-avatar" style="width: 40px; height: 40px;">
                         </td>
-
+ 
                         <td class="field-name"><span class="username">${data.user?.username || 'N/A'}</span></td>
-
+ 
                         <td class="field-name">
                             <span class="user-name">${data.user.first_name} ${data.user.last_name}</span><br>
                             <span class="user-email">${data.user.email}</span>
@@ -314,35 +313,35 @@
                 alert("An error occurred while submitting the form.");
             });
         }
-
-
-
+ 
+ 
+ 
         // Open Delete Modal
         function openDeleteModal(userId = null, userName = '') {
             const modal = document.getElementById("deleteModal");
-            const modalContent = document.querySelector(".delete-modal-content");
-
+            const modalContent = document.querySelector(".delete-user-modal");
+ 
             // Update delete message
             if (userId) {
                 usersToDelete = [userId];
                 const deleteMessage = `Are you sure you want to delete ${userName}?`;
                 document.getElementById("deleteMessage").innerText = deleteMessage;
             }
-
+ 
             modal.style.display = "block";
             setTimeout(() => modalContent.classList.add("open"), 10); // Open with animation
         }
-
+ 
         // Close Delete Modal
         function closeDeleteModal() {
             const modal = document.getElementById("deleteModal");
-            const modalContent = document.querySelector(".delete-modal-content");
+            const modalContent = document.querySelector(".delete-user-modal");
             
             modalContent.classList.remove("open"); // Remove open class for animation
             setTimeout(() => (modal.style.display = "none"), 300); // Ensure modal hides after animation
             usersToDelete = [];
         }
-
+ 
         function confirmDelete() {
             if (usersToDelete.length > 0) {
                 fetch("{% url 'delete_user_view' %}", {
@@ -371,7 +370,7 @@
                 .catch(error => console.error("Error:", error));
             }
         }
-
+ 
     </script>
 </body>
 {% endblock %}

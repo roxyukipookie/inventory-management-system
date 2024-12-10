@@ -5,13 +5,13 @@
 
 {% block content %}
 <body>
-    <div class="titleBlock">
-        <h3 class="titleBlock-title">Add Category</h3>
+    <div class="title-cont">
+        <h3 class="tittle">Add Category</h3>
+        <a href="{% url 'inventory' %}" style="color: black;" class="{% if request.resolver_match.url_name == 'inventory' %}active{% endif %}">Inventory</a> /
         <a href="{% url 'add_category' %}" class="{% if request.resolver_match.url_name == 'add_category' %}active{% endif %}">Add Category</a>
     </div>
 
-    <div class="addCategoryForm-container">
-        <h3 class="addCategoryForm-title">Add New Category</h3>
+    <div class="Form-container">    
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
