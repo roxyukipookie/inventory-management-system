@@ -11,7 +11,7 @@ from decimal import Decimal
 import json
 
 # Sales_terminal View
-def sales_terminal(request):
+"""def sales_terminal(request):
     # Get the logged-in user
     user = request.user
 
@@ -44,7 +44,7 @@ def sales_terminal(request):
         "sales_products": products_in_terminal,
         "total_price": total_price,
     }
-    return render(request, "sales_terminal.html", context)
+    return render(request, "sales_terminal.html", context)"""
 
 #Logic for product selection
 @csrf_protect
@@ -68,17 +68,17 @@ def add_to_sales_terminal(request):
         price = request.POST.get("price")
 
         # Initialize sales terminal session if it doesn't exist
-        if "sales_terminal" not in request.session:
-            request.session["sales_terminal"] = []
+        if "new_sales_terminal" not in request.session:
+            request.session["new_sales_terminal"] = []
 
-        sales_terminal = request.session["sales_terminal"]
+        new_sales_terminal = request.session["new_sales_terminal"]
 
         # Convert price from Decimal to float
         price = float(product.price)
 
         # Check if the product already exists in the sales terminal
         product_exists = False
-        for item in sales_terminal:
+        for item in new_sales_terminal:
             if item["barcode"] == product.barcode:  # Check by unique barcode
                 item["quantity"] += quantity
                 product_exists = True
@@ -86,7 +86,7 @@ def add_to_sales_terminal(request):
 
         # If the product doesn't exist, add it to the session
         if not product_exists:
-            sales_terminal.append({
+            new_sales_terminal.append({
                 "name": product.name,
                 "barcode": product.barcode,
                 "description": product.description,
@@ -96,25 +96,25 @@ def add_to_sales_terminal(request):
 
         # Mark the session as modified and redirect
         request.session.modified = True
-        return redirect("sales_terminal")
+        return redirect("new_sales_terminal")
 
-    return redirect("sales_terminal")
+    return redirect("new_sales_terminal")
 
 
 # CLear Btn
 def clear_sales_terminal(request):
     # Remove sales terminal data from the session
-    if "sales_terminal" in request.session:
-        del request.session["sales_terminal"]
-    return redirect("sales_terminal")  # Redirect back to the sales terminal page
+    if "new_sales_terminal" in request.session:
+        del request.session["new_sales_terminal"]
+    return redirect("new_sales_terminal")  # Redirect back to the sales terminal page
 
 # Total Btn
 def process_total(request):
     # Ensure sales_terminal exists in session
-    sales_terminal = request.session.get("sales_terminal", [])
+    sales_terminal = request.session.get("new_sales_terminal", [])
     if not sales_terminal:
         messages.error(request, "Sales terminal is empty. Cannot process total.")
-        return redirect("sales_terminal")
+        return redirect("new_sales_terminal")
 
     # Loop through sales_terminal and update database quantities
     for item in sales_terminal:
@@ -140,18 +140,50 @@ def process_total(request):
                     request,
                     f"Not enough stock for {product.name}. Available: {product.quantity}, Required: {item['quantity']}"
                 )
-                return redirect("sales_terminal")
+                return redirect("new_sales_terminal")
         except Product.DoesNotExist:
             messages.error(request, f"Product with barcode {item['barcode']} not found.")
-            return redirect("sales_terminal")
+            return redirect("new_sales_terminal")
     
     # Clear sales terminal after processing
-    del request.session["sales_terminal"]
+    del request.session["new_sales_terminal"]
     request.session.modified = True
 
     messages.success(request, "Sales terminal processed successfully!")
-    return redirect("sales_terminal")
+    return redirect("new_sales_terminal")
 
 
 def new_sales_terminal(request):
-    return render(request, 'new_sales_terminal.html')
+    # Get the logged-in user
+    user = request.user
+
+    # Get the owner of the logged-in staff, if applicable
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        owner = user_profile.owner  # The owner linked to the staff
+    except UserProfile.DoesNotExist:
+        # If the user is not staff or no owner exists, assume the user is the owner
+        owner = user
+
+    products_in_terminal = request.session.get("new_sales_terminal", [])
+    selected_category = request.GET.get("category", None)
+    categories = Category.objects.filter(products__owner=owner).distinct()
+
+    total_price = Decimal("0.00")
+
+    for product in products_in_terminal:
+        total_price += Decimal(product["price"] * product["quantity"])
+
+    if selected_category:
+        products = Product.objects.filter(category_id=selected_category, owner=owner)
+    else:
+        products = Product.objects.filter(owner=owner)
+
+    context = {
+        "categories": categories,
+        "selected_category": selected_category,
+        "products": products,
+        "sales_products": products_in_terminal,
+        "total_price": total_price,
+    }
+    return render(request, "new_sales_terminal.html", context)

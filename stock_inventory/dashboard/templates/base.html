@@ -40,7 +40,7 @@
               d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
           </svg></a></li>
       <li><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
-      <li><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
+      <li><a href="{% url 'new_sales_terminal' %}">Sales Terminal</a></li>
       
       {% if request.user.is_owner %}
         <li><a href="{% url 'inventory' %}">Inventory</a></li>
@@ -52,7 +52,7 @@
     <ul>
       <li><img class="logo" src="{% static 'images/LOGO.png' %}" /></li>
       <li class="hideNavbar"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
-      <li class="hideNavbar"><a href="{% url 'sales_terminal' %}">Sales Terminal</a></li>
+      <li class="hideNavbar"><a href="{% url 'new_sales_terminal' %}">Sales Terminal</a></li>
       {% if request.user.is_owner %}
         <li class="hideNavbar"><a href="{% url 'inventory' %}">Inventory</a></li>
         <li class="hideNavbar"><a href="{% url 'history' %}">History</a></li>

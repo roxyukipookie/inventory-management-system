@@ -6,13 +6,13 @@
 
 body{ /*body styles*/
   min-height: 100vh;
-  background-color: white;
+  background-color: whitesmoke;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 nav{ /*nav styles*/
   top: 10px;
-  background-color: white;
+  background-color: whitesmoke;
   width: 100%;
   position: relative;
 }

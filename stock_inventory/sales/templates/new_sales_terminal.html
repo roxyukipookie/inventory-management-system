@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <!-- Dynamic Table Title -->
+            <h6 class="h2 text-white d-inline-block mb-4 fs-1" id="tableTitle">Sales Terminal</h6>
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="{% url 'dashboard_view' %}"><i class="fas fa-home"></i></a>
+              </li>
+              <li class="breadcrumb-item"><a href="{% url 'dashboard_view' %}">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Sales Terminal</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Sales Terminal</h3>
+        </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Barcode</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% if sales_products %}
+                {% for product in sales_products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.quantity }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr id="noProductRow">
+                    <td colspan="5">No products selected</td>
+                </tr>
+                {% endif %}
+            </tbody>
+            </table>
+          </div>
+          
+        <div class="card-header border-0 d-flex justify-content-between align-items-center">
+            <h3 >Total Price: {{ total_price }}</h3>
+        </div>
+        <footer class="footer-btns">
+            <button class="fbtn" id="cncl" type="button" onclick="location.href='{% url 'clear_sales_terminal' %}'">Cancel</button>
+            <button class="fbtn" id="totl" type="button" onclick="location.href=' {% url 'process_total' %} '">Total</button>
+        </footer>
+        </div>
+      </div>
+
+    <div class="menu"> <!--Menu Tab-->
+        <div class="quantity-input">
+            <label for="quantityInput"><strong>Enter Quantity:</strong></label>
+            <form method="post" action="{% url 'add_to_sales_terminal' %}">
+                {% csrf_token %}
+                <input type="number" id="quantityInput" name="quantity" placeholder="Enter quantity" min="1" required>
+                <input type="hidden" id="productSelected" name="barcode">
+            </form>
+        </div>
+
+        <div class="category_tab">
+            <section class="filter-option">
+                <h2>PRODUCTS</h2>
+                <form method="get" action="{% url 'new_sales_terminal' %}">
+                    <select name="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category and selected_category|stringformat:"i" == category.id|stringformat:"i" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </section>
+
+            <table class="product-table">
+                <tbody>
+                    {% for product in products %}
+                        <button type="button" class="product-button" onclick="selectProduct('{{ product.barcode}}')">
+                            {{ product.name }}
+                        </button>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div> <!--Menu Tab-->
+    </div>
+  </div>
+{% endblock content %}
