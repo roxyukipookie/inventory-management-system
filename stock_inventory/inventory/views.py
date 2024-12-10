@@ -118,7 +118,7 @@ def edit_product(request, barcode):
         if form.is_valid():
             inputted_quantity = form.cleaned_data['quantity']
             product.quantity = inputted_quantity  # Update the quantity
-            product.save()  # Save with replenishing=True
+            product.save(replenishing=True)  # Save with replenishing=True
             messages.success(request, 'Product updated successfully!')
             return redirect('inventory')
         else:
