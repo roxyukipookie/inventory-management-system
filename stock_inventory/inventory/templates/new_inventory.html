@@ -24,15 +24,16 @@
                                 <button type="submit" class="input-group-text"><i class="fas fa-search"></i></button>
                             </div>
                             <input class="form-control pt-1 mt-2"
-                                   placeholder="Search"
-                                   type="text"
-                                   name="search"
-                                   value="{{ query }}"
-                                   id = "search-input"
+                                placeholder="Search"
+                                type="text"
+                                name="search"
+                                value="{{ query }}"
+                                id="search-input"
                             />
                         </div>
                     </div>
                 </form>
+
                 <form method="get" action="{% url 'inventory' %}" style="display: inline;">
                     <input type="hidden" name="search" value="">
                     <button class="close-icon" type="submit" style="background: none; border: none; cursor: pointer; padding-right: 10px;">
@@ -73,7 +74,6 @@
                     </div>
                 </div>
             </section>
-    
 
             <!-- Categories Section -->
             <section class="filter-option">
